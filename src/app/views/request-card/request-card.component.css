@@ -1,0 +1,83 @@
+.card-header{
+  background-color: var(--color-primary);
+}
+  .card-title {
+    font-weight: bold;
+    color: aliceblue;
+    
+  }
+ /* Use global colors & Bootstrap */
+.status-approved { color: var(--color-success); font-weight: bold; }
+.status-pending { color: var(--color-warning); font-weight: bold; }
+.status-rejected { color: var(--color-error); font-weight: bold; }
+p i{
+  color :  var(--color-primary-light)
+}
+
+.position-absolute {
+  z-index: 1055; 
+}
+/* Calendar Styling */
+.calendar {
+  position: relative;
+  width: 100px;
+  height: 100px;
+  animation: swing ease-in-out 1s infinite alternate;
+  transform-origin: center -10px;
+  box-shadow: 0 4px 10px rgba(0,0,0,0.2);
+  border-radius: 8px;
+  margin-top: 10px;
+}
+
+.calendar::before {
+  position: absolute;
+  content: '';
+  top: -20px;
+  left: 50%;
+  transform: translateX(-50%);
+  width: 5px;
+  height: 5px;
+  background-color: black;
+  border-radius: 50%;
+}
+
+.calendar::after {
+  position: absolute;
+  top: -10px;
+  left: 50%;
+  margin-left: -20px;
+  content: '';
+  width: 40px;
+  height: 40px;
+  border: 1px solid black;
+  transform: rotate(45deg);
+  z-index: -1;
+}
+
+.calendar__month {
+  width: 100%;
+  height: 30px;
+  background-color: var(--color-primary-dark);
+  color: white;
+  font-size: 14px;
+  font-weight: bold;
+  border-top-left-radius: 8px;
+  border-top-right-radius: 8px;
+}
+
+.calendar__day {
+  width: 100%;
+  height: 70px;
+  background-color: white;
+  font-size: 32px;
+  font-weight: bold;
+  color: var(--color-primary-dark);
+  border-bottom-left-radius: 8px;
+  border-bottom-right-radius: 8px;
+}
+
+/* Swing Animation */
+@keyframes swing {
+  0% { transform: rotate(2deg); }
+  100% { transform: rotate(-2deg); }
+}

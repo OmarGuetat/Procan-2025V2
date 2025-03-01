@@ -1,0 +1,192 @@
+<!-- ALERT -->
+  <div *ngIf="alertMessage" class="alert alert-dismissible fade show position-absolute top-0 end-0 m-3 shadow"
+       [ngClass]="alertType" role="alert">
+    <i *ngIf="alertType === 'alert-danger'" class="bi-exclamation-octagon-fill"></i>
+    <strong class="mx-2">{{ alertMessage }}</strong>
+    <button type="button" class="btn-close" (click)="dismissAlert()" aria-label="Close"></button>
+  </div>
+
+
+<!-- Main Card -->
+<div class="card shadow-sm ">
+  
+  <!-- Card Header -->
+  <div class="card-header d-flex align-items-center justify-content-between">
+    <h5 class="card-title my-1">
+      <i class="bi bi-calendar-check me-2"></i>Leave Request
+    </h5>
+    
+    <!-- Three-Dot Menu -->
+    <div class="dropdown ms-auto">
+      <button class="btn btn-light btn-sm rounded-circle shadow-sm transition-all" type="button" data-bs-toggle="dropdown">
+        <i class="bi bi-three-dots-vertical"></i>
+      </button>
+      <ul class="dropdown-menu">
+        <li *ngIf="request.reason === 'sick_leave'">
+          <a [href]="request.attachment_path" target="_blank" class="btn dropdown-item">
+            <i class="bi bi-eye me-2"></i>See Attachment
+          </a>
+        </li>
+        <li *ngIf="request.status !== 'on_hold'">
+          <button class="dropdown-item" (click)="downloadPdf(request.id)">
+            <i class="bi bi-download me-2"></i>Download PDF
+          </button>
+        </li>
+        <li *ngIf="request.status === 'on_hold'">
+          <button class="dropdown-item" (click)="openUpdateModal(request)">
+            <i class="bi bi-pencil me-2"></i>Modify
+          </button>
+        </li>
+        <li *ngIf="request.status === 'on_hold'">
+          <button class="dropdown-item text-danger" (click)="openDeleteModal(request.id)">
+            <i class="bi bi-trash me-2"></i>Delete
+          </button>
+        </li>
+      </ul>
+    </div>
+  </div>
+
+  <!-- Card Body -->
+  <div class="card-body">
+    <div class="row align-items-center">
+      
+      <!-- Leave Details -->
+      <div class="col-md-8">
+        <p class="d-flex align-items-center">
+          <i class="bi bi-calendar-event me-2"></i>
+          <strong>Start Date:</strong>&nbsp;{{ request.start_date }}
+        </p>
+        <p class="d-flex align-items-center">
+          <i class="bi bi-calendar-event me-2"></i>
+          <strong>End Date:</strong>&nbsp;{{ request.end_date }}
+        </p>
+        <p class="d-flex align-items-center">
+          <i class="bi bi-chat-left-text me-2"></i>
+          <strong>Reason:</strong>&nbsp;
+          <span [ngSwitch]="request.reason">
+            <span *ngSwitchCase="'paternity_leave'">Paternity Leave</span>
+            <span *ngSwitchCase="'maternity_leave'">Maternity Leave</span>
+            <span *ngSwitchCase="'vacation'">Vacation</span>
+            <span *ngSwitchCase="'sick_leave'">Sick Leave</span>
+            <span *ngSwitchCase="'travel_leave'">Travel</span>
+            <span *ngSwitchDefault>{{ request.other_reason || 'N/A' }}</span>
+          </span>
+        </p>
+        
+        <p class="d-flex align-items-center">
+          <i class="bi bi-info-circle me-2"></i>
+          <strong>Status:</strong>&nbsp;
+          <span [ngClass]="{
+            'text-success': request.status === 'approved',
+            'text-warning': request.status === 'on_hold',
+            'text-danger': request.status === 'rejected'
+          }">
+            <span [ngSwitch]="request.status">
+              <span *ngSwitchCase="'approved'">Approved</span>
+              <span *ngSwitchCase="'rejected'">Rejected</span>
+              <span *ngSwitchCase="'on_hold'">Pending</span>
+            </span>
+          </span>
+        </p>
+      </div>
+
+      <!-- Swinging Calendar -->
+      <div class="col-md-4 d-flex justify-content-center">
+        <div class="calendar text-center">
+          <div class="calendar__month">Days</div>
+          <div class="calendar__day">
+            {{ request.reason === 'sick_leave' ? request.effective_leave_days : request.leave_days_requested }}
+          </div>
+        </div>
+      </div>
+
+    </div>
+  </div>
+</div>
+
+  
+<!-- Update Leave Modal-->
+<div class="modal fade" [id]="'updateLeaveModal-' + request.id" tabindex="-1" aria-labelledby="updateLeaveModalLabel" aria-hidden="true">
+  <div class="modal-dialog">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h5 class="modal-title">Update Leave Request</h5>
+        <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+      </div>
+      <div class="modal-body">
+        <form [formGroup]="updateForm" (ngSubmit)="updateLeave()">
+          <!-- Start Date -->
+          <div class="mb-3">
+            <label for="start_date" class="form-label">Start Date</label>
+            <input type="date" formControlName="start_date" class="form-control" (change)="validateDates()">
+            <small *ngIf="updateForm.controls['start_date'].errors?.['required']" class="text-danger">Start date is required.</small>
+          </div>
+
+          <!-- End Date -->
+          <div class="mb-3">
+            <label for="end_date" class="form-label">End Date</label>
+            <input type="date" formControlName="end_date" class="form-control" (change)="validateDates()">
+            <small *ngIf="updateForm.controls['end_date'].errors?.['required']" class="text-danger">End date is required.</small>
+            <small *ngIf="updateForm.controls['end_date'].errors?.['dateInvalid']" class="text-danger">End date cannot be before start date.</small>
+          </div>
+          <!--Days Requested-->
+          <div class="mb-3">
+            <label for="leave_days_requested" class="form-label">Leave Days Requested</label>
+            <input type="number" formControlName="leave_days_requested" class="form-control" min="1">
+            <small *ngIf="updateForm.controls['leave_days_requested'].errors?.['required']" class="text-danger">Leave days are required.</small>
+            <small *ngIf="updateForm.controls['leave_days_requested'].errors?.['min']" class="text-danger">Must be at least 1 day.</small>
+          </div>
+          
+          <!-- Reason Dropdown -->
+          <div class="mb-3">
+            <label for="reason" class="form-label">Reason</label>
+            <select formControlName="reason" class="form-select" (change)="onReasonChange()">
+              <option value="vacation">Vacation</option>
+              <option value="travel_leave">Travel</option>
+              <option value="paternity_leave">Paternity Leave</option>
+              <option value="maternity_leave">Maternity Leave</option>
+              <option value="sick_leave">Sick Leave</option>
+              <option value="other">Other</option>
+            </select>
+          </div>
+
+          <!-- Other Reason Input (Only if "Other" is selected) -->
+          <div class="mb-3" *ngIf="updateForm.value.reason === 'other'">
+            <label for="other_reason" class="form-label">Specify Reason</label>
+            <input type="text" formControlName="other_reason" class="form-control">
+            <small *ngIf="updateForm.controls['other_reason'].errors?.['required']" class="text-danger">Please provide a reason.</small>
+          </div>
+
+          <!-- Attachment (Only if "Sick Leave" is selected) -->
+          <div class="mb-3" *ngIf="updateForm.value.reason === 'sick_leave'">
+            <label for="attachment" class="form-label">Medical Certificate (PDF, JPG, PNG)</label>
+            <input type="file" (change)="onFileChange($event)" class="form-control">
+            <small *ngIf="attachmentError" class="text-danger">{{ attachmentError }}</small>
+          </div>
+
+          <!-- Submit Button -->
+          <button type="submit" class="btn button-primary">Update Leave</button>
+        </form>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- Modal for Delete -->
+<div class="modal fade" id="deleteLeaveModal" tabindex="-1" aria-hidden="true">
+  <div class="modal-dialog">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h5 class="modal-title">Delete Leave Request</h5>
+        <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+      </div>
+      <div class="modal-body">
+        <p>Are you sure you want to delete this leave request?</p>
+      </div>
+      <div class="modal-footer">
+        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancel</button>
+        <button type="button" class="btn btn-danger" (click)="deleteLeave(request.id)">Delete</button>
+      </div>
+    </div>
+  </div>
+</div>

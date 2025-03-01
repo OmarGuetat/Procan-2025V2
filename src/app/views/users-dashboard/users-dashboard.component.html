@@ -1,0 +1,109 @@
+<!-- ALERTS -->
+<!-- Dynamic Alert -->
+<div *ngIf="alertMessage" class="alert alert-dismissible fade show position-absolute top-0 end-0 m-3 shadow" 
+     [ngClass]="alertType" role="alert">
+  <i *ngIf="alertType === 'alert-danger'" class="bi-exclamation-octagon-fill"></i>
+  <strong class="mx-2">{{ alertMessage }}</strong>
+  <button type="button" class="btn-close" (click)="dismissAlert()" aria-label="Close"></button>
+</div>
+
+<!-- Add Candidate Modal (CoreUI modal structure) -->
+<c-modal [(visible)]="modalVisible" [size]="'lg'" [backdrop]="'static'">
+  <c-modal-header>
+    <h5 class="modal-title">Add New Candidate</h5>
+    <button type="button" class="btn-close" (click)="closeModal()" aria-label="Close"></button>
+  </c-modal-header>
+  <c-modal-body>
+    <!-- Candidate Form (Reactive Form) -->
+    <form [formGroup]="candidateForm" (ngSubmit)="onSubmit()">
+      <div class="mb-3">
+        <label for="first_name" class="form-label">First Name</label>
+        <input type="text" class="form-control" id="first_name" formControlName="first_name" required>
+      </div>
+      <div class="mb-3">
+        <label for="last_name" class="form-label">Last Name</label>
+        <input type="text" class="form-control" id="last_name" formControlName="last_name" required>
+      </div>
+      <div class="mb-3">
+        <label for="username" class="form-label">Username</label>
+        <input type="text" class="form-control" id="username" formControlName="username" required>
+      </div>
+      <div class="mb-3">
+        <label for="password" class="form-label">Password</label>
+        <div class="input-group">
+          <input [type]="showPassword ? 'text' : 'password'" class="form-control" id="password" formControlName="password" required>
+          <span class="input-group-text toggle-icon bg-white border" (click)="togglePasswordVisibility()">
+            <i class="bi" [ngClass]="showPassword ? 'bi-eye' : 'bi-eye-slash'"></i>
+          </span>
+        </div>
+      </div>
+      <div class="mb-3">
+        <label class="form-label">Gender</label>
+        <div>
+          <label class="me-2">
+            <input type="radio" formControlName="gender" value="male" required> Male
+          </label>
+          <label>
+            <input type="radio" formControlName="gender" value="female" required> Female
+          </label>
+        </div>
+      </div>
+      <div class="mb-3">
+        <label for="company" class="form-label">Company</label>
+        <select class="form-select" id="company" formControlName="company" required>
+          <option value="procan">Procan</option>
+          <option value="adequat">Adequat</option>
+        </select>
+      </div>
+      <div class="mb-3">
+        <label for="role" class="form-label">Role</label>
+        <select class="form-select" id="role" formControlName="role" required>
+          <option value="employee">Employee</option>
+          <option value="hr">HR</option>
+        </select>
+      </div>
+      <div class="mb-3">
+        <label for="email" class="form-label">Email</label>
+        <input type="email" class="form-control" id="email" formControlName="email" required>
+      </div>
+      <div class="mb-3">
+        <label for="start_date" class="form-label">Start Date</label>
+        <input type="date" class="form-control" id="start_date" formControlName="start_date" required>
+      </div>
+      <div class="mb-3">
+        <label for="job_description" class="form-label">Job Description</label>
+        <input type="text" class="form-control" id="job_description" formControlName="job_description" required maxlength="15">
+        
+        <!-- Validation error message -->
+        <div *ngIf="candidateForm.get('job_description')?.hasError('maxlength') && candidateForm.get('job_description')?.touched" class="text-danger">
+          Job description cannot exceed 15 characters.
+        </div>
+      </div>
+  </form></c-modal-body>
+  <c-modal-footer>
+    <button type="button" class="btn btn-secondary" (click)="closeModal()">Close</button>
+    <button type="submit" class="btn button-primary" [disabled]="candidateForm.invalid">Save Candidate</button>
+  </c-modal-footer>
+</c-modal>
+
+<!-- Search Bar and Add Candidate Button -->
+
+  <div class="row align-items-center justify-content-between mt-1">
+    <!-- Search Bar -->
+    <div class="col-12 col-md-8 col-lg-6 ">
+      <div class="input-group">
+        <input type="text" class="form-control" [(ngModel)]="searchQuery" placeholder="Search..." />
+        <span class="input-group-text search">
+          <i class="bi bi-search"></i>
+        </span>
+      </div>
+    </div>
+
+    <!-- Add Candidate Button -->
+    <div class="col-12 col-md-auto mt-2 d-flex justify-content-md-end justify-content-center">
+      <button class="btn button-success" (click)="openModal()">Add Candidate</button>
+    </div>
+  </div>
+  
+  <app-list-component [searchQuery]="searchQuery" cardType="employee"></app-list-component>
+

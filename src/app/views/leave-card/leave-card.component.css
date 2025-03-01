@@ -1,0 +1,38 @@
+.leave-card {
+  background: var(--color-card);
+  border-radius: 8px;
+  transition: 0.3s ease-in-out;
+  
+}
+.leave-card:hover {
+  transform: scale(1.02);
+  box-shadow: 0px 4px 10px rgba(0, 0, 0, 0.1);
+}
+.border-custom {
+  border: 2px solid var(--color-text-primary);
+}
+.btn-group .btn{
+  border: 1px solid var(--color-text-primary);
+}
+/* Ensure the button group is always inside the card */
+.btn-group {
+  width: 100%; /* Makes sure it always fits */
+}
+.position-absolute {
+  z-index: 1055; 
+}
+/* Buttons should resize and wrap when needed */
+.btn-group .btn {
+  flex: 1; /* Each button takes equal space */
+  min-width: 100px; /* Prevents shrinking too much */
+  padding: 8px 12px; /* Better touch area */
+  text-align: center;
+}
+
+/* On small screens, stack buttons */
+@media (max-width: 576px) {
+  .btn-group {
+      flex-direction: column; /* Stack buttons */
+      gap: 5px; /* Add spacing between buttons */
+  }
+}

@@ -1,0 +1,104 @@
+ <!-- ALERTS -->
+<!-- Dynamic Bootstrap Alert -->
+<div *ngIf="alertMessage" class="alert alert-dismissible fade show position-absolute top-0 end-0 m-3 shadow" 
+     [ngClass]="alertType" role="alert">
+  <i *ngIf="alertType === 'alert-danger'" class="bi-exclamation-octagon-fill"></i>
+  <strong class="mx-2">{{ alertMessage }}</strong>
+  <button type="button" class="btn-close" (click)="dismissAlert()" aria-label="Close"></button>
+</div>
+<div class="container mt-3">
+    <button class="btn rounded-circle border-custom  " (click)="goBack()">
+      <i class="bi bi-arrow-left "></i>
+    </button>
+    <h3 class="mx-auto fw-bold mt-3">{{ employeeName }}'s Leave Requests</h3>
+  <!-- Year Filter -->
+  <div class="my-2">
+    <h5 for="yearFilter fw-bold"><i class="bi bi-filter"></i>Filter by Year</h5>
+    <select id="yearFilter" class="form-control w-25" [(ngModel)]="selectedYear" (change)="onYearChange()" >
+      <option [ngValue]="null" selected>Select Year</option>
+      <option *ngFor="let year of availableYears" [value]="year">{{ year }}</option>
+    </select>
+     <!-- Total Leave Days: Show only when a year is selected -->
+  <p *ngIf="selectedYear" class="mt-1"><strong>Total Leave Days:</strong> {{ totalLeaveDays }}</p>
+  </div>
+
+  <!-- Leave Requests Table -->
+  <table class="table table-bordered">
+    <thead class="thead-dark">
+      <tr>
+        <th>Start Date</th>
+        <th>End Date</th>
+        <th>Reason</th>
+        <th>Requested Days</th>
+        <th>Attachment</th>
+        <th>Status</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr *ngFor="let leave of leaveRequests">
+        <td>{{ leave.start_date }}</td>
+        <td>{{ leave.end_date }}</td>
+
+        <!-- Reason -->
+        <td>
+          <ng-container *ngIf="leave.reason; else showOther">
+            {{ leave.reason }}
+          </ng-container>
+          <ng-template #showOther>
+            {{ leave.other_reason || 'N/A' }}
+          </ng-template>
+        </td>
+
+        <!-- Requested Days -->
+        <td>
+          <ng-container *ngIf="leave.leave_days_requested !== undefined && leave.leave_days_requested !== null; else showEffective">
+            {{ leave.leave_days_requested }}
+          </ng-container>
+          <ng-template #showEffective>
+            {{ leave.effective_leave_days || '0' }}
+          </ng-template>
+        </td>
+
+        <!-- Attachment -->
+        <td>
+          <ng-container *ngIf="leave.reason === 'sick_leave'">
+            <a [href]="leave.attachment_path" target="_blank" class="btn btn-info btn-sm" ng-non-bindable>View Attachment</a>
+          </ng-container>
+          <ng-container *ngIf="leave.reason !== 'sick_leave'">
+            N/A
+          </ng-container>
+        </td>
+
+        <!-- Status & Action Buttons -->
+        <td>
+          <!-- If userRole is not HR, show buttons for status change, otherwise show the status -->
+          <ng-container *ngIf="leave.status === 'on_hold' && userRole !== 'hr'; else showStatus">
+            <div class="btn-group">
+              <button class="btn btn-success btn-sm me-1" (click)="updateLeaveStatus(leave.id, 'approved')">Accept</button>
+              <button class="btn btn-danger btn-sm me-1" (click)="updateLeaveStatus(leave.id, 'rejected')">Reject</button>
+            </div>
+          </ng-container>
+
+          <!-- Show the status if userRole is HR or leave status is not 'on_hold' -->
+          <ng-template #showStatus>
+            <span class="badge" [ngClass]="{
+              'bg-success': leave.status === 'approved',
+              'bg-danger': leave.status === 'rejected',
+              'bg-warning': leave.status === 'on_hold'
+            }">
+              {{ leave.status | uppercase }}
+            </span>
+          </ng-template>
+        </td>
+      </tr>
+    </tbody>
+  </table>
+
+  <!-- Pagination Controls -->
+  <div class="d-flex justify-content-between mt-3">
+    <button class="button-primary" (click)="prevPage()" [disabled]="currentPage === 1">Previous</button>
+    <span class="fw-semibold">Page {{ currentPage }} of {{ totalPages }}</span>
+    <button class="button-primary" (click)="nextPage()" [disabled]="currentPage === totalPages">Next</button>
+  </div>
+  
+</div>

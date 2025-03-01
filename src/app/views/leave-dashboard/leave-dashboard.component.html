@@ -1,0 +1,17 @@
+<div class="container mt-3">
+  <div class="input-group mb-4 " *ngIf="selectedRequestsUserIdChange == null && selectedUserIdChange == null" >
+    <input
+      type="text"
+      class="form-control"
+      [(ngModel)]="searchQuery"
+      (input)="searchEmployees()"
+      placeholder="Search..."
+    />
+    <span class="input-group-text search">
+      <i class="bi bi-search"></i>
+    </span>
+  </div>
+
+  <app-list-component [cardType]="'leave'" [searchQuery]="searchQuery"(selectedUserIdChange)="onUserSelected($event)"
+  (selectedRequestsUserIdChange)="onRequestsUserSelected($event)">w</app-list-component>
+</div>

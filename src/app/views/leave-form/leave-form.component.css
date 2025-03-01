@@ -1,0 +1,65 @@
+.form-check-input {
+  accent-color: var(--color-primary);
+  cursor: pointer;
+}
+
+.form-check-input:checked {
+  background-color: var(--color-primary);
+  border-color: var(--color-primary);
+}
+.position-absolute {
+  z-index: 1055; 
+}
+.form-check-input:checked + .form-check-label {
+  color: var(--color-text-primary);
+  font-weight: 600;
+  transform: scale(1.05);
+  transition: all 0.2s ease-in-out;
+}
+
+.form-check-input:checked {
+  box-shadow: 0 0 5px var(--color-primary-light);
+}
+@keyframes fadeInUp {
+  from {
+    opacity: 0;
+    transform: translateY(50px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+@keyframes fadeInUp {
+  from {
+    opacity: 0;
+    transform: translateX(100px);
+  }
+  to {
+    opacity: 1;
+    transform: translateX(0);
+  }
+}
+.img-container {
+  animation: fadeInUp 1s ease-in-out 1; 
+}
+@keyframes easeInOutBack {
+  0% {
+    opacity: 0;
+    transform: translateY(-50px);
+  }
+  50% {
+    opacity: 1;
+    transform: translateY(10px);
+  }
+  100% {
+    transform: translateY(0);
+  }
+}
+
+.animated-title {
+  display: inline-block; 
+  font-size: 1.5rem;
+  font-weight: bold;
+  animation: easeInOutBack 0.7s cubic-bezier(0.68, -0.55, 0.50, 1) 1;
+}

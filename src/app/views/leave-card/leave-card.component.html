@@ -1,0 +1,59 @@
+ <!-- ALERTS -->
+<!-- Dynamic Bootstrap Alert -->
+<div *ngIf="alertMessage" class="alert alert-dismissible fade show position-absolute top-0 end-0 m-3 shadow" 
+     [ngClass]="alertType" role="alert">
+  <i *ngIf="alertType === 'alert-danger'" class="bi-exclamation-octagon-fill"></i>
+  <strong class="mx-2">{{ alertMessage }}</strong>
+  <button type="button" class="btn-close" (click)="dismissAlert()" aria-label="Close"></button>
+</div>
+<div class="card leave-card text-center shadow-sm align-items-center p-3 ">
+  <img [src]="leaveEmployee.avatar_path" alt="Profile Image" 
+    class="rounded-circle border-custom shadow-sm " 
+    style="width: 100px; height: 100px;">
+
+  <div class="card-body">
+    <h6 class="card-title">{{ leaveEmployee.first_name }} {{ leaveEmployee.last_name }}</h6>
+    
+    <div class="btn-group px-1">
+      <button class="btn button-secondary" (click)="seeDetails()">Details</button>
+      <button class="btn button-success text-nowrap " (click)="addLeaveDays()"><i class="bi bi-plus-circle"></i> Days</button>
+      <button class="btn button-primary text-nowrap"(click)="viewRequests()">Requests</button>
+    </div>
+  </div>    
+</div>
+<!-- Bootstrap Modal for Adding Leave Days -->
+<div class="modal fade" [id]="'leaveModal-' + leaveEmployee.id" tabindex="-1" aria-hidden="true">
+  <div class="modal-dialog">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h5 class="modal-title">Add Leave Days</h5>
+        <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal" aria-label="Close"></button>
+      </div>
+      <div class="modal-body">
+        <form [formGroup]="leaveForm">
+          <!-- Leave Days Input -->
+          <div class="mb-3">
+            <label for="leaveDays" class="form-label">Leave Days</label>
+            <input type="number" id="leaveDays" class="form-control" formControlName="leave_day_limit" 
+                   placeholder="Enter number of leave days" min="1">
+            <div *ngIf="leaveForm.controls['leave_day_limit'].invalid && leaveForm.controls['leave_day_limit'].touched" class="text-danger">
+              Leave days are required and must be at least 1.
+            </div>
+          </div>
+
+          <!-- Description Input -->
+          <div class="mb-3">
+            <label for="description" class="form-label">Description (Optional)</label>
+            <textarea id="description" class="form-control" formControlName="description" 
+                      placeholder="Enter description (max 255 characters)"></textarea>
+          </div>
+        </form>
+
+      </div>
+      <div class="modal-footer">
+        <button type="button" class="btn btn-secondary" id="closeModal-{{ leaveEmployee.id }}" data-bs-dismiss="modal">Close</button>
+        <button type="button" class="button-primary" (click)="submitLeave()">Submit</button>
+      </div>
+    </div>
+  </div>
+</div>

@@ -1,0 +1,193 @@
+/* ===== Import Fonts ===== */
+@import url('https://fonts.googleapis.com/css2?family=Inter:wght@100;200;300;400;500;600;700;800;900&family=Roboto:wght@100;300;400;500;700;900&family=Nunito:wght@200;300;400;600;700&display=swap');
+
+/* ===== Global CSS Variables ===== */
+:root {
+    /* ===== Primary Colors (Branding) ===== */
+    --color-primary: #288FEB; /* Main branding color */
+    --color-primary-dark: #1E6DB9; /* Darker shade for hover states */
+    --color-primary-light: #5CA9F1; /* Lighter shade for secondary elements */
+
+    /* ===== Neutral Colors (Backgrounds, Borders, Text) ===== */
+    --color-background: #F3F3F3; /* Light background */
+    --color-sidebar-footer: #202C3C; /* Dark color for sidebar & footer */
+    --color-card: #FFFFFF; /* White cards & panels */
+    --color-text-primary: #121212; /* Deep black for main text */
+    --color-text-secondary: #4A4A4A; /* Dark gray for less emphasized text */
+    --color-muted-text: #BDC3C7; /* Subtle gray text */
+    --color-border: #D1D5DB; /* Light gray for borders & dividers */
+
+    /* ===== UI Interaction Colors ===== */
+    --color-hover: #F0F6FC; /* Hover effects for buttons, inputs, etc. */
+    --color-success: #4CAF50; /* Success messages, approved statuses */
+    --color-warning: #FFC107; /* Warnings, pending statuses */
+    --color-error: #E63946; /* Errors, delete actions */
+
+    /* ===== Font Families ===== */
+    --font-family-primary: 'Inter', sans-serif; /* Headings */
+    --font-family-secondary: 'Roboto', sans-serif; /* Body text */
+    --font-family-accent: 'Nunito', sans-serif; /* Buttons, small labels */
+}
+
+/* ===== Global Body Styling ===== */
+body {
+    font-family: var(--font-family-secondary);
+    background: var(--color-background);
+    color: var(--color-text-primary);
+}
+
+/* ===== Headings ===== */
+h1, h2, h3 {
+    font-family: var(--font-family-primary);
+    color: var(--color-primary);
+}
+
+h4, h5, h6 {
+    font-family: var(--font-family-secondary);
+    color: var(--color-text-secondary);
+}
+
+/* ===== Buttons ===== */
+.button-primary {
+    background: var(--color-primary);
+    color: white;
+    padding: 10px 16px;
+    border-radius: 6px;
+    border: none;
+    cursor: pointer;
+    font-weight: 600;
+    transition: background 0.3s ease-in-out;
+}
+
+.button-primary:hover {
+    background: var(--color-primary-dark);
+}
+
+.button-primary:disabled {
+    background: var(--color-primary-light);
+    cursor: not-allowed;
+}
+
+/* ===== Secondary Button ===== */
+.button-secondary {
+    background: var(--color-hover);
+    color: var(--color-primary-dark);
+    padding: 10px 16px;
+    border-radius: 6px;
+    border: 1px solid var(--color-primary);
+    cursor: pointer;
+    font-weight: 600;
+    transition: 0.3s ease-in-out, color 0.3s ease-in-out;
+    
+}
+
+.button-secondary:hover {
+    background: #99A8B7;
+    color: white;
+  
+}
+
+/* Success, Warning, Error Buttons with Hover States */
+.button-success {
+    background: var(--color-success);
+    color: white;
+    padding: 10px 16px;
+    border-radius: 6px;
+    border: none;
+    cursor: pointer;
+    font-weight: 600;
+    transition: 0.3s ease-in-out;
+}
+
+.button-success:hover {
+    background: #388E3C;;
+   
+}
+
+.button-warning {
+    background: var(--color-warning);
+    color: white;
+    padding: 10px 16px;
+    border-radius: 6px;
+    border: none;
+    cursor: pointer;
+    font-weight: 600;
+    transition: background 0.3s ease-in-out;
+}
+
+.button-warning:hover {
+    background: darken(var(--color-warning), 10%);
+}
+
+.button-error {
+    background: var(--color-error);
+    color: white;
+    padding: 10px 16px;
+    border-radius: 6px;
+    border: none;
+    cursor: pointer;
+    font-weight: 600;
+    transition: background 0.3s ease-in-out;
+}
+
+.button-error:hover {
+    background: darken(var(--color-error), 10%);
+}
+
+/* ===== Forms & Inputs ===== */
+input, textarea, select {
+    border: 1px solid var(--color-border);
+    padding: 8px;
+    border-radius: 4px;
+    font-family: var(--font-family-secondary);
+    transition: border 0.3s ease-in-out;
+}
+
+input:focus, textarea:focus, select:focus {
+    border-color: var(--color-primary);
+    outline: none;
+    box-shadow: 0 0 5px var(--color-primary-light);
+}
+
+/* ===== Tables & Lists ===== */
+table {
+    width: 100%;
+    border-collapse: collapse;
+}
+
+th, td {
+    padding: 10px;
+    border-bottom: 1px solid var(--color-border);
+}
+
+th {
+    background: var(--color-primary-light);
+    color: white;
+}
+
+/* ===== Modals ===== */
+.modal-header {
+    background-color: var(--color-sidebar-footer); /* Neutral background */
+    border-bottom: 1px solid var(--color-primary); /* Subtle separator */
+}
+
+.modal-title {
+    color: white;
+    font-weight: bold;
+    font-size: 1.25rem; /* Slightly larger for emphasis */
+}
+
+.modal-header .btn-close {
+    
+    opacity: 0.8;
+    transition: opacity 0.3s ease;
+}
+
+.modal-header .btn-close:hover {
+    opacity: 1;
+}
+
+/* Standard Modal Footer */
+.modal-footer {
+    border-top: 1px solid var(--color-border);
+}
