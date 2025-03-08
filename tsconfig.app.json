@@ -13,7 +13,7 @@
     }
   },
   "files": [
-    "src/main.ts"
+    "src/main.ts","src/global.d.ts"
   ],
   "include": [
     "src/**/*.d.ts"

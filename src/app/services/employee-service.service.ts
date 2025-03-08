@@ -1,79 +1,59 @@
 import { Injectable } from '@angular/core';
-import { HttpClient, HttpHeaders } from '@angular/common/http';
-import { map, Observable } from 'rxjs';
-
+import { HttpClient } from '@angular/common/http';
+import { Observable } from 'rxjs';
+import { environment } from 'src/environments/environment';  // Import environment
 
 export interface Employee {
-  id:string;
+  id: string;
   first_name: string;
   last_name: string;
-  gender:string;
-  username:string;
+  gender: string;
+  username: string;
   email: string;
-  password:string;
+  password: string;
   company: string;
   start_date: string;
-  role: string; 
+  role: string;
   initial_leave_balance: number;
 }
 
 @Injectable({
-  providedIn: 'root'
+  providedIn: 'root',
 })
 export class EmployeeService {
-  private apiUrl = 'http://127.0.0.1:8000/api/admin/users';
-  private api = 'http://127.0.0.1:8000/api';
+  private apiUrl = environment.apiUrl;  // Uses the apiUrl from environment
+
   constructor(private http: HttpClient) {}
+
   updateEmployee(id: string, employee: any): Observable<any> {
-    const token = localStorage.getItem('authToken');
-    const headers = new HttpHeaders().set('Authorization', `Bearer ${token}`);
-    return this.http.put<any>(`${this.apiUrl}/${id}`, employee, { headers });
+    return this.http.put<any>(`${this.apiUrl}/admin/users/${id}`, employee);
   }
+
   deleteEmployee(id: string): Observable<any> {
-    const token = localStorage.getItem('authToken');
-    const headers = new HttpHeaders().set('Authorization', `Bearer ${token}`);
-    return this.http.delete<any>(`${this.apiUrl}/${id}`, { headers });
+    return this.http.delete<any>(`${this.apiUrl}/admin/users/${id}`);
   }
+
   searchEmployees(query: string, page: number = 1): Observable<any> {
-    const token = localStorage.getItem('authToken');
-    const headers = new HttpHeaders().set('Authorization', `Bearer ${token}`);
-    return this.http.get<any>(`http://127.0.0.1:8000/api/admin/users?search=${query}&page=${page}`, { headers });
+    return this.http.get<any>(`${this.apiUrl}/admin/users?search=${query}&page=${page}`);
   }
+
   getData(): Observable<any> {
-    const token = localStorage.getItem('authToken');
-    const headers = new HttpHeaders().set('Authorization', `Bearer ${token}`);
-    
-    return this.http.get<any>('http://127.0.0.1:8000/api/user/sidebar', { headers });
+    return this.http.get<any>(`${this.apiUrl}/user/sidebar`);
   }
+
   getProfileData(): Observable<any> {
-    const token = localStorage.getItem('authToken');
-    const headers = new HttpHeaders().set('Authorization', `Bearer ${token}`);
-    return this.http.get<any>(`${this.api}/user/profile`, { headers });
+    return this.http.get<any>(`${this.apiUrl}/user/profile`);
   }
+
   updateProfile(formData: FormData): Observable<any> {
-    const token = localStorage.getItem('authToken');
-  
-    const headers = new HttpHeaders({
-      'Authorization': `Bearer ${token}`
-    });
-  
-    return this.http.post(`${this.api}/user/profile/update`, formData, { headers });
+    return this.http.post(`${this.apiUrl}/user/profile/update`, formData);
   }
+
   updateUserImage(formData: FormData): Observable<any> {
-    const token = localStorage.getItem('authToken');
-  
-    const headers = new HttpHeaders({
-      'Authorization': `Bearer ${token}`
-    });
-  
-    return this.http.post(`${this.api}/user/profile/update-avatar`, formData, { headers });
+    return this.http.post(`${this.apiUrl}/user/profile/update-avatar`, formData);
   }
-  
+
   getLeaveRequests(userId: number): Observable<any> {
-    const token = localStorage.getItem('authToken');
-    const headers = new HttpHeaders().set('Authorization', `Bearer ${token}`);
-  
-    return this.http.get(`${this.api}/leave-balances/${userId}`, { headers });
+    return this.http.get<any>(`${this.apiUrl}/leave-balances/${userId}`);
   }
-  
 }

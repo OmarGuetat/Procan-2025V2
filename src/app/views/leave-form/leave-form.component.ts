@@ -12,11 +12,9 @@ import { CommonModule } from '@angular/common';
 })
 export class LeaveFormComponent {
   leaveForm: FormGroup;
+  leaveDays: number = 0;
   selectedReason: string = '';
-  fileToUpload: File | null = null;
   dateError: string = '';
-  showNextYearDays: boolean = false;
-  fileError: string = '';
   alertMessage: string = '';
   alertType: string = '';
   leaveOptions = [
@@ -27,107 +25,112 @@ export class LeaveFormComponent {
     { value: 'sick_leave', icon: 'bi bi-thermometer-half', label: 'Sick Leave' },
     { value: 'other', icon: 'bi bi-three-dots', label: 'Other' }
   ];
+  step: number = 1;
+  leaveDetails: any = {};
 
   constructor(private fb: FormBuilder, private leaveService: LeaveService) {
     this.leaveForm = this.fb.group({
       start_date: [this.getTodayDate(), Validators.required],
-      end_date: ['', [Validators.required]],
-      leave_days_requested: ['', [Validators.required, Validators.min(0.5)]],
-      leave_days_current_year: ['', [Validators.min(0.5)]], 
-      leave_days_next_year: ['', [Validators.min(0.5)]], 
-      reason: ['', Validators.required],
-      other_reason: [''], 
-      attachment: [null] 
+      end_date: ['', Validators.required],
+      leave_type: ['', Validators.required],
+      other_type: ['']
     });
   }
+
   dismissAlert() {
     this.alertMessage = '';
   }
+
   getTodayDate(): string {
     const today = new Date();
-    return today.toISOString().split('T')[0]; 
+    return today.toISOString().split('T')[0];
   }
-  onReasonChange(reason: string) {
-    this.selectedReason = reason;
-    this.fileError = '';
 
-    if (reason !== 'sick_leave' && reason !== 'other') {
-      this.leaveForm.patchValue({ other_reason: '', attachment: null });
-      this.fileToUpload = null;
+  onReasonChange(leave_type: string) {
+    this.selectedReason = leave_type;
+    if (leave_type !== 'other') {
+      this.leaveForm.patchValue({ other_type: '' });
     }
   }
 
-  handleFileInput(event: any) {
-    const file = event.target.files[0];
-    const allowedTypes = ['application/pdf', 'image/jpeg', 'image/jpg'];
-
-    if (file && allowedTypes.includes(file.type)) {
-      this.fileToUpload = file;
-      this.leaveForm.patchValue({ attachment: file });
-      this.fileError = ''; // Clear error if valid
-    } else {
-      this.fileError = 'Invalid file type. Only PDF,JPG, and JPEG are allowed.';
-      this.leaveForm.patchValue({ attachment: null });
-      this.fileToUpload = null;
-    }
-  }
   onDateChange() {
-    const startDate = this.leaveForm.value.start_date ? new Date(this.leaveForm.value.start_date) : null;
-    const endDate = this.leaveForm.value.end_date ? new Date(this.leaveForm.value.end_date) : null;
-  
-    if (startDate && endDate) {
-      if (startDate > endDate) {
-        this.dateError = 'Start date cannot be later than end date.';
-      } else {
-        this.dateError = '';
-      }
-  
-      this.showNextYearDays = startDate.getFullYear() !== endDate.getFullYear();
+    const startDate = this.leaveForm.get('start_date')?.value;
+    const endDate = this.leaveForm.get('end_date')?.value;
+
+    if (startDate && endDate && new Date(startDate) > new Date(endDate)) {
+      this.dateError = 'Start date cannot be later than end date.';
     } else {
-      // Reset next year input if end date is not selected yet
-      this.showNextYearDays = false;
+      this.dateError = '';
     }
   }
-  
-  submitLeaveRequest() {
-    if (this.leaveForm.invalid) {
-      return;
-    }
 
+  submitLeaveRequest() {
+  if (this.leaveForm.invalid) {
+    return;
+  }
+
+  const formData = new FormData();
+  formData.append('start_date', this.leaveForm.value.start_date);
+  formData.append('end_date', this.leaveForm.value.end_date);
+  formData.append('leave_type', this.leaveForm.value.leave_type);
+
+  if (this.selectedReason === 'other') {
+    formData.append('other_type', this.leaveForm.value.other_type);
+  }
+
+  this.leaveService.calculateLeaveDays(formData).subscribe(
+    response => {
+      console.log(response);  // Log the response to inspect its structure
+      if (response && response.leave_days) {
+        this.leaveDays = response.leave_days;  // Get leave_days from the root of the response
+        this.leaveDetails = response;  // The full response can be stored in leaveDetails
+        this.step = 2;  // Move to Step 2
+      } else {
+        this.alertMessage = 'Invalid response format';
+        this.alertType = 'alert-danger';
+      }
+    },
+    error => {
+      console.error(error);
+      this.alertMessage = error.error?.message || 'Error calculating leave days';
+      this.alertType = 'alert-danger';
+    }
+  );
+}
+
+
+  onFileChange(event: any) {
+    const file = event.target.files[0];
+    if (file) {
+      this.leaveDetails.attachment = file;
+    }
+  }
+
+  confirmLeaveRequest() {
     const formData = new FormData();
     formData.append('start_date', this.leaveForm.value.start_date);
     formData.append('end_date', this.leaveForm.value.end_date);
-    formData.append('leave_days_requested', this.leaveForm.value.leave_days_requested);
-    formData.append('leave_days_current_year', this.leaveForm.value.leave_days_requested);
-    formData.append('leave_days_next_year', this.leaveForm.value.leave_days_next_year);
-    formData.append('effective_leave_days', this.leaveForm.value.leave_days_requested); 
-    formData.append('reason', this.leaveForm.value.reason);
+    formData.append('leave_type', this.leaveForm.value.leave_type);
+    formData.append('leave_days', this.leaveDetails.leave_days.toString());
 
     if (this.selectedReason === 'other') {
-      formData.append('other_reason', this.leaveForm.value.other_reason);
+      formData.append('other_type', this.leaveForm.value.other_type);
     }
 
-    if (this.selectedReason === 'sick_leave' && this.fileToUpload) {
-      formData.append('attachment', this.fileToUpload);
+    if (this.leaveDetails.leave_type === 'sick_leave' && this.leaveDetails.attachment) {
+      formData.append('attachment', this.leaveDetails.attachment);
     }
-    console.log(formData);
-    this.leaveService.submitLeaveRequest(formData).subscribe(
+
+    this.leaveService.storeLeaveRequest(formData).subscribe(
       response => {
         this.alertMessage = response.message || 'Leave request submitted successfully';
         this.alertType = 'alert-success';
-        setTimeout(() => {
-          this.dismissAlert();
-          location.reload();
-        }, (500));
+        this.step = 1;  // Reset to Step 1
+        this.leaveForm.reset();
+        setTimeout(() => this.dismissAlert(), 2000);
       },
       error => {
-        if (error.error) {
-          const errors = error.error; 
-          const firstErrorKey = Object.keys(errors)[0]; 
-        this.alertMessage = errors[firstErrorKey][0]; 
-        } else {
-          this.alertMessage = 'Error submitting leave request';
-        }
+        this.alertMessage = error.error?.message || 'Error submitting leave request';
         this.alertType = 'alert-danger';
       }
     );

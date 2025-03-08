@@ -1,34 +1,31 @@
-<!-- Dynamic Alert -->
-<div *ngIf="alertMessage" class="alert alert-dismissible fade show position-absolute top-0 end-0 m-3 shadow" 
+<!-- Dynamic Alert --> 
+<div *ngIf="alertMessage" class="alert alert-dismissible fade show position-absolute top-0 end-0 m-3 shadow"
   [ngClass]="alertType" role="alert">
   <i *ngIf="alertType === 'alert-danger'" class="bi-exclamation-octagon-fill"></i>
   <strong class="mx-2">{{ alertMessage }}</strong>
   <button type="button" class="btn-close" (click)="dismissAlert()" aria-label="Close"></button>
 </div>
 
-<div class="container ">
+<div class="container">
   <div class="row">
     <!-- Form Section (Left) -->
     <div class="col-lg-6 p-4">
       <h3 class="mb-3">
-        <i class="bi bi-file-earmark-text "></i><span class="animated-title">Leave Request Form</span> 
+        <i class="bi bi-file-earmark-text"></i><span class="animated-title">Leave Request Form</span>
       </h3>
       <hr>
-      <form [formGroup]="leaveForm" (ngSubmit)="submitLeaveRequest()">
+
+      <!-- Step 1: Basic Leave Info -->
+      <form *ngIf="step === 1" [formGroup]="leaveForm" (ngSubmit)="submitLeaveRequest()">
         <!-- Start Date -->
         <div class="mb-3">
           <label for="startDate" class="form-label">
             <i class="bi bi-calendar-event"></i> Start Date
           </label>
-          <input
-            type="date"
-            id="startDate"
-            class="form-control"
-            formControlName="start_date"
-            (change)="onDateChange()"
-            required
-          >
-          <div *ngIf="leaveForm.controls['start_date'].invalid && leaveForm.controls['start_date'].touched" class="text-danger">
+          <input type="date" id="startDate" class="form-control" formControlName="start_date"
+            (change)="onDateChange()">
+          <div *ngIf="leaveForm.controls['start_date'].invalid && leaveForm.controls['start_date'].touched"
+            class="text-danger">
             Start date is required.
           </div>
         </div>
@@ -38,15 +35,9 @@
           <label for="endDate" class="form-label">
             <i class="bi bi-calendar-event"></i> End Date
           </label>
-          <input
-            type="date"
-            id="endDate"
-            class="form-control"
-            formControlName="end_date"
-            (change)="onDateChange()"
-            required
-          >
-          <div *ngIf="leaveForm.controls['end_date'].invalid && leaveForm.controls['end_date'].touched" class="text-danger">
+          <input type="date" id="endDate" class="form-control" formControlName="end_date" (change)="onDateChange()">
+          <div *ngIf="leaveForm.controls['end_date'].invalid && leaveForm.controls['end_date'].touched"
+            class="text-danger">
             End date is required.
           </div>
         </div>
@@ -56,42 +47,22 @@
           {{ dateError }}
         </div>
 
-        <!-- Leave Days Requested -->
-        <div class="mb-3">
-          <label for="leaveDays" class="form-label">
-            <i class="bi bi-calendar-check"></i> Number of Leave Days This Year
-          </label>
-          <input type="number" id="leaveDays" class="form-control" formControlName="leave_days_requested" required step="0.5" min="0">
-          <div *ngIf="leaveForm.controls['leave_days_requested'].invalid && leaveForm.controls['leave_days_requested'].touched" class="text-danger">
-            Number of leave days must be at least 0.5.
-          </div>
-        </div>
-
-        <!-- Number of Leave Days Next Year (Conditionally Displayed) -->
-        <div class="mb-3" *ngIf="showNextYearDays">
-          <label for="leave_days_next_year" class="form-label" >
-            <i class="bi bi-calendar3"></i> Number of Leave Days Next Year
-          </label>
-          <input type="number" id="leave_days_next_year" class="form-control" formControlName="leave_days_next_year" step="0.5" min="0" required>
-          <div *ngIf="leaveForm.controls['leave_days_next_year'].invalid && leaveForm.controls['leave_days_next_year'].touched" class="text-danger">
-            Number of leave days must be at least 0.5.
-          </div>
-        </div>
-
         <!-- Leave Reason -->
         <label class="form-label mt-3">
           <i class="bi bi-question-circle"></i> What is the reason for your leave request?
         </label>
         <div *ngFor="let option of leaveOptions">
           <div class="form-check">
-            <input type="radio" class="form-check-input" [value]="option.value" formControlName="reason" (change)="onReasonChange(option.value)">
+            <input type="radio" class="form-check-input" [value]="option.value" formControlName="leave_type"
+              (change)="onReasonChange(option.value)">
             <label class="form-check-label">
               <i [class]="option.icon"></i> {{ option.label }}
             </label>
           </div>
         </div>
 
-        <div *ngIf="leaveForm.controls['reason'].invalid && leaveForm.controls['reason'].touched" class="text-danger">
+        <div *ngIf="leaveForm.controls['leave_type'].invalid && leaveForm.controls['leave_type'].touched"
+          class="text-danger">
           Please select a leave reason.
         </div>
 
@@ -100,20 +71,10 @@
           <label for="other_reason" class="form-label">
             <i class="bi bi-pencil"></i> Please specify the reason
           </label>
-          <input type="text" id="other_reason" formControlName="other_reason" class="form-control">
-          <div *ngIf="leaveForm.controls['other_reason'].invalid && leaveForm.controls['other_reason'].touched" class="text-danger">
+          <input type="text" id="other_reason" formControlName="other_type" class="form-control">
+          <div *ngIf="leaveForm.controls['other_type'].invalid && leaveForm.controls['other_type'].touched"
+            class="text-danger">
             Please provide a reason.
-          </div>
-        </div>
-
-        <!-- If "Sick Leave" is selected, show file upload -->
-        <div *ngIf="selectedReason === 'sick_leave'" class="mt-3">
-          <label for="attachment" class="form-label">
-            <i class="bi bi-file-earmark-arrow-up"></i> Attach supporting document (PDF, JPG, JPEG)
-          </label>
-          <input type="file" id="attachment" class="form-control" (change)="handleFileInput($event)">
-          <div *ngIf="fileError" class="text-danger">
-            {{ fileError }}
           </div>
         </div>
 
@@ -122,11 +83,28 @@
           <i class="bi bi-check-circle"></i> Submit
         </button>
       </form>
+
+      <!-- Step 2: Display Leave Details -->
+      <div *ngIf="step === 2">
+        <h4>Your leave details:</h4>
+        <p><strong>Start Date:</strong> {{ leaveDetails.start_date }}</p>
+        <p><strong>End Date:</strong> {{ leaveDetails.end_date }}</p>
+        <p><strong>Leave Type:</strong> {{ leaveDetails.leave_type }}</p>
+        <p><strong>Leave Days:</strong> {{ leaveDetails.leave_days }} days</p>
+        <p *ngIf="leaveDetails.leave_type === 'sick_leave'">
+          <label for="attachment" class="form-label"><i class="bi bi-paperclip"></i> Attach a medical certificate</label>
+          <input type="file" id="attachment" (change)="onFileChange($event)" class="form-control">
+        </p>
+
+        <button *ngIf="leaveDetails.leave_type === 'sick_leave'" class="btn button-primary" (click)="confirmLeaveRequest()">Confirm Leave Request</button>
+        <button *ngIf="leaveDetails.leave_type !== 'sick_leave'" class="btn button-primary" (click)="confirmLeaveRequest()">Confirm Leave Request</button>
+      </div>
+
     </div>
 
-    <div class="col-lg-6 d-flex justify-content-center align-items-center ">
-      <img src="assets/leaveCallender.svg" alt="Leave Calendar" class="img-fluid img-container" style="max-width: 80%;">
+    <div class="col-lg-6 d-flex justify-content-center align-items-center">
+      <img src="assets/leaveCallender.svg" alt="Leave Calendar" class="img-fluid img-container" style="max-width: 60%;">
     </div>
-    
+
   </div>
 </div>
