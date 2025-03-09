@@ -54,3 +54,11 @@
   font-weight: bold;
   animation: easeInOutBack 0.7s cubic-bezier(0.68, -0.55, 0.50, 1) 1;
 }
+
+/* Card Borders */
+.card {
+  border: 1px solid var(--borders-lines);
+}
+p i{
+  color :  var(--color-primary-light)
+}

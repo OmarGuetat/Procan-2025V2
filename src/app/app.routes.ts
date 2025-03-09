@@ -22,6 +22,10 @@ export const routes: Routes = [
         path: 'profile',
         loadChildren: () => import('./views/profile/routes').then((m) => m.routes)
       },
+      {
+        path: 'admin-home',
+        loadChildren: () => import('./views/admin-home/routes').then((m) => m.routes)
+      },
       // Users Dashboard
       {
         path: 'users-dashboard',

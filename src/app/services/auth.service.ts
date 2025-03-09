@@ -3,7 +3,7 @@ import { HttpClient } from '@angular/common/http';
 import { Router } from '@angular/router';
 import { Observable, tap } from 'rxjs';
 import { UserService } from './user.service'; // Import the user service
-import { environment } from 'src/environments/environment'; // Import environment for URLs
+import { environment } from '../../environments/environment';  // Import environment
 
 @Injectable({
   providedIn: 'root',

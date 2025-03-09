@@ -4,7 +4,7 @@ import { INavData } from '@coreui/angular';
 export const adminNavItems: INavData[] = [
   {
     name: 'Admin Home',
-    url: '/admin-home',
+    url: '/main/admin-home',
     iconComponent: { name: 'cil-home' }
   },
   {

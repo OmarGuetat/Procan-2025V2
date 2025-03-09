@@ -36,7 +36,7 @@ export class UsersDashboardComponent implements OnInit {
       job_description: ['', [Validators.required, Validators.maxLength(15)]],
     });
   }
-
+  
   togglePasswordVisibility() {
     this.showPassword = !this.showPassword;
   }

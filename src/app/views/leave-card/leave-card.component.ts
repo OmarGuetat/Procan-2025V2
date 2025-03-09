@@ -15,15 +15,17 @@ export class LeaveCardComponent {
   @Output() onSeeDetails = new EventEmitter<number>();
   @Output() onViewRequests = new EventEmitter<number>();
   leaveForm: FormGroup;
- 
+  role: string;
   alertMessage: string = '';
   alertType: string = '';
+  
 
   constructor(private fb: FormBuilder, private leaveService: LeaveService) {
     this.leaveForm = this.fb.group({
       leave_day_limit: ['', [Validators.required, Validators.min(1)]],
       description: ['', [Validators.maxLength(255)]]
     });
+    this.role = localStorage.getItem('role')!;
   }
   dismissAlert() {
     this.alertMessage = '';

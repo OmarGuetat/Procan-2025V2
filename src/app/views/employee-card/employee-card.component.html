@@ -6,6 +6,17 @@
   <strong class="mx-2">{{ alertMessage }}</strong>
   <button type="button" class="btn-close" (click)="dismissAlert()" aria-label="Close"></button>
 </div>
+<!-- Toast Message -->
+<div class="toast-container position-absolute bottom-0 end-0 m-3">
+  <div *ngIf="showToastMessage" class="toast align-items-center text-bg-warning border-0" role="alert" aria-live="assertive" aria-atomic="true" [ngClass]="{ 'show': showToastMessage }">
+    <div class="d-flex">
+      <div class="toast-body">
+        You cannot delete your own account. <div>Please contact an admin.</div>
+      </div>
+      <button type="button" class="btn-close me-2 m-auto" (click)="closeToast()" aria-label="Close"></button>
+    </div>
+  </div>
+</div>
 <div class="flip-card m-3 ">
   <div class="flip-card-inner" [ngClass]="{ 'flipped': isFlipped }">
     <!-- FRONT SIDE -->
@@ -32,12 +43,24 @@
   </div>
   
   <!-- ACTION BAR -->
-  <div class="action-bar d-flex justify-content-around text-white p-2">
-      <i class="bi bi-eye" (click)="toggleFlip()" [ngClass]="{'clicked': isClicked}"></i> 
-      <i class="bi bi-pencil" data-bs-toggle="modal" [attr.data-bs-target]="'#updateModal-' + employee.id"></i>
-      <i class="bi bi-trash text-danger" data-bs-toggle="modal" [attr.data-bs-target]="'#deleteModal-' + employee.id"></i> 
-  </div>
+<div class="action-bar d-flex justify-content-around text-white p-2">
+  <i class="bi bi-eye" (click)="toggleFlip()" [ngClass]="{'clicked': isClicked}"></i> 
+  <i class="bi bi-pencil" data-bs-toggle="modal" [attr.data-bs-target]="'#updateModal-' + employee.id"></i>
+  <i 
+    class="bi bi-trash text-danger" 
+    *ngIf="employee.id !== userId" 
+    data-bs-toggle="modal" 
+    [attr.data-bs-target]="'#deleteModal-' + employee.id">
+  </i>
+  <!-- Disable the delete button for HR with toast notification -->
+  <i 
+    class="bi bi-trash text-danger" 
+    *ngIf="employee.id === userId"
+    (click)="showToast()">
+  </i>
 </div>
+
+
 <!-- Delete Confirmation Modal -->
 <div class="modal fade" id="deleteModal-{{employee.id}}" tabindex="-1" aria-labelledby="deleteModalLabel" aria-hidden="true">
   <div class="modal-dialog">

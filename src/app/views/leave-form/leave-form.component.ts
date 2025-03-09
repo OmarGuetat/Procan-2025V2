@@ -2,11 +2,13 @@ import { Component } from '@angular/core';
 import { FormBuilder, FormGroup, ReactiveFormsModule, Validators } from '@angular/forms';
 import { LeaveService } from '../../services/leave.service';
 import { CommonModule } from '@angular/common';
+import { Router } from '@angular/router';
+import { PageItemComponent, PageLinkDirective, PaginationComponent } from '@coreui/angular';
 
 @Component({
   selector: 'app-leave-form',
   standalone: true,
-  imports: [CommonModule,ReactiveFormsModule],
+  imports: [CommonModule,ReactiveFormsModule,PaginationComponent, PageItemComponent, PageLinkDirective],
   templateUrl: './leave-form.component.html',
   styleUrls: ['./leave-form.component.css']
 })
@@ -17,6 +19,7 @@ export class LeaveFormComponent {
   dateError: string = '';
   alertMessage: string = '';
   alertType: string = '';
+  
   leaveOptions = [
     { value: 'vacation', icon: 'bi bi-sun', label: 'Vacation' },
     { value: 'travel_leave', icon: 'bi bi-airplane', label: 'Travel' },
@@ -28,7 +31,7 @@ export class LeaveFormComponent {
   step: number = 1;
   leaveDetails: any = {};
 
-  constructor(private fb: FormBuilder, private leaveService: LeaveService) {
+  constructor(private fb: FormBuilder, private leaveService: LeaveService,private router: Router) {
     this.leaveForm = this.fb.group({
       start_date: [this.getTodayDate(), Validators.required],
       end_date: ['', Validators.required],
@@ -36,7 +39,10 @@ export class LeaveFormComponent {
       other_type: ['']
     });
   }
-
+  goBackToStep1(): void {
+    this.step = 1;  // Change the step back to 1 to navigate back to Step 1
+  }
+  
   dismissAlert() {
     this.alertMessage = '';
   }
@@ -112,22 +118,18 @@ export class LeaveFormComponent {
     formData.append('end_date', this.leaveForm.value.end_date);
     formData.append('leave_type', this.leaveForm.value.leave_type);
     formData.append('leave_days', this.leaveDetails.leave_days.toString());
-
+  
     if (this.selectedReason === 'other') {
       formData.append('other_type', this.leaveForm.value.other_type);
     }
-
+  
     if (this.leaveDetails.leave_type === 'sick_leave' && this.leaveDetails.attachment) {
       formData.append('attachment', this.leaveDetails.attachment);
     }
-
+  
     this.leaveService.storeLeaveRequest(formData).subscribe(
       response => {
-        this.alertMessage = response.message || 'Leave request submitted successfully';
-        this.alertType = 'alert-success';
-        this.step = 1;  // Reset to Step 1
-        this.leaveForm.reset();
-        setTimeout(() => this.dismissAlert(), 2000);
+        this.step = 3; // Move to Step 3 (confirmation)
       },
       error => {
         this.alertMessage = error.error?.message || 'Error submitting leave request';
@@ -135,4 +137,10 @@ export class LeaveFormComponent {
       }
     );
   }
+  
+  // Placeholder function for future history navigation logic
+  viewHistory() {
+  this.router.navigate(['/main/requests-user-dashboard']);
+  }
+  
 }

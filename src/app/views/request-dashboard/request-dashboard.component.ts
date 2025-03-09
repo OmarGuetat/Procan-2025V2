@@ -26,6 +26,7 @@ export class RequestDashboardComponent {
   totalPages: number = 1;
   alertMessage: string = '';
   alertType: string = '';
+  selectedLeave: any = null; // Holds the selected leave for updating
 
   constructor(private leaveService: LeaveService, private userService: UserService) {}
 
@@ -97,14 +98,42 @@ export class RequestDashboardComponent {
     }
   }
   
-
   onYearChange() {
     this.currentPage = 1; 
     this.fetchLeaveRequests();
   }
 
-  
+  // Open Update Modal
+  openUpdateModal(leave: any) {
+    this.selectedLeave = { ...leave }; 
+  }
 
+  // Update Leave Request
+  updateLeave() {
+    if (!this.selectedLeave) return;
+  
+    const leaveData = new FormData();
+    leaveData.append('start_date', this.selectedLeave.start_date);
+    leaveData.append('end_date', this.selectedLeave.end_date);
+    leaveData.append('leave_type', this.selectedLeave.leave_type);
+    if (this.selectedLeave.other_reason) {
+      leaveData.append('other_reason', this.selectedLeave.other_reason);
+    }
+    leaveData.append('leave_days_requested', this.selectedLeave.leave_days_requested.toString());
+    leaveData.append('effective_leave_days', this.selectedLeave.effective_leave_days?.toString() || '0');
+  
+    this.leaveService.updateLeave(this.selectedLeave.id, leaveData).subscribe(
+      (response) => {
+        alert(response.message);
+        this.fetchLeaveRequests(); // Refresh data
+        this.selectedLeave = null; // Close modal
+      },
+      (error) => {
+        alert('Error updating leave: ' + error.error.message);
+      }
+    );
+  }
+  
   goBack() {
     this.backToList.emit();
   }

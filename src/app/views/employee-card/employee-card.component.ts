@@ -18,6 +18,8 @@ export class EmployeeCardComponent {
   updateForm: FormGroup;
   alertMessage: string = '';
   alertType: string = '';
+  userId: number;
+  showToastMessage = false; 
   toggleFlip() {
     this.isFlipped = !this.isFlipped;
   }
@@ -36,6 +38,7 @@ constructor(private fb: FormBuilder, private employeeService: EmployeeService) {
     role: ['', Validators.required],
     job_description:['', Validators.required],
   });
+  this.userId = +localStorage.getItem('userId')!;
 }
 
 // Fill the form when modal opens
@@ -48,6 +51,18 @@ ngOnInit(): void {
 }
 dismissAlert() {
   this.alertMessage = '';
+}
+// Function to show the toast message when HR tries to delete their own record
+showToast() {
+  this.showToastMessage = true;
+  setTimeout(() => {
+    this.closeToast();  // Hide the toast after 3 seconds
+  }, 3000); // Adjust the timeout as needed
+}
+
+// Function to close the toast manually
+closeToast() {
+  this.showToastMessage = false;
 }
 submitUpdate() {
   if (this.updateForm.valid) {

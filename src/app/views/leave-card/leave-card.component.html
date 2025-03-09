@@ -11,17 +11,22 @@
     class="rounded-circle border-custom shadow-sm " 
     style="width: 100px; height: 100px;">
 
-  <div class="card-body">
+  <div class="card-body ">
     <h6 class="card-title">{{ leaveEmployee.first_name }} {{ leaveEmployee.last_name }}</h6>
     
-    <div class="btn-group px-1">
+    <div class="btn-group">
       <button class="btn button-secondary" (click)="seeDetails()">Details</button>
-      <button class="btn button-success text-nowrap " (click)="addLeaveDays()"><i class="bi bi-plus-circle"></i> Days</button>
+      <button 
+        class="btn button-success text-nowrap" 
+        *ngIf="role !== 'hr'" 
+        (click)="addLeaveDays()">
+        <i class="bi bi-plus-circle"></i> Days
+      </button>
       <button class="btn button-primary text-nowrap"(click)="viewRequests()">Requests</button>
     </div>
   </div>    
 </div>
-<!-- Bootstrap Modal for Adding Leave Days -->
+<!-- Add Leave Days Modal -->
 <div class="modal fade" [id]="'leaveModal-' + leaveEmployee.id" tabindex="-1" aria-hidden="true">
   <div class="modal-dialog">
     <div class="modal-content">

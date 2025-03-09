@@ -17,17 +17,17 @@
     </h5>
     
     <!-- Three-Dot Menu -->
-    <div class="dropdown ms-auto">
+    <div class="dropdown ms-auto" *ngIf="request.status !== 'rejected'">
       <button class="btn btn-light btn-sm rounded-circle shadow-sm transition-all" type="button" data-bs-toggle="dropdown">
         <i class="bi bi-three-dots-vertical"></i>
       </button>
-      <ul class="dropdown-menu">
+      <ul class="dropdown-menu" >
         <li *ngIf="request.reason === 'sick_leave'">
           <a [href]="request.attachment_path" target="_blank" class="btn dropdown-item">
             <i class="bi bi-eye me-2"></i>See Attachment
           </a>
         </li>
-        <li *ngIf="request.status !== 'on_hold'">
+        <li *ngIf="request.status === 'approved'">
           <button class="dropdown-item" (click)="downloadPdf(request.id)">
             <i class="bi bi-download me-2"></i>Download PDF
           </button>

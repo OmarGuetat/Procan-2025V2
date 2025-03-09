@@ -1,7 +1,7 @@
 import { Injectable } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
 import { Observable } from 'rxjs';
-import { environment } from 'src/environments/environment';  // Import environment
+import { environment } from '../../environments/environment';  // Import environment
 
 @Injectable({
   providedIn: 'root',
@@ -77,5 +77,9 @@ export class LeaveService {
 
   storeLeaveRequest(formData: FormData): Observable<any> {
     return this.http.post<any>(`${this.apiUrl}/leave/store`, formData);
+  }
+  // Update Leave Request for Admin
+  updateLeaveAdmin(leaveId: number, leaveData: any): Observable<any> {
+    return this.http.put(`${this.apiUrl}/leave/${leaveId}/update`, leaveData);
   }
 }
