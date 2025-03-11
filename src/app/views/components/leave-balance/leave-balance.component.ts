@@ -12,46 +12,55 @@ import { CommonModule } from '@angular/common';
   styleUrls: ['./leave-balance.component.scss'],
 })
 export class LeaveBalanceComponent implements OnInit {
-  leaveBalances: any[] = [];
-  leaveBalance = {
-    leave_type: '',
-    max_days: 0
-  };
+  leaveBalances = [
+    { leave_type: 'paternity_leave', max_days: 0, id: null },
+    { leave_type: 'maternity_leave', max_days: 0, id: null },
+    { leave_type: 'sick_leave', max_days: 0, id: null }
+  ];
 
   constructor(private leaveBalanceService: LeaveBalanceService) {}
 
   ngOnInit(): void {
-    this.fetchLeaveBalances();
+    this.getLeaveBalances();
   }
 
-  fetchLeaveBalances() {
-    this.leaveBalanceService.getLeaveBalances().subscribe({
-      next: (data) => (this.leaveBalances = data),
-      error: (err) => console.error('Error fetching leave balances:', err),
-    });
-  }
-
-  addLeaveBalance() {
-    this.leaveBalanceService.addLeaveBalance(this.leaveBalance).subscribe({
-      next: () => {
-        this.fetchLeaveBalances();
-        this.leaveBalance = { leave_type: '', max_days: 0 }; // Reset form
+  getLeaveBalances(): void {
+    this.leaveBalanceService.getLeaveBalances().subscribe(
+      (data) => {
+        // Merge received data with default leave types
+        this.leaveBalances = this.leaveBalances.map((defaultLeave) => {
+          const existingLeave = data.find((l: any) => l.leave_type === defaultLeave.leave_type);
+          return existingLeave ? existingLeave : defaultLeave;
+        });
       },
-      error: (err) => console.error('Error adding leave balance:', err),
-    });
+      (error) => console.error('Error fetching leave balances:', error)
+    );
   }
 
-  updateLeaveBalance(leave: any) {
-    this.leaveBalanceService.updateLeaveBalance(leave.id, { max_days: leave.max_days }).subscribe({
-      next: () => console.log('Leave updated'),
-      error: (err) => console.error('Error updating leave:', err),
-    });
+  updateLeaveBalance(leave: any): void {
+    if (!leave.id) return;
+    
+    this.leaveBalanceService.updateLeaveBalance(leave.id, { max_days: leave.max_days })
+      .subscribe(
+        () => this.getLeaveBalances(),
+        (error) => console.error('Error updating leave:', error)
+      );
   }
 
-  deleteLeaveBalance(id: number) {
-    this.leaveBalanceService.deleteLeaveBalance(id).subscribe({
-      next: () => this.fetchLeaveBalances(),
-      error: (err) => console.error('Error deleting leave:', err),
-    });
+  addLeaveBalance(leave: any): void {
+    this.leaveBalanceService.addLeaveBalance({ leave_type: leave.leave_type, max_days: leave.max_days })
+      .subscribe(
+        () => this.getLeaveBalances(),
+        (error) => console.error('Error adding leave:', error)
+      );
+  }
+
+  formatLeaveType(type: string): string {
+    const mapping: any = {
+      'paternity_leave': 'Paternity Leave',
+      'maternity_leave': 'Maternity Leave',
+      'sick_leave': 'Sick Leave'
+    };
+    return mapping[type] || type;
   }
 }

@@ -26,7 +26,9 @@ export class RequestDashboardComponent {
   totalPages: number = 1;
   alertMessage: string = '';
   alertType: string = '';
-  selectedLeave: any = null; // Holds the selected leave for updating
+  selectedLeave: any = {}; 
+  confirmationStatus: string = '';
+  leaveToUpdate: any = null;
 
   constructor(private leaveService: LeaveService, private userService: UserService) {}
 
@@ -37,34 +39,45 @@ export class RequestDashboardComponent {
     }
     this.userRole = this.userService.getRole();
   }
-  updateLeaveStatus(leaveId: number, status: string) {
-    console.log('Updating leave with ID:', leaveId, 'to status:', status);
-    if (!confirm(`Are you sure you want to mark this leave as ${status.toUpperCase()}?`)) {
-      return;
-    }
-  
-    this.leaveService.updateLeaveStatus(leaveId, status).subscribe(
+  // Open the confirmation modal with the status
+  updateLeaveStatus(leaveId: number, status: string): void {
+    this.leaveToUpdate = { id: leaveId, status };
+    this.confirmationStatus = status === 'approved' ? 'Accept' : 'Reject';
+    
+    // Show confirmation modal
+    const confirmationModal = new bootstrap.Modal(document.getElementById('confirmationModal'));
+    confirmationModal.show();
+  }
+
+  // Confirm the status change
+  confirmLeaveStatusChange(): void {
+    if (!this.leaveToUpdate) return;
+
+    const { id, status } = this.leaveToUpdate;
+
+    // Close modal after confirmation
+    const confirmationModal = bootstrap.Modal.getInstance(document.getElementById('confirmationModal'));
+    confirmationModal.hide();
+
+    // Perform the actual status update
+    this.leaveService.updateLeaveStatus(id, status).subscribe(
       response => {
         this.alertMessage = response.message || 'Leave status updated successfully!';
         this.alertType = 'alert-success';
 
+        // Refresh the leave requests list
         setTimeout(() => {
           this.dismissAlert();
           this.fetchLeaveRequests();
         }, 1000);
       },
       error => {
-        if (error.error) {
-          const errors = error.error; 
-          const firstErrorKey = Object.keys(errors)[0]; 
-        this.alertMessage = errors[firstErrorKey][0]; 
-        } else {
-          this.alertMessage = 'Error updating leave status';
-        }
+        this.alertMessage = error.error.message || 'Error updating leave status';
         this.alertType = 'alert-danger';
       }
     );
-  }  
+  }
+
   dismissAlert() {
     this.alertMessage = '';
   }
@@ -73,6 +86,7 @@ export class RequestDashboardComponent {
   
     this.leaveService.getLeaveRequests(this.userId, this.selectedYear ?? undefined, this.currentPage)
       .subscribe((response) => {
+        console.log(response)
         this.leaveRequests = response.data;
         this.availableYears = response.available_years;
         this.totalLeaveDays = this.selectedYear ? response.total_leave_days : 0; 
@@ -102,38 +116,41 @@ export class RequestDashboardComponent {
     this.currentPage = 1; 
     this.fetchLeaveRequests();
   }
-
-  // Open Update Modal
-  openUpdateModal(leave: any) {
-    this.selectedLeave = { ...leave }; 
+  // Open the modal and pre-fill with the leave request data
+  openUpdateModal(leave: any): void {
+    this.selectedLeave = { ...leave }; // Pre-fill the selectedLeave with the leave details
+    const updateModal = new bootstrap.Modal(document.getElementById('updateLeaveModal'));
+    updateModal.show(); // Show the modal
   }
 
-  // Update Leave Request
-  updateLeave() {
-    if (!this.selectedLeave) return;
-  
-    const leaveData = new FormData();
-    leaveData.append('start_date', this.selectedLeave.start_date);
-    leaveData.append('end_date', this.selectedLeave.end_date);
-    leaveData.append('leave_type', this.selectedLeave.leave_type);
-    if (this.selectedLeave.other_reason) {
-      leaveData.append('other_reason', this.selectedLeave.other_reason);
+  // Submit the updated leave request
+  submitUpdatedLeave(): void {
+    if (!this.selectedLeave.start_date || !this.selectedLeave.end_date || !this.selectedLeave.leave_type || !this.selectedLeave.leave_days_requested) {
+      this.alertMessage = 'Please fill in all required fields.';
+      this.alertType = 'alert-danger';
+      return;
     }
-    leaveData.append('leave_days_requested', this.selectedLeave.leave_days_requested.toString());
-    leaveData.append('effective_leave_days', this.selectedLeave.effective_leave_days?.toString() || '0');
-  
-    this.leaveService.updateLeave(this.selectedLeave.id, leaveData).subscribe(
-      (response) => {
-        alert(response.message);
-        this.fetchLeaveRequests(); // Refresh data
-        this.selectedLeave = null; // Close modal
+
+    this.leaveService.updateLeaveAdmin(this.selectedLeave.id, this.selectedLeave).subscribe(
+      response => {
+        this.alertMessage = response.message || 'Leave updated successfully!';
+        this.alertType = 'alert-success';
+
+        // Close the modal after successful update
+        const updateModal = bootstrap.Modal.getInstance(document.getElementById('updateLeaveModal'));
+        updateModal.hide();
+
+        setTimeout(() => {
+          this.fetchLeaveRequests(); // Refresh the leave requests list
+          this.dismissAlert();
+        }, 1000);
       },
-      (error) => {
-        alert('Error updating leave: ' + error.error.message);
+      error => {
+        this.alertMessage = error.error.message || 'Error updating leave request';
+        this.alertType = 'alert-danger';
       }
     );
   }
-  
   goBack() {
     this.backToList.emit();
   }

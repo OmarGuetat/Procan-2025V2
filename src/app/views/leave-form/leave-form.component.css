@@ -7,9 +7,6 @@
   background-color: var(--color-primary);
   border-color: var(--color-primary);
 }
-.position-absolute {
-  z-index: 1055; 
-}
 .form-check-input:checked + .form-check-label {
   color: var(--color-text-primary);
   font-weight: 600;

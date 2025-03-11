@@ -1,5 +1,5 @@
 <!-- ALERT -->
-  <div *ngIf="alertMessage" class="alert alert-dismissible fade show position-absolute top-0 end-0 m-3 shadow"
+  <div *ngIf="alertMessage" class="alert alert-dismissible fade show position-fixed top-0 end-0 m-3 shadow"
        [ngClass]="alertType" role="alert">
     <i *ngIf="alertType === 'alert-danger'" class="bi-exclamation-octagon-fill"></i>
     <strong class="mx-2">{{ alertMessage }}</strong>
@@ -22,7 +22,7 @@
         <i class="bi bi-three-dots-vertical"></i>
       </button>
       <ul class="dropdown-menu" >
-        <li *ngIf="request.reason === 'sick_leave'">
+        <li *ngIf="request.leave_type === 'sick_leave'">
           <a [href]="request.attachment_path" target="_blank" class="btn dropdown-item">
             <i class="bi bi-eye me-2"></i>See Attachment
           </a>
@@ -63,13 +63,13 @@
         <p class="d-flex align-items-center">
           <i class="bi bi-chat-left-text me-2"></i>
           <strong>Reason:</strong>&nbsp;
-          <span [ngSwitch]="request.reason">
+          <span [ngSwitch]="request.leave_type">
             <span *ngSwitchCase="'paternity_leave'">Paternity Leave</span>
             <span *ngSwitchCase="'maternity_leave'">Maternity Leave</span>
             <span *ngSwitchCase="'vacation'">Vacation</span>
             <span *ngSwitchCase="'sick_leave'">Sick Leave</span>
             <span *ngSwitchCase="'travel_leave'">Travel</span>
-            <span *ngSwitchDefault>{{ request.other_reason || 'N/A' }}</span>
+            <span *ngSwitchDefault>{{ request.other_type || 'N/A' }}</span>
           </span>
         </p>
         
@@ -95,7 +95,7 @@
         <div class="calendar text-center">
           <div class="calendar__month">Days</div>
           <div class="calendar__day">
-            {{ request.reason === 'sick_leave' ? request.effective_leave_days : request.leave_days_requested }}
+            {{ request.leave_type === 'sick_leave' ? request.effective_leave_days : request.leave_days_requested }}
           </div>
         </div>
       </div>
@@ -139,8 +139,8 @@
           
           <!-- Reason Dropdown -->
           <div class="mb-3">
-            <label for="reason" class="form-label">Reason</label>
-            <select formControlName="reason" class="form-select" (change)="onReasonChange()">
+            <label for="leave_type" class="form-label">Reason</label>
+            <select formControlName="leave_type" class="form-select" (change)="onReasonChange()">
               <option value="vacation">Vacation</option>
               <option value="travel_leave">Travel</option>
               <option value="paternity_leave">Paternity Leave</option>
@@ -151,14 +151,14 @@
           </div>
 
           <!-- Other Reason Input (Only if "Other" is selected) -->
-          <div class="mb-3" *ngIf="updateForm.value.reason === 'other'">
-            <label for="other_reason" class="form-label">Specify Reason</label>
-            <input type="text" formControlName="other_reason" class="form-control">
-            <small *ngIf="updateForm.controls['other_reason'].errors?.['required']" class="text-danger">Please provide a reason.</small>
+          <div class="mb-3" *ngIf="updateForm.value.leave_type === 'other'">
+            <label for="other_type" class="form-label">Specify Reason</label>
+            <input type="text" formControlName="other_type" class="form-control">
+            <small *ngIf="updateForm.controls['other_type'].errors?.['required']" class="text-danger">Please provide a leave_type.</small>
           </div>
 
           <!-- Attachment (Only if "Sick Leave" is selected) -->
-          <div class="mb-3" *ngIf="updateForm.value.reason === 'sick_leave'">
+          <div class="mb-3" *ngIf="updateForm.value.leave_type === 'sick_leave'">
             <label for="attachment" class="form-label">Medical Certificate (PDF, JPG, PNG)</label>
             <input type="file" (change)="onFileChange($event)" class="form-control">
             <small *ngIf="attachmentError" class="text-danger">{{ attachmentError }}</small>

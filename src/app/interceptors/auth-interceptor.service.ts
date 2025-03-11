@@ -16,8 +16,7 @@ export const authInterceptor: HttpInterceptorFn = (req, next) => {
       }
     });
   }
-  console.log('Token being sent:', token); //
-  console.log(`Interceptor Applied: ${req.url}`);
+
 
   return next(clonedRequest).pipe(
     catchError((error) => {

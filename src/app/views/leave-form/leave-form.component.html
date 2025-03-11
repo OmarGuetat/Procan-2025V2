@@ -1,5 +1,5 @@
 <!-- Dynamic Alert -->
-<div *ngIf="alertMessage" class="alert alert-dismissible fade show position-absolute top-0 end-0 m-3 shadow"
+<div *ngIf="alertMessage" class="alert alert-dismissible fade show position-fixed top-0 end-0 m-3 shadow"
   [ngClass]="alertType" role="alert">
   <i *ngIf="alertType === 'alert-danger'" class="bi-exclamation-octagon-fill"></i>
   <strong class="mx-2">{{ alertMessage }}</strong>
@@ -12,7 +12,7 @@
     <div class="col-lg-6 p-4" [ngClass]="{'col-lg-12': step === 3}">
       <div class="card shadow-sm p-4">
         <!-- Step Controls in the top-right corner -->
-        <div class="step-controls position-absolute top-0 end-0 p-3">
+        <div class="step-controls position-fixed top-0 end-0 p-3">
           <span *ngIf="step === 1" class="badge bg-primary">Step 1</span>
           <span *ngIf="step === 2" class="badge bg-secondary">Step 2</span>
           <span *ngIf="step === 3" class="badge bg-success">Step 3</span>
@@ -71,8 +71,8 @@
 
           <!-- If "Other" is selected, show this text input -->
           <div *ngIf="selectedReason === 'other'" class="mt-3">
-            <label for="other_reason" class="form-label"><i class="bi bi-pencil"></i> Specify reason</label>
-            <input type="text" id="other_reason" formControlName="other_type" class="form-control">
+            <label for="other_type" class="form-label"><i class="bi bi-pencil"></i> Specify reason</label>
+            <input type="text" id="other_type" formControlName="other_type" class="form-control">
             <div *ngIf="leaveForm.controls['other_type'].invalid && leaveForm.controls['other_type'].touched"
               class="text-danger">
               Please provide a reason.

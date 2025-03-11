@@ -191,3 +191,6 @@ th {
 .modal-footer {
     border-top: 1px solid var(--color-border);
 }
+.alert{
+    z-index: 1060;
+}

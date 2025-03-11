@@ -1,40 +1,76 @@
 <ng-container>
   <c-container [fluid]="true" class="border-bottom px-4 d-flex justify-content-between align-items-center">
     <!-- Sidebar Toggle -->
-    <button
-      [cSidebarToggle]="sidebarId()"
-      cHeaderToggler
-      class="btn"
-      toggle="visible"
-      aria-label="Toggle sidebar navigation"
-    >
+    <button [cSidebarToggle]="sidebarId()" cHeaderToggler class="btn" toggle="visible"
+      aria-label="Toggle sidebar navigation">
       <svg cIcon name="cilMenu" size="lg"></svg>
     </button>
 
     <!-- Right Section: Notifications & User Dropdown -->
-    <div class="d-flex align-items-center">
-      <!-- Notification Icon -->
-      <a cNavLink class="me-3">
-        <svg cIcon class="my-1" name="cilBell" size="lg"></svg>
-      </a>
+    <div class="d-flex align-items-center gap-3">
+      <!-- Notification Dropdown -->
+      <c-dropdown [popperOptions]="{ placement: 'bottom-start' }" variant="nav-item">
+        <button [caret]="false" cDropdownToggle class="py-0 pe-0 position-relative" aria-label="Open notifications">
+          <svg cIcon class="my-1" name="cilBell" size="lg"></svg>
+          <span *ngIf="unreadCount > 0" 
+                class="position-absolute top-0 start-100 translate-middle badge rounded-circle bg-danger 
+                       d-flex justify-content-center align-items-center"
+                style="width: 16px; height: 16px; font-size: 10px;">
+            {{ unreadCount }}
+          </span>
+        </button>
+
+        <!-- Dropdown Menu -->
+        <ul cDropdownMenu class="p-2 w-100" style="min-width: 300px; max-height: 300px; overflow-y: auto;">
+          <li *ngIf="notifications.length === 0" class="text-muted px-3 py-2">No notifications</li>
+        
+          <li *ngFor="let notification of notifications" 
+              (click)="markAsRead(notification.id)" 
+              class="d-flex align-items-center justify-content-between p-2 rounded position-relative"
+              [ngClass]="{'bg-light': !notification.read_at, 'bg-white': notification.read_at}"
+              (mouseenter)="notification.hover = true" 
+              (mouseleave)="notification.hover = false">
+            
+            <!-- Notification Content -->
+            <a cDropdownItem class="d-flex align-items-center flex-grow-1 text-decoration-none">
+              <!-- Sender Avatar -->
+              <img *ngIf="notification?.sender_avatar_path" [src]="notification?.sender_avatar_path"
+                class="rounded-circle me-2 flex-shrink-0" width="40" height="40" alt="Sender Avatar" />
+              <i *ngIf="!notification?.sender_avatar_path" class="bi bi-person-circle fs-4 text-muted me-2"></i>
+        
+              <!-- Message -->
+              <div class="text-wrap" style="white-space: normal; max-width: 200px;">
+                <small class="text-muted d-block">{{ notification?.message }}</small>
+              </div>
+            </a>
+        
+            <!-- Delete Icon (Shown Only on Hover) -->
+            <button *ngIf="notification.hover" (click)="deleteNotification(notification.id, $event)" 
+                    class="btn btn-sm p-0 position-absolute top-50 end-0 translate-middle-y me-2" 
+                    aria-label="Delete">
+              <i class="bi bi-x-circle text-danger fs-6"></i>
+            </button>
+          </li>
+        
+          <!-- Show All Notifications Footer -->
+          <li class="text-center border-top pt-2">
+            <button class="btn btn-sm btn-link text-decoration-none" (click)="showAllNotifications()">
+              Show All Notifications
+            </button>
+          </li>
+        </ul>
+      </c-dropdown>
 
       <!-- User Dropdown -->
       <c-dropdown [popperOptions]="{ placement: 'bottom-start' }" variant="nav-item">
         <button [caret]="false" cDropdownToggle class="py-0 pe-0" aria-label="Open user menu">
-          <!-- Admin Icon Instead of Name -->
           <ng-container *ngIf="isAdmin; else userAvatar">
-            <i class="bi bi-shield-lock fs-4 "></i>
+            <i class="bi bi-person-circle fs-4"></i>
           </ng-container>
 
-          <!-- User Avatar and Name -->
           <ng-template #userAvatar>
-            <c-avatar
-              shape="rounded-1"
-              [size]="'md'"
-              [src]="avatarPath"
-              *ngIf="avatarPath; else defaultAvatar"
-              alt="User avatar"
-            />
+            <c-avatar shape="rounded-1" [size]="'md'" [src]="avatarPath" *ngIf="avatarPath; else defaultAvatar"
+              alt="User avatar" />
             <ng-template #defaultAvatar>
               <i class="bi bi-person-circle fs-4 text-muted"></i>
             </ng-template>
@@ -44,7 +80,7 @@
         <!-- Dropdown Menu -->
         <ul cDropdownMenu class="pt-0 w-auto">
           <li>
-            <a cDropdownItem routerLink="/profile">
+            <a  *ngIf="isAdmin===false" cDropdownItem routerLink="/profile">
               <svg cIcon class="me-2" name="cilUser"></svg>
               Profile
             </a>

@@ -1,7 +1,4 @@
 
-.position-absolute {
-  z-index: 1055; 
-}
 /* Hover Effect */
 .profile-card:hover {
   transform: translateY(-5px);

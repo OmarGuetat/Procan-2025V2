@@ -30,8 +30,8 @@ export class RequestCardComponent {
       start_date: [this.request.start_date, Validators.required],
       end_date: [this.request.end_date, Validators.required],
       leave_days_requested: [this.request.leave_days_requested, [Validators.required, Validators.min(1)]],
-      reason: [this.request.reason, Validators.required],
-      other_reason: [this.request.other_reason || '', []]
+      leave_type: [this.request.leave_type, Validators.required],
+      other_type: [this.request.other_type || '', []]
     });
     this.validateDates();
   }
@@ -44,7 +44,7 @@ export class RequestCardComponent {
     this.updateForm.patchValue({
       start_date: request.start_date,
       end_date: request.end_date,
-      reason: request.reason,
+      leave_type: request.leave_type,
     });
   
     // Dynamically target the modal based on the request ID
@@ -54,12 +54,12 @@ export class RequestCardComponent {
   
   // Handle Reason Change
   onReasonChange() {
-    if (this.updateForm.value.reason === 'other') {
-      this.updateForm.controls['other_reason'].setValidators([Validators.required]);
+    if (this.updateForm.value.leave_type === 'other') {
+      this.updateForm.controls['other_type'].setValidators([Validators.required]);
     } else {
-      this.updateForm.controls['other_reason'].clearValidators();
+      this.updateForm.controls['other_type'].clearValidators();
     }
-    this.updateForm.controls['other_reason'].updateValueAndValidity();
+    this.updateForm.controls['other_type'].updateValueAndValidity();
   }
 
   // Validate Start and End Dates
@@ -99,10 +99,10 @@ export class RequestCardComponent {
     formData.append('start_date', this.updateForm.value.start_date);
     formData.append('end_date', this.updateForm.value.end_date);
     formData.append('leave_days_requested', this.updateForm.value.leave_days_requested);
-    formData.append('reason', this.updateForm.value.reason);
+    formData.append('leave_type', this.updateForm.value.leave_type);
 
-    if (this.updateForm.value.reason === 'other') {
-      formData.append('other_reason', this.updateForm.value.other_reason);
+    if (this.updateForm.value.leave_type === 'other') {
+      formData.append('other_type', this.updateForm.value.other_type);
     }
 
     if (this.attachmentFile) {

@@ -14,9 +14,6 @@ p i{
   color :  var(--color-primary-light)
 }
 
-.position-absolute {
-  z-index: 1055; 
-}
 /* Calendar Styling */
 .calendar {
   position: relative;

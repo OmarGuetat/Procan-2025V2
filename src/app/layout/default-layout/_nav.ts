@@ -16,6 +16,11 @@ export const adminNavItems: INavData[] = [
     name: 'Leave Dashboard',
     url: '/main/leave-dashboard',
     iconComponent: { name: 'cil-spreadsheet' }
+  },
+  {
+    name: 'Notifications',
+    url: '/main/notifications',
+    iconComponent: { name: 'cil-spreadsheet' }
   }
 ];
 

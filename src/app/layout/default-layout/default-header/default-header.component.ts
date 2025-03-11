@@ -1,6 +1,6 @@
 import { CommonModule, NgTemplateOutlet } from '@angular/common';
 import { Component, computed, inject, input, OnInit } from '@angular/core';
-import { RouterLink, RouterLinkActive } from '@angular/router';
+import { RouterLink, RouterLinkActive,Router } from '@angular/router';
 
 import {
   AvatarComponent,
@@ -25,6 +25,7 @@ import {
 import { IconDirective } from '@coreui/icons-angular';
 import { AuthService } from '../../../services/auth.service';
 import { EmployeeService } from '../../../services/employee-service.service';
+import { NotificationService } from '../../../services/notification.service';
 
 
 @Component({
@@ -36,25 +37,17 @@ export class DefaultHeaderComponent extends HeaderComponent implements OnInit  {
   avatarPath: string = '';
   fullName: string = 'User';
   isAdmin: boolean = false;
+  notifications: any[] = [];
+  unreadCount: number = 0;
   ngOnInit(): void {
     this.loadUserData();
+    this.fetchNotifications();
+    this.notificationService.notifications$.subscribe((notifications) => {
+      this.notifications = notifications;
+      this.updateUnreadCount();
+    });
   }
-
-  readonly #colorModeService = inject(ColorModeService);
-  readonly colorMode = this.#colorModeService.colorMode;
-
-  readonly colorModes = [
-    { name: 'light', text: 'Light', icon: 'cilSun' },
-    { name: 'dark', text: 'Dark', icon: 'cilMoon' },
-    { name: 'auto', text: 'Auto', icon: 'cilContrast' }
-  ];
-
-  readonly icons = computed(() => {
-    const currentMode = this.colorMode();
-    return this.colorModes.find(mode => mode.name === currentMode)?.icon ?? 'cilSun';
-  });
-
-  constructor(private authService: AuthService,private employeeService: EmployeeService) {
+  constructor(private authService: AuthService,private employeeService: EmployeeService, private notificationService: NotificationService,private router: Router) {
     super();
   }
 
@@ -76,4 +69,40 @@ export class DefaultHeaderComponent extends HeaderComponent implements OnInit  {
     localStorage.removeItem('role');
   }
   
+  fetchNotifications(): void {
+    this.notificationService.getNotifications().subscribe((response) => {
+      this.notifications = response;
+      this.updateUnreadCount();
+    });
+  }
+
+  markAsRead(notificationId: number): void {
+    this.notificationService.markAsRead(notificationId).subscribe(() => {
+      // Optimized state update
+      this.notifications = this.notifications.map((n) =>
+        n.id === notificationId ? { ...n, is_read: true } : n
+      );
+      this.updateUnreadCount();
+    });
+  }
+   // Delete Notification
+   deleteNotification(notificationId: number, event: Event): void {
+    event.stopPropagation(); // Prevents triggering markAsRead
+
+    this.notificationService.deleteNotification(notificationId).subscribe(
+      () => {
+        this.notifications = this.notifications.filter(n => n.id !== notificationId);
+        this.unreadCount = this.notifications.filter(n => !n.read_at).length;
+      },
+      (error) => {
+        console.error('Error deleting notification:', error);
+      }
+    );
+  }
+  showAllNotifications() {
+    this.router.navigate(['/main/notifications']);
+    }
+  private updateUnreadCount(): void {
+    this.unreadCount = this.notifications.filter((n) => !n.is_read).length;
+  }
 }

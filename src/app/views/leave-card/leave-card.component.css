@@ -14,9 +14,7 @@
 .btn-group .btn{
   border: 1px solid var(--color-text-primary);
 }
-.position-absolute {
-  z-index: 1055; 
-}
+
 /* Buttons should resize and wrap when needed */
 .btn-group .btn {
   flex: 1; /* Each button takes equal space */
