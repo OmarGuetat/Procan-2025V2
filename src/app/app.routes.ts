@@ -16,7 +16,10 @@ export const routes: Routes = [
   {
     path: 'main',
     component: DefaultLayoutComponent, canActivate: [AuthGuard],
-    children: [
+    children: [{
+      path: 'notifications',
+      loadChildren: () => import('./views/notifications/routes').then((m) => m.routes)
+    },
       // Profile
       {
         path: 'profile',

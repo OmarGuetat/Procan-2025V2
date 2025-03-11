@@ -9,16 +9,10 @@ export const routes: Routes = [
     children: [
       {
         path: '',
-        redirectTo: 'notifications',
-        pathMatch: 'full'
-      },
-      {
-        path: 'notifications',
         loadComponent: () => import('./notifications.component').then(m => m.NotificationsComponent),
         data: {
           title: 'Notifications'
-        }
-      }
+        }}
     ]
   }
 ];
