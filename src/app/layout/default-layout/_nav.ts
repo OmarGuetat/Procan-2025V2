@@ -35,11 +35,6 @@ export const employeeNavItems: INavData[] = [
     name: 'Requests Dashboard',
     url: '/main/requests-user-dashboard',
     iconComponent: { name: 'cil-list' }
-  },
-  {
-    name: 'Profile',
-    url: '/main/profile',
-    iconComponent: { name: 'cil-user' }
   }
 ];
 
@@ -69,11 +64,6 @@ export const hrNavItems: INavData[] = [
     name: 'Requests Dashboard',
     url: '/main/requests-user-dashboard',
     iconComponent: { name: 'cil-list' }
-  },
-  {
-    name: 'Profile',
-    url: '/main/profile',
-    iconComponent: { name: 'cil-user' }
   }
 ];
 

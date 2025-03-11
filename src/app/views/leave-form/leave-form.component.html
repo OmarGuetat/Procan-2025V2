@@ -12,7 +12,7 @@
     <div class="col-lg-6 p-4" [ngClass]="{'col-lg-12': step === 3}">
       <div class="card shadow-sm p-4">
         <!-- Step Controls in the top-right corner -->
-        <div class="step-controls position-fixed top-0 end-0 p-3">
+        <div class="step-controls position-absolute top-0 end-0 p-3">
           <span *ngIf="step === 1" class="badge bg-primary">Step 1</span>
           <span *ngIf="step === 2" class="badge bg-secondary">Step 2</span>
           <span *ngIf="step === 3" class="badge bg-success">Step 3</span>

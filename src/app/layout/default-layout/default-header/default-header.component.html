@@ -63,7 +63,7 @@
       </c-dropdown>
 
       <!-- User Dropdown -->
-      <c-dropdown [popperOptions]="{ placement: 'bottom-start' }" variant="nav-item">
+      <c-dropdown *ngIf="isAdmin===false" [popperOptions]="{ placement: 'bottom-start' }" variant="nav-item">
         <button [caret]="false" cDropdownToggle class="py-0 pe-0" aria-label="Open user menu">
           <ng-container *ngIf="isAdmin; else userAvatar">
             <i class="bi bi-person-circle fs-4"></i>
@@ -79,9 +79,9 @@
         </button>
 
         <!-- Dropdown Menu -->
-        <ul cDropdownMenu class="pt-0 w-auto">
+        <ul cDropdownMenu class="pt-0 w-auto" >
           <li>
-            <a  *ngIf="isAdmin===false" cDropdownItem routerLink="/profile">
+            <a   cDropdownItem (click)="goToProfile()" >
               <svg cIcon class="me-2" name="cilUser"></svg>
               Profile
             </a>
@@ -94,6 +94,10 @@
           </li>
         </ul>
       </c-dropdown>
+      <button  *ngIf="isAdmin" class="btn btn-outline-danger d-flex align-items-center" (click)="logout()">
+        <svg cIcon class="me-2" name="cilAccountLogout"></svg>
+        Logout
+      </button>
     </div>
   </c-container>
 </ng-container>

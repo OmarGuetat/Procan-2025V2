@@ -102,6 +102,9 @@ export class DefaultHeaderComponent extends HeaderComponent implements OnInit  {
   showAllNotifications() {
     this.router.navigate(['/main/notifications']);
     }
+    goToProfile() {
+      this.router.navigate(['/main/profile']);
+      }
   private updateUnreadCount(): void {
     this.unreadCount = this.notifications.filter((n) => !n.is_read).length;
   }
