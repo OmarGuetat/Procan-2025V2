@@ -1,12 +1,11 @@
 import { CommonModule, NgTemplateOutlet } from '@angular/common';
 import { Component, computed, inject, input, OnInit } from '@angular/core';
-import { RouterLink, RouterLinkActive,Router } from '@angular/router';
+import { RouterLink, RouterLinkActive, Router } from '@angular/router';
 
 import {
   AvatarComponent,
   BadgeComponent,
   BreadcrumbRouterComponent,
-  ColorModeService,
   ContainerComponent,
   DropdownComponent,
   DropdownDividerDirective,
@@ -29,11 +28,11 @@ import { NotificationService } from '../../../services/notification.service';
 
 
 @Component({
-    selector: 'app-default-header',
-    templateUrl: './default-header.component.html',
-    imports: [ContainerComponent, HeaderTogglerDirective,CommonModule, SidebarToggleDirective, IconDirective, HeaderNavComponent, NavItemComponent, NavLinkDirective, RouterLink, RouterLinkActive, NgTemplateOutlet, BreadcrumbRouterComponent, DropdownComponent, DropdownToggleDirective, AvatarComponent, DropdownMenuDirective, DropdownHeaderDirective, DropdownItemDirective, BadgeComponent, DropdownDividerDirective]
+  selector: 'app-default-header',
+  templateUrl: './default-header.component.html',
+  imports: [ContainerComponent, HeaderTogglerDirective, CommonModule, SidebarToggleDirective, IconDirective, HeaderNavComponent, NavItemComponent, NavLinkDirective, RouterLink, RouterLinkActive, NgTemplateOutlet, BreadcrumbRouterComponent, DropdownComponent, DropdownToggleDirective, AvatarComponent, DropdownMenuDirective, DropdownHeaderDirective, DropdownItemDirective, BadgeComponent, DropdownDividerDirective]
 })
-export class DefaultHeaderComponent extends HeaderComponent implements OnInit  {
+export class DefaultHeaderComponent extends HeaderComponent implements OnInit {
   avatarPath: string = '';
   fullName: string = 'User';
   isAdmin: boolean = false;
@@ -42,12 +41,14 @@ export class DefaultHeaderComponent extends HeaderComponent implements OnInit  {
   ngOnInit(): void {
     this.loadUserData();
     this.fetchNotifications();
-    this.notificationService.notifications$.subscribe((notifications) => {
-      this.notifications = notifications;
+    // Subscribe to real-time notifications
+    this.notificationService.notifications$.subscribe((newNotifications) => {
+      this.notifications = newNotifications;
       this.updateUnreadCount();
     });
+
   }
-  constructor(private authService: AuthService,private employeeService: EmployeeService, private notificationService: NotificationService,private router: Router) {
+  constructor(private authService: AuthService, private employeeService: EmployeeService, private notificationService: NotificationService, private router: Router) {
     super();
   }
 
@@ -68,7 +69,7 @@ export class DefaultHeaderComponent extends HeaderComponent implements OnInit  {
     this.authService.logout();
     localStorage.removeItem('role');
   }
-  
+
   fetchNotifications(): void {
     this.notificationService.getNotifications().subscribe((response) => {
       this.notifications = response;
@@ -85,8 +86,8 @@ export class DefaultHeaderComponent extends HeaderComponent implements OnInit  {
       this.updateUnreadCount();
     });
   }
-   // Delete Notification
-   deleteNotification(notificationId: number, event: Event): void {
+  // Delete Notification
+  deleteNotification(notificationId: number, event: Event): void {
     event.stopPropagation(); // Prevents triggering markAsRead
 
     this.notificationService.deleteNotification(notificationId).subscribe(
@@ -101,10 +102,10 @@ export class DefaultHeaderComponent extends HeaderComponent implements OnInit  {
   }
   showAllNotifications() {
     this.router.navigate(['/main/notifications']);
-    }
-    goToProfile() {
-      this.router.navigate(['/main/profile']);
-      }
+  }
+  goToProfile() {
+    this.router.navigate(['/main/profile']);
+  }
   private updateUnreadCount(): void {
     this.unreadCount = this.notifications.filter((n) => !n.is_read).length;
   }
