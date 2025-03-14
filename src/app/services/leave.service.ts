@@ -37,10 +37,13 @@ export class LeaveService {
     return this.http.delete<any>(`${this.apiUrl}/leave-balances/${leaveId}`);
   }
 
-  getLeaveRequests(userId: number, year?: number, page: number = 1): Observable<any> {
+  getLeaveRequests(userId: number, year?: number, page: number = 1,type_leave?:string): Observable<any> {
     const params: any = { page };
     if (year) {
       params.year = year;
+    }
+    if (type_leave) {
+      params.type_leave = type_leave;
     }
     return this.http.get<any>(`${this.apiUrl}/admin/employees/${userId}/leaves`, { params });
   }

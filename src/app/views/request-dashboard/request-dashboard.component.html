@@ -1,22 +1,32 @@
 
-
 <div class="container mt-3">
     <button class="btn rounded-circle border-custom" (click)="goBack()">
       <i class="bi bi-arrow-left"></i>
     </button>
     <h3 class="mx-auto fw-bold mt-3">{{ employeeName }}'s Leave Requests</h3>
 
-  <!-- Year Filter -->
-  <div class="my-2">
-    <h5 for="yearFilter fw-bold"><i class="bi bi-filter"></i> Filter by Year</h5>
-    <select id="yearFilter" class="form-control w-25" [(ngModel)]="selectedYear" (change)="onYearChange()">
-      <option [ngValue]="null" selected>Select Year</option>
-      <option *ngFor="let year of availableYears" [value]="year">{{ year }}</option>
-    </select>
-    <!-- Total Leave Days: Show only when a year is selected -->
-    <p *ngIf="selectedYear" class="mt-1"><strong>Total Leave Days:</strong> {{ totalLeaveDays }}</p>
-  </div>
-
+    <div class="d-flex my-3">
+      <!-- Year Filter -->
+      <div class="mr-3">
+        <h5 class="fw-bold"><i class="bi bi-filter"></i> Filter by Year</h5>
+        <select id="yearFilter" class="form-control w-100" [(ngModel)]="selectedYear" (change)="onYearChange()">
+          <option [ngValue]="null" selected>Select Year</option>
+          <option *ngFor="let year of availableYears" [value]="year">{{ year }}</option>
+        </select>
+        
+      </div>
+    
+      <!-- Leave Type Filter -->
+      <div class="mx-3">
+        <h5 for="leaveTypeFilter" class="fw-bold"><i class="bi bi-filter"></i> Filter by Leave Type</h5>
+        <select id="leaveTypeFilter" class="form-control w-100" [(ngModel)]="selectedType" (change)="onLeaveTypeChange()">
+          <option [ngValue]="null" selected>Select Leave Type</option>
+          <option *ngFor="let type of leaveTypes" [value]="type">{{ type | titlecase }}</option>
+        </select>
+      </div>
+    </div>
+<!-- Total Leave Days: Show only when a year is selected -->
+<p *ngIf="selectedYear" class="mt-1"><strong>Total Leave Days:</strong> {{ totalLeaveDays }}</p>
   <!-- Leave Requests Table -->
   <table class="table table-bordered">
     <thead class="thead-dark">

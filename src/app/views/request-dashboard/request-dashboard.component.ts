@@ -19,6 +19,7 @@ export class RequestDashboardComponent {
   leaveRequests: any[] = [];
   availableYears: number[] = [];
   selectedYear: number | null = null;
+  selectedType: string | null = null;
   totalLeaveDays: number = 0;
   employeeName: string = "";
   userRole: string | null = null;
@@ -29,7 +30,7 @@ export class RequestDashboardComponent {
   selectedLeave: any = {}; 
   confirmationStatus: string = '';
   leaveToUpdate: any = null;
-
+  leaveTypes: string[] = ['paternity_leave', 'maternity_leave', 'sick_leave', 'vacation', 'travel_leave', 'other'];
   constructor(private leaveService: LeaveService, private userService: UserService) {}
 
   ngOnInit() {
@@ -84,7 +85,7 @@ export class RequestDashboardComponent {
   fetchLeaveRequests(): void {
     if (this.userId === null) return; 
   
-    this.leaveService.getLeaveRequests(this.userId, this.selectedYear ?? undefined, this.currentPage)
+    this.leaveService.getLeaveRequests(this.userId, this.selectedYear ?? undefined, this.currentPage,this.selectedType ?? undefined)
       .subscribe((response) => {
         console.log(response)
         this.leaveRequests = response.data;
@@ -116,6 +117,11 @@ export class RequestDashboardComponent {
     this.currentPage = 1; 
     this.fetchLeaveRequests();
   }
+  onLeaveTypeChange(): void {
+    this.currentPage = 1; // Reset to the first page
+    this.fetchLeaveRequests(); // Fetch leave requests based on the new leave type
+  }
+  
   // Open the modal and pre-fill with the leave request data
   openUpdateModal(leave: any): void {
     this.selectedLeave = { ...leave }; // Pre-fill the selectedLeave with the leave details

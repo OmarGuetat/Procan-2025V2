@@ -1,7 +1,7 @@
 import { CommonModule } from '@angular/common';
-import { Component, OnInit } from '@angular/core';
+import { Component, EventEmitter, OnInit, Output } from '@angular/core';
 import { Router } from '@angular/router';
-import { NotificationService } from 'src/app/services/notification.service';
+import { NotificationService } from '../../services/notification.service';
 
 
 @Component({
@@ -11,8 +11,8 @@ import { NotificationService } from 'src/app/services/notification.service';
   styleUrls: ['./notifications.component.scss']
 })
 export class NotificationsComponent implements OnInit {
+  @Output() onViewRequests = new EventEmitter<number>();
   notifications: any[] = [];
-
   constructor(private notificationService: NotificationService, private router: Router) {}
 
   ngOnInit(): void {
@@ -24,12 +24,11 @@ export class NotificationsComponent implements OnInit {
       this.notifications = response;
     });
   }
-
   viewHistory(notification: any): void {
     if (!notification.is_read) {
       this.markAsRead(notification.id);
     }
-    this.router.navigate(['/main/history']);
+    this.onViewRequests.emit(notification.sender_id);
   }
 
   markAsRead(notificationId: number, event?: Event): void {
