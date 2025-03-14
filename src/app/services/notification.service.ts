@@ -32,18 +32,40 @@ export class NotificationService {
     return this.http.delete<any>(`${this.apiUrl}/${id}`);
   }
 
-  // Initialize Pusher
   private initializePusher(): void {
     this.pusher = new Pusher(environment.pusherAppKey, {
-      cluster: environment.pusherAppCluster
+      cluster: environment.pusherAppCluster,
+      forceTLS: true,
+      authEndpoint: `${environment.apiUrl}/broadcasting/auth`,  // ✅ Required for private channels
+      auth: {
+        headers: {
+          Authorization: `Bearer ${localStorage.getItem('token')}`, // ✅ Ensure the user is authenticated
+        },
+      },
     });
-
-    const channel = this.pusher.subscribe('notifications-channel');
+  
+    this.pusher.connection.bind('connected', () => {
+      console.log('✅ Pusher connected');
+    });
+  
+    this.pusher.connection.bind('error', (err: any) => {
+      console.error('❌ Pusher error:', err);
+    });
+  
+    // ✅ Subscribe to the user's private notification channel
+    const userId = localStorage.getItem('userId');
+    const channel = this.pusher.subscribe(`private-notifications.${userId}`);
+  
     channel.bind('new-notification', (data: any) => {
+      console.log('🔔 New notification received:', data);
+  
       this.ngZone.run(() => {
         const currentNotifications = this.notificationsSubject.value;
         this.notificationsSubject.next([data, ...currentNotifications]);
       });
     });
   }
+  
+
+  
 }

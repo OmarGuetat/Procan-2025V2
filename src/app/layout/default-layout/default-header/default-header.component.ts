@@ -73,6 +73,7 @@ export class DefaultHeaderComponent extends HeaderComponent implements OnInit {
   fetchNotifications(): void {
     this.notificationService.getNotifications().subscribe((response) => {
       this.notifications = response;
+  
       this.updateUnreadCount();
     });
   }
