@@ -4,7 +4,7 @@ import { FormsModule } from '@angular/forms';
 import { LeaveService } from '../../services/leave.service';
 import { AuthService } from '../../services/auth.service';
 
-import { UserService } from '../../services/user.service';
+
 
 @Component({
   selector: 'app-request-dashboard',
@@ -31,14 +31,14 @@ export class RequestDashboardComponent {
   confirmationStatus: string = '';
   leaveToUpdate: any = null;
   leaveTypes: string[] = ['paternity_leave', 'maternity_leave', 'sick_leave', 'vacation', 'travel_leave', 'other'];
-  constructor(private leaveService: LeaveService, private userService: UserService) {}
+  constructor(private leaveService: LeaveService, private authService: AuthService) {}
 
   ngOnInit() {
     
     if (this.userId) {
       this.fetchLeaveRequests();
     }
-    this.userRole = this.userService.getRole();
+    this.userRole = this.authService.getRole();
   }
   // Open the confirmation modal with the status
   updateLeaveStatus(leaveId: number, status: string): void {

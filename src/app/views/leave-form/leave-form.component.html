@@ -26,27 +26,61 @@
 
         <!-- Step 1: Basic Leave Info -->
         <form *ngIf="step === 1" [formGroup]="leaveForm" (ngSubmit)="submitLeaveRequest()">
-          <!-- Start Date -->
-          <div class="mb-3">
-            <label for="startDate" class="form-label"><i class="bi bi-calendar-event"></i> Start Date</label>
-            <input type="date" id="startDate" class="form-control" formControlName="start_date"
-              (change)="onDateChange()">
-            <div *ngIf="leaveForm.controls['start_date'].invalid && leaveForm.controls['start_date'].touched"
-              class="text-danger">
-              Start date is required.
-            </div>
-          </div>
+        <!-- Start Date -->
+<div class="mb-3">
+  <label for="startDate" class="form-label"><i class="bi bi-calendar-event"></i> Start Date</label>
+  <input type="date" id="startDate" class="form-control" formControlName="start_date" (change)="onDateChange()">
+  <div *ngIf="leaveForm.controls['start_date'].invalid && leaveForm.controls['start_date'].touched" class="text-danger">
+    Start date is required.
+  </div>
+</div>
 
-          <!-- End Date -->
-          <div class="mb-3">
-            <label for="endDate" class="form-label"><i class="bi bi-calendar-event"></i> End Date</label>
-            <input type="date" id="endDate" class="form-control" formControlName="end_date" (change)="onDateChange()">
-            <div *ngIf="leaveForm.controls['end_date'].invalid && leaveForm.controls['end_date'].touched"
-              class="text-danger">
-              End date is required.
-            </div>
-          </div>
+<!-- Start Time Selection -->
+<div class="mb-3">
+  <label class="form-label"><i class="bi bi-clock"></i> Start Time</label>
+  <div class="d-flex">
+    <div class="form-check mr-3 ">
+      <input type="radio" id="fullDayStart" class="form-check-input" name="startTime" value="full" (change)="setStartTime('full')" checked>
+      <label for="fullDayStart" class="form-check-label">Full Day</label>
+    </div>
+    <div class="form-check mx-3 ">
+      <input type="radio" id="firstHalfStart" class="form-check-input" name="startTime" value="first" (change)="setStartTime('first')">
+      <label for="firstHalfStart" class="form-check-label">1st Half</label>
+    </div>
+    <div class="form-check mx-3 ">
+      <input type="radio" id="secondHalfStart" class="form-check-input" name="startTime" value="second" (change)="setStartTime('second')">
+      <label for="secondHalfStart" class="form-check-label">2nd Half</label>
+    </div>
+  </div>
+</div>
 
+<!-- End Date -->
+<div class="mb-3">
+  <label for="endDate" class="form-label"><i class="bi bi-calendar-event"></i> End Date</label>
+  <input type="date" id="endDate" class="form-control" formControlName="end_date" (change)="onDateChange()">
+  <div *ngIf="leaveForm.controls['end_date'].invalid && leaveForm.controls['end_date'].touched" class="text-danger">
+    End date is required.
+  </div>
+</div>
+
+<!-- End Time Selection -->
+<div class="mb-3">
+  <label class="form-label"><i class="bi bi-clock"></i> End Time</label>
+  <div class="d-flex ">
+    <div class="form-check mr-3">
+      <input type="radio" id="fullDayEnd" class="form-check-input" name="endTime" value="full" (change)="setEndTime('full')" checked>
+      <label for="fullDayEnd" class="form-check-label">Full Day</label>
+    </div>
+    <div class="form-check mx-3">
+      <input type="radio" id="firstHalfEnd" class="form-check-input" name="endTime" value="first" (change)="setEndTime('first')">
+      <label for="firstHalfEnd" class="form-check-label">1st Half</label>
+    </div>
+    <div class="form-check mx-3 ">
+      <input type="radio" id="secondHalfEnd" class="form-check-input" name="endTime" value="second" (change)="setEndTime('second')">
+      <label for="secondHalfEnd" class="form-check-label">2nd Half</label>
+    </div>
+  </div>
+</div>
           <!-- Error message for invalid date selection -->
           <div *ngIf="dateError" class="text-danger mb-3">
             {{ dateError }}
@@ -93,7 +127,14 @@
             <p><i class="bi bi-calendar-event"></i>&nbsp; <strong>Start Date:</strong> {{ leaveDetails.start_date }}</p>
             <p><i class="bi bi-calendar-event"></i> &nbsp;<strong>End Date:</strong> {{ leaveDetails.end_date }}</p>
             <p><i class="bi bi-chat-left-text"></i>&nbsp; <strong>Leave Type:</strong> {{ leaveDetails.leave_type }}</p>
-            <p><i class="bi bi-calendar-week"></i>&nbsp; <strong>Leave Days:</strong> {{ leaveDetails.leave_days }} days</p>
+            <p><i class="bi bi-calendar-week"></i>&nbsp; <strong>Leave Days:</strong> {{ leaveDetails.leave_days }} days
+            </p>
+          </div>
+          <div class="my-2">
+            <label class="form-label">Remaining Balance:</label> {{ remainingDays }} days
+            <p [ngClass]="{'text-danger': remainingDays <= 0}">   
+              <span *ngIf="remainingDays <= 0"> - No more balance left, but you can still send the request.</span>
+            </p>
           </div>
           <!-- File Upload for Sick Leave -->
           <div *ngIf="leaveDetails.leave_type === 'sick_leave'" class="mt-3 mb-4">

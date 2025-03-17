@@ -66,10 +66,18 @@ togglePasswordVisibility() {
 dismissAlert() {
   this.errorMessage = '';
 }
-  redirectUser() {
-    this.router.navigate(['/main']);
-   
+redirectUser() {
+  const role = localStorage.getItem('role');
+  if (role === 'admin') {
+    this.router.navigate(['/main/admin-home']);
+  } else if (role === 'hr') {
+    this.router.navigate(['/main/hr-home']);
+  } else if (role === 'employee') {
+    this.router.navigate(['/main/employee-home']);
+  } else {
+    this.router.navigate(['/login']);
   }
+}
   getUserRole(): string {
     return localStorage.getItem('userRole') || 'guest';
   }

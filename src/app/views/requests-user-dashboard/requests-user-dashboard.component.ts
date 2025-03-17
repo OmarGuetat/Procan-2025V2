@@ -30,7 +30,7 @@ export class RequestsUserDashboardComponent implements OnInit {
   }
 
   fetchLeaveRequests(): void {
-    this.leaveRequestService.getUserLeaveRequests(this.userId, this.currentPage, this.selectedYear ?? undefined)
+    this.leaveRequestService.getUserLeaveRequests( this.currentPage, this.selectedYear ?? undefined)
       .subscribe(response => {
         this.leaveRequests = response.data;
         this.availableYears = response.available_years;

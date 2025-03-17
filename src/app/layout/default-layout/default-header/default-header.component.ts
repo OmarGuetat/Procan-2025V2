@@ -26,11 +26,15 @@ import { AuthService } from '../../../services/auth.service';
 import { EmployeeService } from '../../../services/employee-service.service';
 import { NotificationService } from '../../../services/notification.service';
 
-
 @Component({
   selector: 'app-default-header',
   templateUrl: './default-header.component.html',
-  imports: [ContainerComponent, HeaderTogglerDirective, CommonModule, SidebarToggleDirective, IconDirective, HeaderNavComponent, NavItemComponent, NavLinkDirective, RouterLink, RouterLinkActive, NgTemplateOutlet, BreadcrumbRouterComponent, DropdownComponent, DropdownToggleDirective, AvatarComponent, DropdownMenuDirective, DropdownHeaderDirective, DropdownItemDirective, BadgeComponent, DropdownDividerDirective]
+  imports: [
+    ContainerComponent, HeaderTogglerDirective, CommonModule, SidebarToggleDirective, IconDirective, HeaderNavComponent,
+    NavItemComponent, NavLinkDirective, RouterLink, RouterLinkActive, NgTemplateOutlet, BreadcrumbRouterComponent,
+    DropdownComponent, DropdownToggleDirective, AvatarComponent, DropdownMenuDirective, DropdownHeaderDirective,
+    DropdownItemDirective, BadgeComponent, DropdownDividerDirective
+  ]
 })
 export class DefaultHeaderComponent extends HeaderComponent implements OnInit {
   avatarPath: string = '';
@@ -38,21 +42,36 @@ export class DefaultHeaderComponent extends HeaderComponent implements OnInit {
   isAdmin: boolean = false;
   notifications: any[] = [];
   unreadCount: number = 0;
+
   ngOnInit(): void {
     this.loadUserData();
     this.fetchNotifications();
-    // Subscribe to real-time notifications
+
+    // ✅ Subscribe to real-time notifications
     this.notificationService.notifications$.subscribe((newNotifications) => {
-      this.notifications = newNotifications;
+      console.log('🔔 Real-time notifications received:', newNotifications);
+
+      if (Array.isArray(newNotifications)) {
+        this.notifications = [...newNotifications, ...this.notifications];
+      } else {
+        this.notifications = [newNotifications, ...this.notifications];
+      }
+
       this.updateUnreadCount();
     });
-
   }
-  constructor(private authService: AuthService, private employeeService: EmployeeService, private notificationService: NotificationService, private router: Router) {
+
+  constructor(
+    private authService: AuthService,
+    private employeeService: EmployeeService,
+    private notificationService: NotificationService,
+    private router: Router
+  ) {
     super();
   }
 
   sidebarId = input('sidebar1');
+
   loadUserData(): void {
     const role = localStorage.getItem('role');
     if (role !== 'admin') {
@@ -65,6 +84,7 @@ export class DefaultHeaderComponent extends HeaderComponent implements OnInit {
       this.isAdmin = true;
     }
   }
+
   logout(): void {
     this.authService.logout();
     localStorage.removeItem('role');
@@ -73,41 +93,44 @@ export class DefaultHeaderComponent extends HeaderComponent implements OnInit {
   fetchNotifications(): void {
     this.notificationService.getNotifications().subscribe((response) => {
       this.notifications = response;
-  
+      console.log('📩 Fetched notifications:', response);
       this.updateUnreadCount();
     });
   }
 
   markAsRead(notificationId: number): void {
     this.notificationService.markAsRead(notificationId).subscribe(() => {
-      // Optimized state update
       this.notifications = this.notifications.map((n) =>
         n.id === notificationId ? { ...n, is_read: true } : n
       );
       this.updateUnreadCount();
     });
   }
-  // Delete Notification
+
+  // ✅ Delete Notification
   deleteNotification(notificationId: number, event: Event): void {
     event.stopPropagation(); // Prevents triggering markAsRead
 
     this.notificationService.deleteNotification(notificationId).subscribe(
       () => {
         this.notifications = this.notifications.filter(n => n.id !== notificationId);
-        this.unreadCount = this.notifications.filter(n => !n.read_at).length;
+        this.updateUnreadCount();
       },
       (error) => {
-        console.error('Error deleting notification:', error);
+        console.error('❌ Error deleting notification:', error);
       }
     );
   }
+
   showAllNotifications() {
     this.router.navigate(['/main/notifications']);
   }
+
   goToProfile() {
     this.router.navigate(['/main/profile']);
   }
+
   private updateUnreadCount(): void {
-    this.unreadCount = this.notifications.filter((n) => !n.is_read).length;
+    this.unreadCount = this.notifications.filter(n => !n.is_read).length;
   }
 }

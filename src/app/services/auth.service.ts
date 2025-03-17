@@ -26,14 +26,16 @@ export class AuthService {
         if (response.access_token && response.role) {
           this.saveToken(response.access_token);
           this.saveRole(response.role); // Save role to localStorage
-          this.userService.setRole(response.role); // Set the role using the service
+          this.setRole(response.role); // Set the role using the service
         } else {
           console.error('Invalid login response format:', response);
         }
       })
     );
   }
-
+  setRole(role: string) {
+    localStorage.setItem('role', role);
+  }
   // Forgot password method
   forgotPassword(email: string): Observable<any> {
     return this.http.post<any>(`${environment.apiUrl}/password/email`, { email });

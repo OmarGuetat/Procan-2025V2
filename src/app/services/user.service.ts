@@ -6,11 +6,5 @@ import { Injectable } from '@angular/core';
 export class UserService {
   constructor() {}
 
-  setRole(role: string) {
-    localStorage.setItem('role', role);
-  }
-
-  getRole(): string | null {
-    return localStorage.getItem('role');
-  }
+ 
 }

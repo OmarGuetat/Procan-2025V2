@@ -22,6 +22,11 @@ export class NotificationService {
     return this.http.get<any[]>(this.apiUrl);
   }
 
+  // Set initial notifications (when the page is loaded)
+  setInitialNotifications(notifications: any[]): void {
+    this.notificationsSubject.next(notifications);
+  }
+
   // Mark a notification as read
   markAsRead(notificationId: number): Observable<any> {
     return this.http.put(`${this.apiUrl}/${notificationId}/read`, {});
@@ -36,36 +41,33 @@ export class NotificationService {
     this.pusher = new Pusher(environment.pusherAppKey, {
       cluster: environment.pusherAppCluster,
       forceTLS: true,
-      authEndpoint: `${environment.apiUrl}/broadcasting/auth`,  // ✅ Required for private channels
-      auth: {
-        headers: {
-          Authorization: `Bearer ${localStorage.getItem('token')}`, // ✅ Ensure the user is authenticated
-        },
-      },
     });
-  
-    this.pusher.connection.bind('connected', () => {
-      console.log('✅ Pusher connected');
-    });
-  
-    this.pusher.connection.bind('error', (err: any) => {
-      console.error('❌ Pusher error:', err);
-    });
-  
-    // ✅ Subscribe to the user's private notification channel
+
     const userId = localStorage.getItem('userId');
-    const channel = this.pusher.subscribe(`private-notifications.${userId}`);
-  
+    if (!userId) {
+      console.error('User ID not found in localStorage.');
+      return;
+    }
+
+    // Subscribe to the user's notifications channel
+    const channel = this.pusher.subscribe(`notifications-channel.${userId}`);
+
+    // Handle subscription errors
+    channel.bind('pusher:subscription_error', (status: any) => {
+      console.error('Pusher subscription error:', status);
+    });
+
+    // Listen for new notifications
     channel.bind('new-notification', (data: any) => {
-      console.log('🔔 New notification received:', data);
-  
       this.ngZone.run(() => {
+        const notification = {
+          ...data.notification,
+          sender_avatar_path: data.sender_avatar_path, // Including sender's avatar path
+        };
+
         const currentNotifications = this.notificationsSubject.value;
-        this.notificationsSubject.next([data, ...currentNotifications]);
+        this.notificationsSubject.next([notification, ...currentNotifications]); // Add new notification at the beginning
       });
     });
   }
-  
-
-  
 }

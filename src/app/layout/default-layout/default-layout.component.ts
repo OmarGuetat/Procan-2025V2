@@ -5,7 +5,8 @@ import { IconDirective } from '@coreui/icons-angular';
 import { ContainerComponent, SidebarComponent, SidebarHeaderComponent, SidebarBrandComponent, SidebarNavComponent, SidebarFooterComponent, SidebarToggleDirective, SidebarTogglerDirective, ShadowOnScrollDirective } from '@coreui/angular';
 import { DefaultFooterComponent, DefaultHeaderComponent } from './';
 import { adminNavItems, employeeNavItems, hrNavItems } from './_nav'; // Import HR navigation items
-import { UserService } from '../../services/user.service';
+
+import { AuthService } from '../../services/auth.service';
 
 @Component({
   selector: 'app-dashboard',
@@ -33,7 +34,7 @@ export class DefaultLayoutComponent implements OnInit {
 
   public navItems: any[] = []; // Initialize navItems as an empty array
 
-  constructor(private userService: UserService) {}
+  constructor(private authService: AuthService) {}
 
   ngOnInit(): void {
     // Dynamically load nav items based on the user role
@@ -41,7 +42,7 @@ export class DefaultLayoutComponent implements OnInit {
   }
 
   private getNavItemsBasedOnRole() {
-    const userRole = this.userService.getRole(); // Get role from UserService
+    const userRole = this.authService.getRole(); // Get role from UserService
 
     // Determine which navigation items to load based on role
     if (userRole === 'admin') {

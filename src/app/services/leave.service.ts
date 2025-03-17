@@ -53,12 +53,12 @@ export class LeaveService {
     return this.http.patch(url, { status });
   }
 
-  getUserLeaveRequests(userId: number, page: number = 1, year?: number): Observable<any> {
+  getUserLeaveRequests( page: number = 1, year?: number): Observable<any> {
     const params: any = { page };
     if (year) {
       params.year = year;
     }
-    return this.http.get<any>(`${this.apiUrl}/employee/leaves/${userId}?page=${page}`, { params });
+    return this.http.get<any>(`${this.apiUrl}/employee/leaves?page=${page}`, { params });
   }
 
   updateLeave(leaveId: number, formData: FormData): Observable<any> {

@@ -27,23 +27,19 @@ export class RequestCardComponent {
   }
   initForm() {
     this.updateForm = this.fb.group({
-      start_date: [this.request.start_date, Validators.required],
-      end_date: [this.request.end_date, Validators.required],
-      leave_days_requested: [this.request.leave_days_requested, [Validators.required, Validators.min(1)]],
       leave_type: [this.request.leave_type, Validators.required],
       other_type: [this.request.other_type || '', []]
     });
-    this.validateDates();
+   
   }
   dismissAlert() {
     this.alertMessage = '';
   }
   openUpdateModal(request: any): void { 
     this.selectedLeaveId = request.id;
-    console.log(this.selectedLeaveId);
+
     this.updateForm.patchValue({
-      start_date: request.start_date,
-      end_date: request.end_date,
+     
       leave_type: request.leave_type,
     });
   
@@ -62,17 +58,7 @@ export class RequestCardComponent {
     this.updateForm.controls['other_type'].updateValueAndValidity();
   }
 
-  // Validate Start and End Dates
-  validateDates() {
-    const start = this.updateForm.value.start_date;
-    const end = this.updateForm.value.end_date;
 
-    if (start && end && new Date(end) < new Date(start)) {
-      this.updateForm.controls['end_date'].setErrors({ dateInvalid: true });
-    } else {
-      this.updateForm.controls['end_date'].setErrors(null);
-    }
-  }
 
   // Handle File Upload
   onFileChange(event: any) {
@@ -94,36 +80,35 @@ export class RequestCardComponent {
   // Submit Form
   updateLeave() {
     if (this.updateForm.invalid) return;
-
+  
     const formData = new FormData();
-    formData.append('start_date', this.updateForm.value.start_date);
-    formData.append('end_date', this.updateForm.value.end_date);
-    formData.append('leave_days_requested', this.updateForm.value.leave_days_requested);
     formData.append('leave_type', this.updateForm.value.leave_type);
-
-    if (this.updateForm.value.leave_type === 'other') {
+  
+    // Append 'other_type' only if 'leave_type' is 'other'
+    if (this.updateForm.value.leave_type === 'other' && this.updateForm.value.other_type) {
       formData.append('other_type', this.updateForm.value.other_type);
     }
-
-    if (this.attachmentFile) {
+  
+    // Append attachment only if 'leave_type' is 'sick_leave' and a file is selected
+    if (this.updateForm.value.leave_type === 'sick_leave' && this.attachmentFile) {
       formData.append('attachment', this.attachmentFile);
     }
-    console.log(this.selectedLeaveId);
+  
     this.leaveService.updateLeave(Number(this.selectedLeaveId), formData).subscribe(
       response => {
-        console.log(this.selectedLeaveId);
+        console.log('Form Data:', Object.fromEntries(formData as any));
+        console.log(response);
         this.alertMessage = response.message || 'Leave Request Updated Successfully!';
         this.alertType = 'alert-success';
         setTimeout(() => {
           this.dismissAlert();
-          location.reload();
         }, 500);
       },
       error => {
         if (error.error) {
-          const errors = error.error; 
-          const firstErrorKey = Object.keys(errors)[0]; 
-        this.alertMessage = errors[firstErrorKey][0]; 
+          const errors = error.error;
+          const firstErrorKey = Object.keys(errors)[0];
+          this.alertMessage = errors[firstErrorKey][0];
         } else {
           this.alertMessage = 'Error Updating Leave Request';
         }
@@ -131,6 +116,7 @@ export class RequestCardComponent {
       }
     );
   }
+  
   openDeleteModal(requestId: number): void {
     console.log(this.request.status)
     this.selectedLeaveId = requestId;
@@ -176,7 +162,8 @@ export class RequestCardComponent {
       },
       (error) => {
         console.error('Error downloading PDF:', error);
-        alert('Failed to download PDF. Please try again.');
+        this.alertMessage='Failed to download PDF. Please try again.'
+        this.alertType = 'alert-danger';
       }
     );
   }

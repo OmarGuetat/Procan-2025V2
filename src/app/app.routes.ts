@@ -15,40 +15,50 @@ export const routes: Routes = [
   // 3. Default Layout with children (only after login, protected by AuthGuard)
   {
     path: 'main',
-    component: DefaultLayoutComponent, canActivate: [AuthGuard],
-    children: [{
+    component: DefaultLayoutComponent,
+    canActivate: [AuthGuard],
+    children: [
+    {
       path: 'notifications',
       loadChildren: () => import('./views/notifications/routes').then((m) => m.routes)
     },
-      // Profile
-      {
-        path: 'profile',
-        loadChildren: () => import('./views/profile/routes').then((m) => m.routes)
-      },
-      {
-        path: 'admin-home',
-        loadChildren: () => import('./views/admin-home/routes').then((m) => m.routes)
-      },
-      // Users Dashboard
-      {
-        path: 'users-dashboard',
-        loadChildren: () => import('./views/users-dashboard/routes').then((m) => m.routes)
-      },
-      // Leave Dashboard
-      {
-        path: 'leave-dashboard',
-        loadChildren: () => import('./views/leave-dashboard/routes').then((m) => m.routes)
-      },
-      // Leave Form
-      {
-        path: 'leave-form',
-        loadChildren: () => import('./views/leave-form/routes').then((m) => m.routes)
-      },
-      // Requests User Dashboard
-      {
-        path: 'requests-user-dashboard',
-        loadChildren: () => import('./views/requests-user-dashboard/routes').then((m) => m.routes)
-      }
+    // Profile
+    {
+      path: 'profile',
+      loadChildren: () => import('./views/profile/routes').then((m) => m.routes)
+    },
+    {
+      path: 'admin-home',
+      loadChildren: () => import('./views/admin-home/routes').then((m) => m.routes)
+    },
+    {
+      path: 'employee-home',
+      loadChildren: () => import('./views/employee-home/routes').then((m) => m.routes)
+    },
+    {
+      path: 'hr-home',
+      loadChildren: () => import('./views/hr-home/routes').then((m) => m.routes)
+    },
+    // Users Dashboard
+    {
+      path: 'users-dashboard',
+      loadChildren: () => import('./views/users-dashboard/routes').then((m) => m.routes)
+    },
+    // Leave Dashboard
+    {
+      path: 'leave-dashboard',
+      loadChildren: () => import('./views/leave-dashboard/routes').then((m) => m.routes)
+    },
+    // Leave Form
+    {
+      path: 'leave-form',
+      loadChildren: () => import('./views/leave-form/routes').then((m) => m.routes)
+    },
+    // Requests User Dashboard
+    {
+      path: 'requests-user-dashboard',
+      loadChildren: () => import('./views/requests-user-dashboard/routes').then((m) => m.routes)
+    }
     ]
   },
 
@@ -57,7 +67,7 @@ export const routes: Routes = [
 ];
 
 @NgModule({
-  imports: [RouterModule.forRoot(routes, { useHash: true })],
+  imports: [RouterModule.forRoot(routes)],
   exports: [RouterModule]
 })
-export class AppRoutingModule {}
+export class AppRoutingModule { }

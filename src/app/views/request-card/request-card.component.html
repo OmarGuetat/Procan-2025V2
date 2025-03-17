@@ -115,28 +115,6 @@
       </div>
       <div class="modal-body">
         <form [formGroup]="updateForm" (ngSubmit)="updateLeave()">
-          <!-- Start Date -->
-          <div class="mb-3">
-            <label for="start_date" class="form-label">Start Date</label>
-            <input type="date" formControlName="start_date" class="form-control" (change)="validateDates()">
-            <small *ngIf="updateForm.controls['start_date'].errors?.['required']" class="text-danger">Start date is required.</small>
-          </div>
-
-          <!-- End Date -->
-          <div class="mb-3">
-            <label for="end_date" class="form-label">End Date</label>
-            <input type="date" formControlName="end_date" class="form-control" (change)="validateDates()">
-            <small *ngIf="updateForm.controls['end_date'].errors?.['required']" class="text-danger">End date is required.</small>
-            <small *ngIf="updateForm.controls['end_date'].errors?.['dateInvalid']" class="text-danger">End date cannot be before start date.</small>
-          </div>
-          <!--Days Requested-->
-          <div class="mb-3">
-            <label for="leave_days_requested" class="form-label">Leave Days Requested</label>
-            <input type="number" formControlName="leave_days_requested" class="form-control" min="1">
-            <small *ngIf="updateForm.controls['leave_days_requested'].errors?.['required']" class="text-danger">Leave days are required.</small>
-            <small *ngIf="updateForm.controls['leave_days_requested'].errors?.['min']" class="text-danger">Must be at least 1 day.</small>
-          </div>
-          
           <!-- Reason Dropdown -->
           <div class="mb-3">
             <label for="leave_type" class="form-label">Reason</label>
@@ -149,21 +127,18 @@
               <option value="other">Other</option>
             </select>
           </div>
-
           <!-- Other Reason Input (Only if "Other" is selected) -->
           <div class="mb-3" *ngIf="updateForm.value.leave_type === 'other'">
             <label for="other_type" class="form-label">Specify Reason</label>
             <input type="text" formControlName="other_type" class="form-control">
             <small *ngIf="updateForm.controls['other_type'].errors?.['required']" class="text-danger">Please provide a leave_type.</small>
           </div>
-
           <!-- Attachment (Only if "Sick Leave" is selected) -->
           <div class="mb-3" *ngIf="updateForm.value.leave_type === 'sick_leave'">
             <label for="attachment" class="form-label">Medical Certificate (PDF, JPG, PNG)</label>
             <input type="file" (change)="onFileChange($event)" class="form-control">
             <small *ngIf="attachmentError" class="text-danger">{{ attachmentError }}</small>
           </div>
-
           <!-- Submit Button -->
           <button type="submit" class="btn button-primary">Update Leave</button>
         </form>
@@ -171,7 +146,6 @@
     </div>
   </div>
 </div>
-
 <!-- Modal for Delete -->
 <div class="modal fade" id="deleteLeaveModal" tabindex="-1" aria-hidden="true">
   <div class="modal-dialog">

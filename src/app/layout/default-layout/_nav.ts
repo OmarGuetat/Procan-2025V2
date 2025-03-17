@@ -23,7 +23,7 @@ export const adminNavItems: INavData[] = [
 export const employeeNavItems: INavData[] = [
   {
     name: 'Employee Home',
-    url: '/employee-home',
+    url: '/main/employee-home',
     iconComponent: { name: 'cil-user' }
   },
   {
@@ -42,7 +42,7 @@ export const employeeNavItems: INavData[] = [
 export const hrNavItems: INavData[] = [
   {
     name: 'HR Home',
-    url: '/hr-home',
+    url: '/main/hr-home',
     iconComponent: { name: 'cil-briefcase' }
   },
   {
