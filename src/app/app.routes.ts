@@ -32,6 +32,18 @@ export const routes: Routes = [
       loadChildren: () => import('./views/admin-home/routes').then((m) => m.routes)
     },
     {
+      path: 'manage-holidays',
+      loadChildren: () => import('./views/manage-holidays/routes').then((m) => m.routes)
+    },
+    {
+      path: 'leave-balance',
+      loadChildren: () => import('./views/leave-balance/routes').then((m) => m.routes)
+    },
+    {
+      path: 'admin-home',
+      loadChildren: () => import('./views/admin-home/routes').then((m) => m.routes)
+    },
+    {
       path: 'employee-home',
       loadChildren: () => import('./views/employee-home/routes').then((m) => m.routes)
     },

@@ -1,30 +1,66 @@
 import { INavData } from '@coreui/angular';
 
-// 🔹 Admin Sidebar Navigation
 export const adminNavItems: INavData[] = [
   {
-    name: 'Admin Home',
+    name: 'Home',
     url: '/main/admin-home',
     iconComponent: { name: 'cil-home' }
   },
   {
-    name: 'Users Dashboard',
-    url: '/main/users-dashboard',
-    iconComponent: { name: 'cil-people' }
+    name: 'Leave Management',
+    url: '',
+    iconComponent: { name: 'cil-calendar' },
+    children: [
+      {
+        name: 'Users Dashboard',
+        url: '/main/users-dashboard',
+        iconComponent: { name: 'cil-people' }
+      },
+      {
+        name: 'Leave Requests',
+        url: '/main/leave-requests',
+        iconComponent: { name: 'cil-list' }
+      },
+      {
+        name: 'Leave Settings',
+        url: '',
+        iconComponent: { name: 'cil-settings' },
+        children: [
+          {
+            name: 'Leave Balances',
+            url: '/main/leave-balance',
+            iconComponent: { name: 'cil-spreadsheet' }
+          },
+          {
+            name: 'Public Holidays',
+            url: '/main/manage-holidays',
+            iconComponent: { name: 'cil-calendar-check' }
+          }
+        ]
+      }
+    ]
   },
   {
-    name: 'Leave Dashboard',
-    url: '/main/leave-dashboard',
-    iconComponent: { name: 'cil-spreadsheet' }
+    name: 'Invoices Management',
+    url: '',
+    iconComponent: { name: 'cil-dollar' },
+    children: [
+      {
+        name: 'Invoices Dashboard',
+        url: '/main/invoices-dashboard',
+        iconComponent: { name: 'cil-file' }
+      }
+    ]
   }
 ];
+
 
 // 🔹 Employee Sidebar Navigation
 export const employeeNavItems: INavData[] = [
   {
-    name: 'Employee Home',
+    name: 'Home',
     url: '/main/employee-home',
-    iconComponent: { name: 'cil-user' }
+    iconComponent: { name: 'cil-home' }
   },
   {
     name: 'Leave Form',
@@ -32,40 +68,54 @@ export const employeeNavItems: INavData[] = [
     iconComponent: { name: 'cil-file' }
   },
   {
-    name: 'Requests Dashboard',
+    name: 'My Requests',
     url: '/main/requests-user-dashboard',
     iconComponent: { name: 'cil-list' }
   }
 ];
 
-// 🔹 HR Sidebar Navigation
 export const hrNavItems: INavData[] = [
   {
-    name: 'HR Home',
+    name: 'Home',
     url: '/main/hr-home',
-    iconComponent: { name: 'cil-briefcase' }
+    iconComponent: { name: 'cil-home' }
   },
   {
-    name: 'Users Dashboard',
-    url: '/main/users-dashboard',
-    iconComponent: { name: 'cil-people' }
+    name: 'Work Management',
+    url: '',
+    iconComponent: { name: 'cil-people' },
+    children: [
+      {
+        name: 'Users Dashboard',
+        url: '/main/users-dashboard',
+        icon: 'nav-icon-bullet'
+      },
+      {
+        name: 'Leave Dashboard',
+        url: '/main/leave-dashboard',
+        icon: 'nav-icon-bullet'
+      }
+    ]
   },
   {
-    name: 'Leave Dashboard',
-    url: '/main/leave-dashboard',
-    iconComponent: { name: 'cil-spreadsheet' }
-  },
-  {
-    name: 'Leave Form',
-    url: '/main/leave-form',
-    iconComponent: { name: 'cil-file' }
-  },
-  {
-    name: 'Requests Dashboard',
-    url: '/main/requests-user-dashboard',
-    iconComponent: { name: 'cil-list' }
+    name: 'My Leave',
+    url: '',
+    iconComponent: { name: 'cil-calendar' },
+    children: [
+      {
+        name: 'Leave Form',
+        url: '/main/leave-form',
+        icon: 'nav-icon-bullet'
+      },
+      {
+        name: 'My Requests',
+        url: '/main/requests-user-dashboard',
+        icon: 'nav-icon-bullet'
+      }
+    ]
   }
 ];
+
 
 // 🔹 Auto-Select Navigation Based on User Role
 export const navItems: INavData[] = (() => {

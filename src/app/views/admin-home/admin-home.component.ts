@@ -1,6 +1,6 @@
 import { AfterViewInit, Component, ElementRef, ViewChild } from '@angular/core';
-import { LeaveBalanceComponent } from '../components/leave-balance/leave-balance.component';
-import { ManageHolidaysComponent } from '../components/manage-holidays/manage-holidays.component';
+import { LeaveBalanceComponent } from '../leave-balance/leave-balance.component';
+import { ManageHolidaysComponent } from '../manage-holidays/manage-holidays.component';
 
 @Component({
   selector: 'app-admin-home',

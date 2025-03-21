@@ -1,5 +1,5 @@
 import { Component, OnInit } from '@angular/core';
-import { LeaveBalanceService } from '../../../services/leave-balance.service';
+import { LeaveBalanceService } from '../../services/leave-balance.service';
 import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { CommonModule } from '@angular/common';
 

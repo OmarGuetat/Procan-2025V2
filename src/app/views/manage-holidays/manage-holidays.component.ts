@@ -1,6 +1,6 @@
 import { Component, OnInit } from '@angular/core';
 import { FormBuilder, FormGroup, ReactiveFormsModule, Validators } from '@angular/forms';
-import { PublicHolidayService } from '../../../services/public-holidays.service';
+import { PublicHolidayService } from '../../services/public-holidays.service';
 import { CommonModule } from '@angular/common';
 
 interface PublicHoliday {
