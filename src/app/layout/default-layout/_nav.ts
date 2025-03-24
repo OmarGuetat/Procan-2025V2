@@ -17,9 +17,9 @@ export const adminNavItems: INavData[] = [
         iconComponent: { name: 'cil-people' }
       },
       {
-        name: 'Leave Requests',
-        url: '/main/leave-requests',
-        iconComponent: { name: 'cil-list' }
+        name: 'Leave Dashboard',
+        url: '/main/leave-dashboard',
+        icon: 'bi-calendar-check' 
       },
       {
         name: 'Leave Settings',
@@ -34,8 +34,9 @@ export const adminNavItems: INavData[] = [
           {
             name: 'Public Holidays',
             url: '/main/manage-holidays',
-            iconComponent: { name: 'cil-calendar-check' }
+            icon: 'bi-calendar-plus'
           }
+          
         ]
       }
     ]

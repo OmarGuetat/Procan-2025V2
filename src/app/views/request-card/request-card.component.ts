@@ -102,6 +102,7 @@ export class RequestCardComponent {
         this.alertType = 'alert-success';
         setTimeout(() => {
           this.dismissAlert();
+          location.reload();
         }, 500);
       },
       error => {

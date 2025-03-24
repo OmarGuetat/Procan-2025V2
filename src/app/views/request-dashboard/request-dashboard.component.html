@@ -62,36 +62,26 @@
         <td>{{ leave.effective_leave_days || '0' }}</td>
 
         <!-- Attachment -->
-        <td>
-          <ng-container *ngIf="leave.leave_type === 'sick_leave'">
-            <a [href]="leave.attachment_path" target="_blank" class="btn btn-info btn-sm" ng-non-bindable>View Attachment</a>
-          </ng-container>
-          <ng-container *ngIf="leave.leave_type !== 'sick_leave'">
-            N/A
-          </ng-container>
-        </td>
+          <td>
+            <ng-container *ngIf="leave.leave_type === 'sick_leave' && leave.attachment_path; else noAttachment">
+              <a [href]="leave.attachment_path" target="_blank" class="btn btn-info btn-sm">View Attachment</a>
+            </ng-container>
+            <ng-template #noAttachment>
+              N/A
+            </ng-template>
+          </td>
+
 
         <!-- Status & Action Buttons -->
         <td>
           <!-- If userRole is not HR, show buttons for status change, otherwise show the status -->
-          <ng-container *ngIf="leave.status === 'on_hold' && userRole !== 'hr'; else showStatus">
+          <ng-container>
             <div class="btn-group">
               <button class="btn btn-success btn-sm me-1" (click)="updateLeaveStatus(leave.id, 'approved')">Accept</button>
               <button class="btn btn-danger btn-sm me-1" (click)="updateLeaveStatus(leave.id, 'rejected')">Reject</button>
               <button class="btn btn-warning btn-sm me-1 " (click)="openUpdateModal(leave)">Update</button>
             </div>
           </ng-container>
-
-          <!-- Show the status if userRole is HR or leave status is not 'on_hold' -->
-          <ng-template #showStatus>
-            <span class="badge" [ngClass]="{
-              'bg-success': leave.status === 'approved',
-              'bg-danger': leave.status === 'rejected',
-              'bg-warning': leave.status === 'on_hold'
-            }">
-              {{ leave.status | uppercase }}
-            </span>
-          </ng-template>
         </td>
       </tr>
     </tbody>

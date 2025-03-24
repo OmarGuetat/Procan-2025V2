@@ -97,6 +97,7 @@ export class RequestDashboardComponent {
       }, error => {
         console.error('Error fetching leave details:', error);
       });
+    console.log(this.leaveRequests);
   }
   
   prevPage(): void {

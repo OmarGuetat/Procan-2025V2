@@ -17,10 +17,12 @@ export class LeaveFormComponent {
   leaveDays: number = 0;
   remainingDays: number = 0;
   selectedReason: string = '';
-  dateError: string = '';
+  dateError: string | null = null;
   alertMessage: string = '';
   alertType: string = '';
-  
+  showEndTime: boolean = true; 
+  selectedStartTime: string = '08:00:00';
+  selectedEndTime: string = '08:00:00';
   leaveOptions = [
     { value: 'vacation', icon: 'bi bi-sun', label: 'Vacation' },
     { value: 'travel_leave', icon: 'bi bi-airplane', label: 'Travel' },
@@ -37,13 +39,18 @@ export class LeaveFormComponent {
       start_date: [this.getTodayDate(), Validators.required],
       end_date: ['', Validators.required],
       leave_type: ['', Validators.required],
-      start_time: ['08:00:00'], // Default to full day
-      end_time: ['17:00:00'],
+      start_time: [this.selectedStartTime], // Use stored value
+      end_time: [this.selectedEndTime], // Use stored value
       other_type: ['']
     });
   }
+   
   goBackToStep1(): void {
-    this.step = 1;  // Change the step back to 1 to navigate back to Step 1
+    this.step = 1;
+    this.leaveForm.patchValue({
+      start_time: this.selectedStartTime,
+      end_time: this.selectedEndTime
+    });
   }
   
   dismissAlert() {
@@ -62,44 +69,38 @@ export class LeaveFormComponent {
     }
   }
 
-   // Set start time based on radio selection
-   setStartTime(type: string) {
-    let startTime = '08:00:00'; // Default
-
-    if (type === 'first') {
-      startTime = '08:00:00';
-    } else if (type === 'second') {
-      startTime = '13:00:00';
-    }
-
-    this.leaveForm.patchValue({ start_time: startTime });
+  // Set start time based on radio selection
+  setStartTime(time: string) {
+    let timeValue = '08:00:00';
+    if (time === 'first') timeValue = '12:00:00';
+    if (time === 'second') timeValue = '17:00:00';
+    if (time === 'full') timeValue = '08:00:00'; // Full day option sets start time
+    this.selectedStartTime = timeValue; 
+    this.leaveForm.patchValue({ start_time: timeValue }); // Update start_time form control
   }
 
   // Set end time based on radio selection
-  setEndTime(type: string) {
-    let endTime = '17:00:00'; // Default
-
-    if (type === 'first') {
-      endTime = '12:00:00';
-    } else if (type === 'second') {
-      endTime = '17:00:00';
-    }
-
-    this.leaveForm.patchValue({ end_time: endTime });
+  setEndTime(time: string) {
+    let timeValue = '08:00:00';
+    if (time === 'first') timeValue = '12:00:00';
+    if (time === 'second') timeValue = '17:00:00';
+    if (time === 'full') timeValue = '08:00:00'; // Full day option sets end time
+    this.selectedEndTime = timeValue; 
+    this.leaveForm.patchValue({ end_time: timeValue }); // Update end_time form control
   }
 
   onDateChange() {
     const startDate = this.leaveForm.value.start_date;
     const endDate = this.leaveForm.value.end_date;
-    const startTime = this.leaveForm.value.start_time;
-    const endTime = this.leaveForm.value.end_time;
-  
+
     if (startDate && endDate) {
-      // Don't modify the start and end date, just prepare them for submission later
-      this.leaveForm.patchValue({
-        start_date: startDate, // Only pass date part
-        end_date: endDate,     // Only pass date part
-      });
+      if (startDate > endDate) {
+        this.dateError = 'End date cannot be before start date.';
+        this.showEndTime = false;
+      } else {
+        this.dateError = null;
+        this.showEndTime = startDate !== endDate;
+      }
     }
   }
   
@@ -108,9 +109,13 @@ export class LeaveFormComponent {
       return;
     }
     // Ensure start_date and end_date include time (combine separately)
-    const startDate = `${this.leaveForm.value.start_date} ${this.leaveForm.value.start_time}`;
-    const endDate = `${this.leaveForm.value.end_date} ${this.leaveForm.value.end_time}`;
-  
+    let startDate = `${this.leaveForm.value.start_date} ${this.leaveForm.value.start_time}`;
+    let endDate = `${this.leaveForm.value.end_date} ${this.leaveForm.value.end_time}`;
+    // Check if the start and end dates are the same
+    if (this.leaveForm.value.start_date === this.leaveForm.value.end_date) {
+      // If they are the same, set the end time to 23:00:00
+      endDate = `${this.leaveForm.value.end_date} 23:00:00`;
+    }
     const formData = new FormData();
     formData.append('start_date', startDate); // Send combined date and time
     formData.append('end_date', endDate);     // Send combined date and time
@@ -149,9 +154,13 @@ export class LeaveFormComponent {
   }
 
   confirmLeaveRequest() {
-    const startDate = `${this.leaveForm.value.start_date} ${this.leaveForm.value.start_time}`; // Combine date and time for start
-    const endDate = `${this.leaveForm.value.end_date} ${this.leaveForm.value.end_time}`; // Combine date and time for end
-  
+    let startDate = `${this.leaveForm.value.start_date} ${this.leaveForm.value.start_time}`; // Combine date and time for start
+    let endDate = `${this.leaveForm.value.end_date} ${this.leaveForm.value.end_time}`; // Combine date and time for end
+    // Check if the start and end dates are the same
+      if (this.leaveForm.value.start_date === this.leaveForm.value.end_date) {
+        // If they are the same, set the end time to 23:00:00
+        endDate = `${this.leaveForm.value.end_date} 23:00:00`;
+      }
     const formData = new FormData();
     formData.append('start_date', startDate);  // Use combined start date and time
     formData.append('end_date', endDate);      // Use combined end date and time

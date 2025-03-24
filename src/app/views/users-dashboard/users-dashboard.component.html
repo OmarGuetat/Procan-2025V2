@@ -11,7 +11,7 @@
 <c-modal [(visible)]="modalVisible" [size]="'lg'" [backdrop]="'static'">
   <c-modal-header>
     <h5 class="modal-title">Add New Candidate</h5>
-    <button type="button" class="btn-close" (click)="closeModal()" aria-label="Close"></button>
+    <button type="button" class="btn-close" (click)="closeModal()" aria-label="Close" class="btn-close btn-close-white"></button>
   </c-modal-header>
   <c-modal-body>
     <!-- Candidate Form (Reactive Form) -->
@@ -82,7 +82,7 @@
   </form></c-modal-body>
   <c-modal-footer>
     <button type="button" class="btn btn-secondary" (click)="closeModal()">Close</button>
-    <button type="submit" class="btn button-primary" [disabled]="candidateForm.invalid">Save Candidate</button>
+    <button type="submit" class="btn button-primary" (click)="onSubmit()" [disabled]="candidateForm.invalid">Save Candidate</button>
   </c-modal-footer>
 </c-modal>
 

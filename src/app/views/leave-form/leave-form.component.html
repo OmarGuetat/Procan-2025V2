@@ -39,44 +39,45 @@
 <div class="mb-3">
   <label class="form-label"><i class="bi bi-clock"></i> Start Time</label>
   <div class="d-flex">
-    <div class="form-check mr-3 ">
-      <input type="radio" id="fullDayStart" class="form-check-input" name="startTime" value="full" (change)="setStartTime('full')" checked>
+    <div class="form-check mr-3">
+      <input type="radio" id="fullDayStart" class="form-check-input" name="startTime" value="full" (change)="setStartTime('full')" [checked]="leaveForm.value.start_time === '08:00:00'">
       <label for="fullDayStart" class="form-check-label">Full Day</label>
     </div>
-    <div class="form-check mx-3 ">
-      <input type="radio" id="firstHalfStart" class="form-check-input" name="startTime" value="first" (change)="setStartTime('first')">
+    <div class="form-check mx-3">
+      <input type="radio" id="firstHalfStart" class="form-check-input" name="startTime" value="first" (change)="setStartTime('first')" [checked]="leaveForm.value.start_time === '12:00:00'">
       <label for="firstHalfStart" class="form-check-label">1st Half</label>
     </div>
-    <div class="form-check mx-3 ">
-      <input type="radio" id="secondHalfStart" class="form-check-input" name="startTime" value="second" (change)="setStartTime('second')">
+    <div class="form-check mx-3">
+      <input type="radio" id="secondHalfStart" class="form-check-input" name="startTime" value="second" (change)="setStartTime('second')" [checked]="leaveForm.value.start_time === '17:00:00'">
       <label for="secondHalfStart" class="form-check-label">2nd Half</label>
     </div>
   </div>
 </div>
 
+
 <!-- End Date -->
 <div class="mb-3">
-  <label for="endDate" class="form-label"><i class="bi bi-calendar-event"></i> End Date</label>
+  <label  for="endDate" class="form-label"><i class="bi bi-calendar-event"></i> End Date</label>
   <input type="date" id="endDate" class="form-control" formControlName="end_date" (change)="onDateChange()">
   <div *ngIf="leaveForm.controls['end_date'].invalid && leaveForm.controls['end_date'].touched" class="text-danger">
     End date is required.
   </div>
 </div>
 
-<!-- End Time Selection -->
-<div class="mb-3">
+<!-- End Time Selection (if applicable) -->
+<div class="mb-3" *ngIf="showEndTime">
   <label class="form-label"><i class="bi bi-clock"></i> End Time</label>
-  <div class="d-flex ">
-    <div class="form-check mr-3">
-      <input type="radio" id="fullDayEnd" class="form-check-input" name="endTime" value="full" (change)="setEndTime('full')" checked>
+  <div class="d-flex">
+    <div class="form-check mx-2">
+      <input type="radio" id="fullDayEnd" class="form-check-input" name="endTime" value="full" (change)="setEndTime('full')" [checked]="leaveForm.value.end_time === '08:00:00'">
       <label for="fullDayEnd" class="form-check-label">Full Day</label>
     </div>
-    <div class="form-check mx-3">
-      <input type="radio" id="firstHalfEnd" class="form-check-input" name="endTime" value="first" (change)="setEndTime('first')">
+    <div class="form-check mx-2">
+      <input type="radio" id="firstHalfEnd" class="form-check-input" name="endTime" value="first" (change)="setEndTime('first')" [checked]="leaveForm.value.end_time === '12:00:00'">
       <label for="firstHalfEnd" class="form-check-label">1st Half</label>
     </div>
-    <div class="form-check mx-3 ">
-      <input type="radio" id="secondHalfEnd" class="form-check-input" name="endTime" value="second" (change)="setEndTime('second')">
+    <div class="form-check mx-2">
+      <input type="radio" id="secondHalfEnd" class="form-check-input" name="endTime" value="second" (change)="setEndTime('second')" [checked]="leaveForm.value.end_time === '17:00:00'">
       <label for="secondHalfEnd" class="form-check-label">2nd Half</label>
     </div>
   </div>
