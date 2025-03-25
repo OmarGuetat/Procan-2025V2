@@ -3,7 +3,7 @@ import { FormBuilder, FormGroup, ReactiveFormsModule, Validators } from '@angula
 import { Router } from '@angular/router';
 import { NgStyle } from '@angular/common';
 import { IconDirective } from '@coreui/icons-angular';
-import { ContainerComponent, RowComponent, ColComponent, CardGroupComponent, TextColorDirective, CardComponent, CardBodyComponent, FormDirective, InputGroupComponent, InputGroupTextDirective, FormControlDirective, ButtonDirective } from '@coreui/angular';
+import { ContainerComponent, RowComponent, ColComponent, CardGroupComponent, TextColorDirective, CardComponent, CardBodyComponent,  InputGroupComponent, InputGroupTextDirective, FormControlDirective, ButtonDirective } from '@coreui/angular';
 import { CommonModule } from '@angular/common';
 import { AuthService } from '../../services/auth.service';
 import { ForgotPasswordComponent } from '../../views/components/forgot-password/forgot-password.component';
@@ -11,7 +11,7 @@ import { ForgotPasswordComponent } from '../../views/components/forgot-password/
 
 @Component({
   selector: 'app-login',
-  imports: [ReactiveFormsModule,CommonModule,ForgotPasswordComponent,ContainerComponent, RowComponent, ColComponent, CardGroupComponent, TextColorDirective, CardComponent, CardBodyComponent, FormDirective, InputGroupComponent, InputGroupTextDirective, IconDirective, FormControlDirective, ButtonDirective, NgStyle],
+  imports: [ReactiveFormsModule,CommonModule,ForgotPasswordComponent,ContainerComponent, RowComponent, ColComponent, CardGroupComponent, TextColorDirective, CardComponent, CardBodyComponent,  InputGroupComponent, InputGroupTextDirective, IconDirective, FormControlDirective, ButtonDirective, NgStyle],
   templateUrl: './login.component.html',
   styleUrls: ['./login.component.css']
 })

@@ -3,12 +3,12 @@ import { FormBuilder, FormGroup, ReactiveFormsModule, Validators } from '@angula
 import { LeaveService } from '../../services/leave.service';
 import { CommonModule } from '@angular/common';
 import { Router } from '@angular/router';
-import { PageItemComponent, PageLinkDirective, PaginationComponent } from '@coreui/angular';
+
 
 @Component({
   selector: 'app-leave-form',
   standalone: true,
-  imports: [CommonModule,ReactiveFormsModule,PaginationComponent, PageItemComponent, PageLinkDirective],
+  imports: [CommonModule,ReactiveFormsModule],
   templateUrl: './leave-form.component.html',
   styleUrls: ['./leave-form.component.css']
 })

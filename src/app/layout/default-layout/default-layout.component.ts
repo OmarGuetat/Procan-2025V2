@@ -24,7 +24,7 @@ import { AuthService } from '../../services/auth.service';
     DefaultFooterComponent,
     DefaultHeaderComponent,
     ShadowOnScrollDirective,
-    IconDirective,
+    
     NgScrollbar,
     RouterOutlet,
     RouterLink
