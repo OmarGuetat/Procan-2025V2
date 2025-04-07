@@ -1,6 +1,6 @@
 import { Component, EventEmitter, Input, Output } from '@angular/core';
 import { FormBuilder, FormGroup, ReactiveFormsModule, Validators } from '@angular/forms';
-import { LeaveService } from '../../services/leave.service';
+import { LeaveService } from '../../../services/leave.service';
 import { CommonModule } from '@angular/common';
 
 
@@ -18,7 +18,7 @@ export class LeaveCardComponent {
   role: string;
   alertMessage: string = '';
   alertType: string = '';
-  
+  isSubmitting: boolean = false;
 
   constructor(private fb: FormBuilder, private leaveService: LeaveService) {
     this.leaveForm = this.fb.group({
@@ -42,13 +42,17 @@ export class LeaveCardComponent {
   }
 
   submitLeave() {
+    if (this.isSubmitting) return; // Prevent double click
+  
+    this.isSubmitting = true;
     if (this.leaveForm.invalid) return;
 
    
 
     this.leaveService.addLeaveDays(this.leaveEmployee.id, this.leaveForm.value)
-      .subscribe(
-        response => {
+      .subscribe({
+        next: (response) => {
+          console.log("pressed");
           this.alertMessage = response.message || 'Added successfully!';
           this.alertType = 'alert-success';
   
@@ -57,7 +61,7 @@ export class LeaveCardComponent {
             this.dismissAlert();
           }, 1500);
         },
-        error => {
+        error: (error) => {
           setTimeout(() => {
             this.dismissAlert();
           }, 1500);
@@ -68,7 +72,13 @@ export class LeaveCardComponent {
           } else {
             this.alertMessage = 'An error occurred';
           }
+          this.isSubmitting = false;
           this.alertType = 'alert-danger';
+        },
+        complete: () => {
+          setTimeout(() => {
+          this.isSubmitting = false;},4000)
         }
-      );}
+        
+      });}
 }

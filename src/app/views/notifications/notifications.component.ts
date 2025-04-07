@@ -28,7 +28,7 @@ export class NotificationsComponent implements OnInit {
     if (!notification.is_read) {
       this.markAsRead(notification.id);
     }
-    this.onViewRequests.emit(notification.sender_id);
+    this.router.navigate(['/main/leave-decision-details',notification.sender_id]);
   }
 
   markAsRead(notificationId: number, event?: Event): void {

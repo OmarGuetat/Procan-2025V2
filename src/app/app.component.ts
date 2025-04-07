@@ -10,7 +10,7 @@ import { AuthService } from './services/auth.service';
 @Component({
     selector: 'app-root',
     template: '<router-outlet />',
-    imports: [RouterOutlet],
+    imports: [RouterOutlet,],
     providers: [AuthService],
 })
 export class AppComponent implements OnInit {

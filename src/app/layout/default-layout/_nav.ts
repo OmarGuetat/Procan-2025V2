@@ -50,6 +50,19 @@ export const adminNavItems: INavData[] = [
         name: 'Invoices Dashboard',
         url: '/main/invoices-dashboard',
         iconComponent: { name: 'cil-file' }
+      },
+      {
+        name: 'Invoices Settings',
+        url: '',
+        iconComponent: { name: 'cil-settings' },
+        children: [
+          {
+            name: 'company settings',
+            url: '/main/company-settings',
+            iconComponent: { name: 'cil-spreadsheet' }
+          }
+          
+        ]
       }
     ]
   }

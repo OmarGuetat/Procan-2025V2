@@ -8,7 +8,6 @@ import {
   withRouterConfig,
   withViewTransitions
 } from '@angular/router';
-
 import { DropdownModule, SidebarModule } from '@coreui/angular';
 import { IconSetService } from '@coreui/icons-angular';
 import { routes } from './app.routes';

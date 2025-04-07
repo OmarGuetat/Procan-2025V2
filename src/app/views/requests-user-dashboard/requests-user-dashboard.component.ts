@@ -1,8 +1,9 @@
 import { Component, Input, OnInit } from '@angular/core';
 import { LeaveService } from '../../services/leave.service';
 import { FormsModule } from '@angular/forms';
-import { RequestCardComponent } from '../request-card/request-card.component';
+
 import { CommonModule } from '@angular/common';
+import { RequestCardComponent } from '../cards/request-card/request-card.component';
 
 
 

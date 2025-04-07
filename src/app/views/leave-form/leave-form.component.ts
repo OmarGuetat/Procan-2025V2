@@ -23,6 +23,8 @@ export class LeaveFormComponent {
   showEndTime: boolean = true; 
   selectedStartTime: string = '08:00:00';
   selectedEndTime: string = '08:00:00';
+  isConfirming: boolean = false;
+  isSubmitting: boolean = false;
   leaveOptions = [
     { value: 'vacation', icon: 'bi bi-sun', label: 'Vacation' },
     { value: 'travel_leave', icon: 'bi bi-airplane', label: 'Travel' },
@@ -105,6 +107,9 @@ export class LeaveFormComponent {
   }
   
   submitLeaveRequest() {
+    if (this.isSubmitting) return; // Prevent double click
+  
+  this.isSubmitting = true;
     if (this.leaveForm.invalid) {
       return;
     }
@@ -125,9 +130,9 @@ export class LeaveFormComponent {
       formData.append('other_type', this.leaveForm.value.other_type);
     }
   
-    this.leaveService.calculateLeaveDays(formData).subscribe(
-      response => {
-        console.log(response);
+    this.leaveService.calculateLeaveDays(formData).subscribe({
+      next: (response) => {
+        console.log("pressedConfirm");
         if (response && response.leave_days) {
           this.leaveDays = response.leave_days;
           this.leaveDetails = response;
@@ -138,12 +143,13 @@ export class LeaveFormComponent {
           this.alertType = 'alert-danger';
         }
       },
-      error => {
+      error: (error) => {
         console.error(error);
         this.alertMessage = error.error?.message || 'Error calculating leave days';
         this.alertType = 'alert-danger';
+        this.isSubmitting = false; 
       }
-    );
+    });
   }
   
  onFileChange(event: any) {
@@ -154,6 +160,9 @@ export class LeaveFormComponent {
   }
 
   confirmLeaveRequest() {
+    if (this.isConfirming) return; // Prevent double click
+  
+  this.isConfirming = true;
     let startDate = `${this.leaveForm.value.start_date} ${this.leaveForm.value.start_time}`; // Combine date and time for start
     let endDate = `${this.leaveForm.value.end_date} ${this.leaveForm.value.end_time}`; // Combine date and time for end
     // Check if the start and end dates are the same
@@ -175,15 +184,18 @@ export class LeaveFormComponent {
       formData.append('attachment', this.leaveDetails.attachment);
     }
   
-    this.leaveService.storeLeaveRequest(formData).subscribe(
-      response => {
+    this.leaveService.storeLeaveRequest(formData).subscribe({
+      next: (response) => {
+        console.log("pressed");
         this.step = 3; // Move to Step 3 (confirmation)
       },
-      error => {
+      error: (error) => {
         this.alertMessage = error.error?.message || 'Error submitting leave request';
         this.alertType = 'alert-danger';
-      }
-    );
+        this.isConfirming = false;
+      },
+      complete: () => {}
+    });
   }
   
   

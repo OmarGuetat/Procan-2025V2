@@ -1,7 +1,7 @@
 import { CommonModule } from '@angular/common';
 import { Component,Input } from '@angular/core';
 import { FormBuilder, FormGroup, ReactiveFormsModule, Validators } from '@angular/forms';
-import { EmployeeService } from '../../services/employee-service.service';
+import { EmployeeService } from '../../../services/employee-service.service';
 
 
 
@@ -20,6 +20,8 @@ export class EmployeeCardComponent {
   alertType: string = '';
   userId: number;
   showToastMessage = false; 
+  isSubmitting: boolean = false;
+  isDeleting: boolean = false;
   toggleFlip() {
     this.isFlipped = !this.isFlipped;
   }
@@ -65,6 +67,9 @@ closeToast() {
   this.showToastMessage = false;
 }
 submitUpdate() {
+  if (this.isSubmitting) return; // Prevent double click
+  
+  this.isSubmitting = true;
   if (this.updateForm.valid) {
     const updatedEmployee = {
       company: this.updateForm.value.company,
@@ -74,6 +79,7 @@ submitUpdate() {
 
     this.employeeService.updateEmployee(this.employee.id, updatedEmployee).subscribe(
       response => {
+        console.log("pressed");
         this.alertMessage = response.message || 'Employee updated successfully!';
         this.alertType = 'alert-success';
 
@@ -90,12 +96,16 @@ submitUpdate() {
         } else {
           this.alertMessage = 'Error updating employee';
         }
+        this.isSubmitting = false;
         this.alertType = 'alert-danger';
       }
     );
   }
 }
 confirmDelete(employeeId: string) {
+  if (this.isDeleting) return; // Prevent double click
+  
+  this.isDeleting = true;
   this.employeeService.deleteEmployee(employeeId).subscribe(
     response => {
       this.alertMessage = response.message || 'Employee deleted successfully!';
@@ -107,6 +117,7 @@ confirmDelete(employeeId: string) {
       }, (500));
     },
     error => {
+      this.isDeleting = false;
       this.alertMessage = error.error.error || 'Error deleting employee';
       this.alertType = 'alert-danger';
     }

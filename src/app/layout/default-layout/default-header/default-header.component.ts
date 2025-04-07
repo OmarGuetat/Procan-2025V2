@@ -2,22 +2,14 @@ import { CommonModule, NgTemplateOutlet } from '@angular/common';
 import { Component, computed, inject, input, OnInit } from '@angular/core';
 import {Router } from '@angular/router';
 
-import {
-  AvatarComponent,
-  BadgeComponent,
-  
+import { 
   ContainerComponent,
   DropdownComponent,
-  
-  
   DropdownItemDirective,
   DropdownMenuDirective,
   DropdownToggleDirective,
   HeaderComponent,
- 
   HeaderTogglerDirective,
- 
-  
   SidebarToggleDirective
 } from '@coreui/angular';
 
@@ -31,7 +23,6 @@ import { NotificationService } from '../../../services/notification.service';
   templateUrl: './default-header.component.html',
   imports: [
     ContainerComponent, HeaderTogglerDirective, CommonModule, SidebarToggleDirective, IconDirective,
-    
     DropdownComponent, DropdownToggleDirective, DropdownMenuDirective, 
     DropdownItemDirective
   ]

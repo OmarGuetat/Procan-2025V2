@@ -22,6 +22,9 @@ export class LeaveDetailsComponent implements OnInit {
   currentPage: number = 1; 
   totalPages: number = 1; 
   totalLeaves: number = 0; 
+  alertMessage: string = '';
+  alertType: string = '';
+  isSubmitting: boolean = false;
   perPage: number = 10; 
   user: { first_name: string; last_name: string } = { first_name: '', last_name: '' };
 
@@ -51,7 +54,9 @@ export class LeaveDetailsComponent implements OnInit {
       this.fetchLeaveData();
     }
   }
-
+  dismissAlert() {
+    this.alertMessage = '';
+  }
   // Method to go to the previous page
   goToPreviousPage(): void {
     if (this.currentPage > 1) {
@@ -68,11 +73,23 @@ export class LeaveDetailsComponent implements OnInit {
     }
   }
   cancelLeave(leaveId: number): void {
-    this.leaveService.cancelLeave(leaveId).subscribe(response => {
-      alert(response.message);
+    if (this.isSubmitting) return; // Prevent double click
+  
+    this.isSubmitting = true;
+    this.leaveService.cancelLeave(leaveId).subscribe(
+      response => {
+      console.log("pressed");
+      this.alertMessage = response.message || 'Deleted Successfully!';
+        this.alertType = 'alert-success';
+        setTimeout(() => {
+          this.dismissAlert();
+          this.isSubmitting = false;
+        }, 500);
       this.fetchLeaveData(); 
     }, error => {
-      alert('Error canceling leave: ' + error.error?.message);
+      this.alertMessage = error.error?.message || 'Error Deleting';
+      this.alertType = 'alert-danger';
+      this.isSubmitting = false; 
     });
   }
 

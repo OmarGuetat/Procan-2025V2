@@ -1,0 +1,110 @@
+ <!-- ALERTS -->
+<!-- Dynamic Bootstrap Alert -->
+<div *ngIf="alertMessage" class="alert alert-dismissible fade show position-fixed top-0 end-0 m-3 shadow" 
+     [ngClass]="alertType" role="alert">
+  <i *ngIf="alertType === 'alert-danger'" class="bi-exclamation-octagon-fill"></i>
+  <strong class="mx-2">{{ alertMessage }}</strong>
+  <button type="button" class="btn-close" (click)="dismissAlert()" aria-label="Close"></button>
+</div>
+<c-container>
+    <!-- Search Input -->
+    <c-row class="justify-content-center">
+      <c-col lg="6">
+        <c-card>
+          <c-card-header>
+            <span>Search for Company</span>
+          </c-card-header>
+          <c-card-body>
+            <form [formGroup]="searchForm" (ngSubmit)="onSearch()">
+              <div class="mb-2">
+                <select
+                  class="form-select"
+                  formControlName="name"
+                  (change)="onSearch()"
+                >
+                  <option value="" disabled selected>Select a company</option>
+                  <option *ngFor="let option of companyOptions" [value]="option.value">
+                    {{ option.label }}
+                  </option>
+                </select>
+                <div *ngIf="searchForm.get('name')?.invalid && searchForm.get('name')?.touched" class="text-danger mt-1">
+                  <small>Please select a company.</small>
+                </div>
+              </div>
+            </form>
+          </c-card-body>
+        </c-card>
+      </c-col>
+    </c-row>
+  
+ 
+    <!-- Display Company Info -->
+<c-row *ngIf="company" class="justify-content-center mt-3">
+  <c-col lg="6">
+    <c-card>
+      <c-card-header>
+        <strong>Company Details</strong>
+      </c-card-header>
+      <c-card-body>
+        <p><strong>Name:</strong> {{ company.name }}</p>
+        <p><strong>TVA Number:</strong> {{ company.tva_number || 'N/A' }}</p>
+        <p><strong>Email:</strong> {{ company.email || 'N/A' }}</p>
+        <p><strong>Phone:</strong> {{ company.phone_number || 'N/A' }}</p>
+        <p><strong>Address:</strong> {{ company.address || 'N/A' }}</p>
+        <p><strong>Postal Code:</strong> {{ company.postal_code || 'N/A' }}</p>
+        <p><strong>Country:</strong> {{ company.country || 'N/A' }}</p>
+        <button class="btn button-warning mt-3" (click)="openUpdateModal()">Edit</button>
+      </c-card-body>
+    </c-card>
+  </c-col>
+</c-row>
+  
+   <!-- Update / Create Modal -->
+<c-modal [visible]="isModalOpen" (close)="isModalOpen = false" size="xl">
+  <c-modal-header>
+    <h5 class="modal-title">{{ isEditMode ? 'Update' : 'Create' }} Company</h5>
+    <button type="button" class="btn-close" (click)="isModalOpen = false"></button>
+  </c-modal-header>
+  <c-modal-body>
+    <form [formGroup]="companyForm" (ngSubmit)="onSubmit()">
+      <div class="row">
+        <div class="col-md-6 mb-3" *ngFor="let field of companyFields">
+          <label class="form-label">
+            <i [ngClass]="getIcon(field.controlName)" class="me-2"></i> {{ field.label }}
+          </label>
+          <input
+            [type]="field.type || 'text'"
+            class="form-control"
+            [formControlName]="field.controlName"
+            [placeholder]="field.placeholder"
+            [readonly]="field.controlName === 'name' || field.controlName === 'country'"
+            [ngClass]="{
+              'bg-light': field.controlName === 'name' || field.controlName === 'country',
+              'is-invalid': companyForm.get(field.controlName)?.invalid && companyForm.get(field.controlName)?.touched
+            }"
+          />
+        
+          <div class="invalid-feedback" *ngIf="companyForm.get(field.controlName)?.touched && companyForm.get(field.controlName)?.invalid">
+            <ng-container [ngSwitch]="field.controlName">
+              <span *ngSwitchCase="'phone_number'">Phone number must contain only digits.</span>
+              <span *ngSwitchCase="'tva_number'">TVA must be a number between 1 and 99.</span>
+              <span *ngSwitchCase="'rib_bank'">RIB Bank must contain only digits.</span>
+              <span *ngSwitchCase="'email'">Enter a valid email address.</span>
+              <span *ngSwitchCase="'website'">Enter a valid website URL (e.g., https://example.com).</span>
+              <span *ngSwitchDefault>This field is required.</span>
+            </ng-container>
+          </div>
+        </div>
+        
+      </div>
+      <div class="text-end">
+        <button type="submit" class="btn button-primary" [disabled]="companyForm.invalid">
+          {{ isEditMode ? 'Update' : 'Create' }}
+        </button>
+      </div>
+    </form>
+  </c-modal-body>
+  
+</c-modal>
+  </c-container>
+  

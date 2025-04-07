@@ -19,7 +19,8 @@ export class UsersDashboardComponent implements OnInit {
   alertType: string = '';
   searchQuery: string = '';
   showPassword: boolean = false;
-  modalVisible: boolean = false;  // Control modal visibility
+  modalVisible: boolean = false;  
+  isSubmitting: boolean = false;
   constructor(private formBuilder: FormBuilder, private candidateService: CandidateService) { }
 
   ngOnInit(): void {
@@ -61,6 +62,9 @@ export class UsersDashboardComponent implements OnInit {
   }
 
   onSubmit() {
+    if (this.isSubmitting) return; // Prevent double click
+  
+    this.isSubmitting = true;
     if (this.candidateForm.valid) {
       this.candidateService.addCandidate(this.candidateForm.value).subscribe(
         response => {
@@ -80,6 +84,7 @@ export class UsersDashboardComponent implements OnInit {
           } else {
             this.alertMessage = 'Error adding candidate';
           }
+          this.isSubmitting = false;
           this.alertType = 'alert-danger';
         }
       );
