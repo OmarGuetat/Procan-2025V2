@@ -59,7 +59,12 @@ export const adminNavItems: INavData[] = [
           {
             name: 'company settings',
             url: '/main/company-settings',
-            iconComponent: { name: 'cil-spreadsheet' }
+            icon: 'nav-icon-bullet'
+          },
+          {
+            name: 'invoice form',
+            url: '/main/invoice-form',
+            icon: 'nav-icon-bullet'
           }
           
         ]

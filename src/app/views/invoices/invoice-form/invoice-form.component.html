@@ -1,0 +1,294 @@
+<div class="container py-5">
+    <h2 class="text-center mb-4">Invoice Creation Process</h2>
+    <div class="row">
+      <div class="col-12">
+        <!-- Step Indicator -->
+        <ul class="nav nav-pills justify-content-center mb-4">
+          <li class="nav-item">
+            <a class="nav-link" [ngClass]="{'active': currentStep === 1}" (click)="goToStep(1)">Step 1</a>
+          </li>
+          <li class="nav-item">
+            <a class="nav-link" [ngClass]="{'active': currentStep === 2}" (click)="goToStep(2)">Step 2</a>
+          </li>
+          <li class="nav-item">
+            <a class="nav-link" [ngClass]="{'active': currentStep === 3}" (click)="goToStep(3)">Step 3</a>
+          </li>
+          <li class="nav-item">
+            <a class="nav-link" [ngClass]="{'active': currentStep === 4}" (click)="goToStep(4)">Step 4</a>
+          </li>
+        </ul>
+  
+        <!-- Step 1: Invoice Details -->
+        <div *ngIf="currentStep === 1">
+          <form (ngSubmit)="onSubmitStepOne()">
+            <div class="form-group">
+              <label for="type">Invoice Type</label>
+              <select class="form-control" id="type" [(ngModel)]="stepOneData.type" name="type" required>
+                <option value="facture">Invoice (Facture)</option>
+                <option value="devis">Quote (Devis)</option>
+              </select>
+            </div>
+            <div class="form-group">
+              <label for="creation_date">Creation Date</label>
+              <input type="date" class="form-control" id="creation_date" [(ngModel)]="stepOneData.creation_date" name="creation_date" required />
+            </div>
+            <div class="form-group">
+              <label for="company_name">Company</label>
+              <select class="form-control" id="company_name" [(ngModel)]="stepOneData.company_name" name="company_name" required>
+                <option value="Procan">Procan</option>
+                <option value="Adequate">Adequate</option>
+              </select>
+            </div>
+            <div class="form-group">
+              <label for="additional_date">Additional Date</label>
+              <input type="date" class="form-control" id="additional_date" [(ngModel)]="stepOneData.additional_date" name="additional_date" />
+            </div>
+            <div class="form-group">
+              <label for="additional_date_type">Additional Date Type</label>
+              <select class="form-control" id="additional_date_type" [(ngModel)]="stepOneData.additional_date_type" name="additional_date_type">
+                <option value="">Select Type</option>
+                <option value="Date of sale">Date of sale</option>
+                <option value="Expiry date">Expiry date</option>
+                <option value="Withdrawal date until">Withdrawal date until</option>
+              </select>
+            </div>
+            <button type="submit" class="btn btn-primary">Next</button>
+          </form>
+          
+        </div>
+  
+        <!-- Step 2: Client Details -->
+       <!-- Step 2: Client Details -->
+<div *ngIf="currentStep === 2">
+    <form (ngSubmit)="onSubmitStepTwo()" #stepTwoForm="ngForm">
+      <!-- Client Type -->
+      <div class="form-group">
+        <label for="client_type">Client Type</label>
+        <select class="form-control" id="client_type" [(ngModel)]="stepTwoData.client_type" name="client_type" required>
+          <option value="">Select Type</option>
+          <option value="professional">Professional</option>
+          <option value="individual">Individual</option>
+        </select>
+      </div>
+  
+      <!-- PROFESSIONAL Fields -->
+      <div *ngIf="stepTwoData.client_type === 'professional'">
+        <div class="form-group">
+          <label for="name">Client Name</label>
+          <input type="text" class="form-control" id="name" name="name" [(ngModel)]="stepTwoData.name" required />
+        </div>
+        <div class="form-group">
+          <label for="tva_number_client">TVA Number</label>
+          <input type="number" class="form-control" id="tva_number_client" name="tva_number_client" [(ngModel)]="stepTwoData.tva_number_client" />
+        </div>
+      </div>
+  
+      <!-- INDIVIDUAL Fields -->
+      <div *ngIf="stepTwoData.client_type === 'individual'">
+        <div class="form-group">
+          <label for="civility">Civility</label>
+          <input type="text" class="form-control" id="civility" name="civility" [(ngModel)]="stepTwoData.civility" />
+        </div>
+        <div class="form-group">
+          <label for="first_name">First Name</label>
+          <input type="text" class="form-control" id="first_name" name="first_name" [(ngModel)]="stepTwoData.first_name" />
+        </div>
+        <div class="form-group">
+          <label for="last_name">Last Name</label>
+          <input type="text" class="form-control" id="last_name" name="last_name" [(ngModel)]="stepTwoData.last_name" />
+        </div>
+      </div>
+  
+      <!-- Common Fields -->
+      <div class="form-group">
+        <label for="address">Address</label>
+        <input type="text" class="form-control" id="address" name="address" [(ngModel)]="stepTwoData.address" required />
+      </div>
+      <div class="form-group">
+        <label for="postal_code">Postal Code</label>
+        <input type="text" class="form-control" id="postal_code" name="postal_code" [(ngModel)]="stepTwoData.postal_code" required />
+      </div>
+      <div class="form-group">
+        <label for="country">Country</label>
+        <select class="form-control" id="country" name="country" [(ngModel)]="stepTwoData.country" required>
+          <option *ngFor="let country of countries" [value]="country">{{ country }}</option>
+        </select>
+      </div>
+      <div class="form-group">
+        <label for="rib_bank">RIB Bank</label>
+        <input type="text" class="form-control" id="rib_bank" name="rib_bank" [(ngModel)]="stepTwoData.rib_bank" />
+      </div>
+      <div class="form-group">
+        <label for="email">Email</label>
+        <input type="email" class="form-control" id="email" name="email" [(ngModel)]="stepTwoData.email" />
+      </div>
+      <div class="form-group">
+        <label for="phone_number">Phone Number</label>
+        <input type="text" class="form-control" id="phone_number" name="phone_number" [(ngModel)]="stepTwoData.phone_number" required maxlength="15" />
+      </div>
+  
+      <button type="submit" class="btn btn-primary" [disabled]="!stepTwoForm.form.valid">Next</button>
+    </form>
+  
+    <!-- Display Step Data -->
+    <div class="mt-4">
+      <h4>Step 1 Data:</h4>
+      <pre>{{ stepOneData | json }}</pre>
+    </div>
+  </div>
+  
+  
+  <div *ngIf="currentStep === 3">
+    <form (ngSubmit)="onSubmitStepThree()">
+      <div class="form-group">
+        <label>Services</label>
+  
+        <div *ngFor="let service of stepThreeData.services; let i = index" class="mb-3 border p-3 rounded bg-light">
+          <div class="form-row">
+            <div class="col">
+              <input type="text" class="form-control" [(ngModel)]="service.name" name="services[{{i}}].name" placeholder="Service Name" required (input)="updateCalculations()" />
+            </div>
+            <div class="col">
+              <input type="number" class="form-control" [(ngModel)]="service.quantity" name="services[{{i}}].quantity" placeholder="Quantity" required (input)="updateCalculations()" />
+            </div>
+            <div class="col">
+              <select class="form-control" [(ngModel)]="service.unit" name="services[{{i}}].unit" required (change)="updateCalculations()">
+                <option value="hours">Hours</option>
+                <option value="days">Days</option>
+              </select>
+            </div>
+            <div class="col">
+              <input type="number" class="form-control" [(ngModel)]="service.price_ht" name="services[{{i}}].price_ht" placeholder="Price HT" required (input)="updateCalculations()" />
+            </div>
+            <div class="col">
+              <input type="number" class="form-control" [(ngModel)]="service.tva" name="services[{{i}}].tva" placeholder="TVA %" required (input)="updateCalculations()" />
+            </div>
+            <div class="col">
+              <input type="number" class="form-control" [(ngModel)]="service.total_ht" name="services[{{i}}].total_ht" placeholder="Total HT" readonly />
+            </div>
+            <div class="col">
+              <input type="number" class="form-control" [(ngModel)]="service.total_ttc" name="services[{{i}}].total_ttc" placeholder="Total TTC" readonly />
+            </div>
+            <div class="col">
+              <input type="text" class="form-control" [(ngModel)]="service.comment" name="services[{{i}}].comment" placeholder="Comment (optional)" />
+            </div>
+          </div>
+        </div>
+  
+        <button class="btn btn-secondary mt-2" type="button" (click)="addService()">Add Service</button>
+      </div>
+  
+      <hr />
+  
+      <div class="form-group">
+        <label>Total HT</label>
+        <input type="number" class="form-control" [(ngModel)]="stepThreeData.TTotal_HT" name="TTotal_HT" readonly />
+      </div>
+      <div class="form-group">
+        <label>Total TVA</label>
+        <input type="number" class="form-control" [(ngModel)]="stepThreeData.TTotal_TVA" name="TTotal_TVA" readonly />
+      </div>
+      <div class="form-group">
+        <label>Total TTC</label>
+        <input type="number" class="form-control" [(ngModel)]="stepThreeData.TTotal_TTC" name="TTotal_TTC" readonly />
+      </div>
+  
+      <button type="submit" class="btn btn-primary">Finish</button>
+    </form>
+  
+    <div class="mt-4">
+      <h4>Step 3 Data (Debug):</h4>
+      <pre>{{ stepTwoData | json }}</pre>
+    </div>
+  </div>
+  
+  
+      <!-- Step 4: Confirmation -->
+<div *ngIf="currentStep === 4" class="container">
+    <h3 class="mb-4">Confirm Invoice Details</h3>
+  
+    <!-- Step 1: Invoice Info -->
+    <div class="card mb-3">
+      <div class="card-header">Invoice Information</div>
+      <div class="card-body">
+        <p><strong>Type:</strong> {{ stepOneData.type }}</p>
+        <p><strong>Creation Date:</strong> {{ stepOneData.creation_date }}</p>
+        <p><strong>Company:</strong> {{ stepOneData.company_name }}</p>
+        <p><strong>Additional Date:</strong> {{ stepOneData.additional_date }}</p>
+        <p><strong>Additional Date Type:</strong> {{ stepOneData.additional_date_type }}</p>
+      </div>
+    </div>
+  
+    <!-- Step 2: Client Info -->
+    <div class="card mb-3">
+      <div class="card-header">Client Information</div>
+      <div class="card-body">
+        <p><strong>Client Type:</strong> {{ stepTwoData.client_type }}</p>
+        <p><strong>Full Name:</strong> {{ stepTwoData.civility }} {{ stepTwoData.first_name }} {{ stepTwoData.last_name }}</p>
+        <p><strong>Company Name:</strong> {{ stepTwoData.name }}</p>
+        <p><strong>TVA Number:</strong> {{ stepTwoData.tva_number_client }}</p>
+        <p><strong>Address:</strong> {{ stepTwoData.address }}</p>
+        <p><strong>Postal Code:</strong> {{ stepTwoData.postal_code }}</p>
+        <p><strong>Country:</strong> {{ stepTwoData.country }}</p>
+        <p><strong>RIB Bank:</strong> {{ stepTwoData.rib_bank }}</p>
+        <p><strong>Email:</strong> {{ stepTwoData.email }}</p>
+        <p><strong>Phone Number:</strong> {{ stepTwoData.phone_number }}</p>
+      </div>
+    </div>
+  
+    <!-- Step 3: Services -->
+    <div class="card mb-3">
+      <div class="card-header">Services</div>
+      <div class="card-body table-responsive">
+        <table class="table table-bordered table-hover">
+          <thead>
+            <tr>
+              <th>Name</th>
+              <th>Qty</th>
+              <th>Unit</th>
+              <th>Price HT</th>
+              <th>TVA (%)</th>
+              <th>Total HT</th>
+              <th>Total TTC</th>
+              <th>Comment</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr *ngFor="let service of stepThreeData.services">
+              <td>{{ service.name }}</td>
+              <td>{{ service.quantity }}</td>
+              <td>{{ service.unit }}</td>
+              <td>{{ service.price_ht | number:'1.2-2' }}</td>
+              <td>{{ service.tva }}</td>
+              <td>{{ service.total_ht | number:'1.2-2' }}</td>
+              <td>{{ service.total_ttc | number:'1.2-2' }}</td>
+              <td>{{ service.comment }}</td>
+            </tr>
+          </tbody>
+        </table>
+        <div class="mt-3">
+          <p><strong>Total HT:</strong> {{ stepThreeData.TTotal_HT | number:'1.2-2' }}</p>
+          <p><strong>Total TVA:</strong> {{ stepThreeData.TTotal_TVA | number:'1.2-2' }}</p>
+          <p><strong>Total TTC:</strong> {{ stepThreeData.TTotal_TTC | number:'1.2-2' }}</p>
+        </div>
+      </div>
+    </div>
+  
+    <!-- Confirm Button -->
+    <div class="text-center mt-4">
+      <button class="btn btn-success" (click)="confirmInvoice()">Confirm and Save Invoice</button>
+    </div>
+  
+    <!-- Success/Error Messages -->
+    <div *ngIf="confirmationMessage" class="alert alert-success mt-4">
+      {{ confirmationMessage }}
+    </div>
+    <div *ngIf="confirmationError" class="alert alert-danger mt-4">
+      {{ confirmationError }}
+    </div>
+  </div>
+  
+      </div>
+    </div>
+  </div>
+  
