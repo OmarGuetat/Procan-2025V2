@@ -73,7 +73,7 @@ export class InvoiceFormComponent {
     this.invoiceService.stepTwo(this.stepTwoData).subscribe(
       (response) => {
         console.log('Step 2 Response:', response);
-        this.currentStep = 3;0
+        this.currentStep = 3;
       },
       (error) => {
         console.error('Error in Step 2:', error);
@@ -115,19 +115,25 @@ export class InvoiceFormComponent {
   this.stepThreeData.TTotal_TTC = totalTTC;
   }
   
-confirmInvoice() {
-  this.invoiceService.confirm().subscribe({
-    next: (res: any) => {
-      this.confirmationMessage = res.message;
-      this.confirmationError = '';
-      this.currentStep = 5; // or reset/redirect if needed
-    },
-    error: (err) => {
-      this.confirmationError = err?.error?.error || 'An unexpected error occurred.';
-      this.confirmationMessage = '';
-    }
-  });
-}
+  confirmInvoice() {
+    const invoiceData = {
+      step1: this.stepOneData,
+      step2: this.stepTwoData,
+      step3: this.stepThreeData
+    };
+  
+    this.invoiceService.confirm(invoiceData).subscribe({
+      next: (res: any) => {
+        this.confirmationMessage = res.message;
+        this.confirmationError = '';
+        this.currentStep = 5; // Passer à l'étape de confirmation ou effectuer une redirection
+      },
+      error: (err) => {
+        this.confirmationError = err?.error?.error || 'Une erreur inattendue est survenue.';
+        this.confirmationMessage = '';
+      }
+    });
+  }
   addService() {
     this.stepThreeData.services.push({
       name: '',
