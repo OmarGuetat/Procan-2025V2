@@ -21,16 +21,12 @@
                   class="form-select"
                   formControlName="name"
                   (change)="onSearch()"
-                  aria-placeholder="Select a company"
                 >
                   <option value="" disabled selected>Select a company</option>
                   <option *ngFor="let option of companyOptions" [value]="option.value">
                     {{ option.label }}
                   </option>
                 </select>
-                <div *ngIf="searchForm.get('name')?.invalid && searchForm.get('name')?.touched" class="text-danger mt-1">
-                  <small>Please select a company.</small>
-                </div>
               </div>
             </form>
           </c-card-body>
@@ -60,11 +56,11 @@
   </c-col>
 </c-row>
   
-  <!-- Update / Create Modal -->
+  <!-- Update -->
 <c-modal [visible]="isModalOpen" (close)="isModalOpen = false" size="xl">
   <c-modal-header>
     <h5 class="modal-title">{{ isEditMode ? 'Update' : 'Create' }} Company</h5>
-    <button type="button" class="btn-close" (click)="isModalOpen = false"></button>
+    <button type="button" class="btn-close btn-close-white" (click)="isModalOpen = false"></button>
   </c-modal-header>
   <c-modal-body>
     <form [formGroup]="companyForm" (ngSubmit)="onSubmit()">

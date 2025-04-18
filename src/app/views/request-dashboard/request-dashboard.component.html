@@ -99,7 +99,7 @@
   [ngClass]="alertType" role="alert">
   <i *ngIf="alertType === 'alert-danger'" class="bi-exclamation-octagon-fill"></i>
   <strong class="mx-2">{{ alertMessage }}</strong>
-  <button type="button" class="btn-close" (click)="dismissAlert()" aria-label="Close"></button>
+  <button type="button" class="btn-close"(click)="dismissAlert()" aria-label="Close"></button>
 </div>
 <!-- Modal for Update -->
 <div class="modal fade" id="updateLeaveModal" tabindex="-1" aria-labelledby="updateLeaveModalLabel" aria-hidden="true">
@@ -107,7 +107,7 @@
     <div class="modal-content">
       <div class="modal-header">
         <h5 class="modal-title" id="updateLeaveModalLabel">Update Leave Request</h5>
-        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+        <button type="button" class="btn-close btn-close-white"data-bs-dismiss="modal" aria-label="Close"></button>
       </div>
       <div class="modal-body">
         <form (ngSubmit)="submitUpdatedLeave()">
@@ -154,7 +154,7 @@
     <div class="modal-content">
       <div class="modal-header">
         <h5 class="modal-title" id="confirmationModalLabel">Confirm Leave Status Change</h5>
-        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+        <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal" aria-label="Close"></button>
       </div>
       <div class="modal-body">
         Are you sure you want to mark this leave request as <strong>{{ confirmationStatus }}ed</strong>?

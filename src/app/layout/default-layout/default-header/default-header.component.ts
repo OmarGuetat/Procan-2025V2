@@ -30,7 +30,7 @@ import { NotificationService } from '../../../services/notification.service';
 export class DefaultHeaderComponent extends HeaderComponent implements OnInit {
   avatarPath: string = '';
   fullName: string = 'User';
-  isAdmin: boolean = false;
+  
   notifications: any[] = [];
   unreadCount: number = 0;
 
@@ -64,17 +64,13 @@ export class DefaultHeaderComponent extends HeaderComponent implements OnInit {
   sidebarId = input('sidebar1');
 
   loadUserData(): void {
-    const role = localStorage.getItem('role');
-    if (role !== 'admin') {
       this.employeeService.getData().subscribe(response => {
         this.avatarPath = response.avatar_path || '';
         this.fullName = response.full_name || 'User';
       });
-    } else {
-      this.fullName = 'Admin';
-      this.isAdmin = true;
+    
     }
-  }
+  
 
   logout(): void {
     this.authService.logout();

@@ -2,7 +2,7 @@ import { Component, OnInit } from '@angular/core';
 import { FormGroup, FormBuilder, Validators, FormsModule, ReactiveFormsModule } from '@angular/forms';
 
 import { CommonModule } from '@angular/common';
-import { ListComponent } from '../list-component/list-component.component';
+import { ListComponent } from '../components/list-component/list-component.component';
 
 import { CandidateService } from '../../services/condidate.service';
 import { ModalModule } from '@coreui/angular';
@@ -30,13 +30,28 @@ export class UsersDashboardComponent implements OnInit {
       gender: ['male', Validators.required],
       username: ['', Validators.required],
       email: ['', [Validators.required, Validators.email]],
-      password: ['', [Validators.required, Validators.minLength(6)]],
+      password: [
+        '',
+        [
+          Validators.required,
+          Validators.minLength(6),
+          Validators.pattern(/^(?=.*[A-Za-z])(?=.*\d)[A-Za-z\d]+$/), // alphanumeric only
+        ],
+      ],
+      phone_number: [
+        '',
+        [
+          Validators.pattern(/^\d{8}$/), // exactly 8 digits
+        ],
+      ],
       company: ['procan', Validators.required],
       start_date: [this.getTodayDate(), Validators.required],
       role: ['employee', Validators.required],
       job_description: ['', [Validators.required, Validators.maxLength(15)]],
     });
   }
+  
+  
   
   togglePasswordVisibility() {
     this.showPassword = !this.showPassword;

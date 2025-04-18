@@ -83,7 +83,7 @@ export class InvoiceFormComponent {
 
   onSubmitStepThree() {
     this.updateCalculations();
-
+    
     this.invoiceService.stepThree(this.stepThreeData).subscribe(
       (response) => {
         console.log('Step 3 Response:', response);
@@ -94,6 +94,10 @@ export class InvoiceFormComponent {
         console.error('Error in Step 3:', error);
       }
     );
+  }
+  removeService(index: number) {
+    this.stepThreeData.services.splice(index, 1);
+    this.updateCalculations();
   }
   updateCalculations() {
     let totalHT = 0;

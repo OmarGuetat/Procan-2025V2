@@ -14,10 +14,13 @@ export class ProfileComponent implements OnInit {
   selectedFile!: File | null;
   alertMessage: string = '';
   alertType: string = '';
+  isAdmin: boolean = false;
 
   constructor(private employeeService: EmployeeService, private fb: FormBuilder) {}
 
   ngOnInit(): void {
+    const role = localStorage.getItem('role');
+    this.isAdmin = role === 'admin';
     this.initializeForm();
     this.loadProfile();
   }

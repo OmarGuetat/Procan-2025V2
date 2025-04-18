@@ -1,13 +1,14 @@
 import { Component, EventEmitter, Input, OnChanges, OnInit, Output, SimpleChanges } from '@angular/core';
-import { EmployeeService } from '../../services/employee-service.service';
-import { LeaveService } from '../../services/leave.service';
+import { EmployeeService } from '../../../services/employee-service.service';
+import { LeaveService } from '../../../services/leave.service';
 
 
 import { CommonModule } from '@angular/common';
+
+import { RequestDashboardComponent } from '../../request-dashboard/request-dashboard.component';
+import { EmployeeCardComponent } from '../../cards/employee-card/employee-card.component';
+import { LeaveCardComponent } from '../../cards/leave-card/leave-card.component';
 import { LeaveDetailsComponent } from '../leave-details/leave-details.component';
-import { RequestDashboardComponent } from '../request-dashboard/request-dashboard.component';
-import { EmployeeCardComponent } from '../cards/employee-card/employee-card.component';
-import { LeaveCardComponent } from '../cards/leave-card/leave-card.component';
 
 
 @Component({

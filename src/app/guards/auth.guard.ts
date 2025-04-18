@@ -23,10 +23,11 @@ export class AuthGuard implements CanActivate {
   }
   private getHomeRoute(role: string): string {
     switch (role) {
-      case 'admin': return '/main/admin-home';
-      case 'expediteur': return '/main/expediteur-home';
-      case 'livreur': return '/main/livreur-home';
-      default: return '/main/login';
+      case 'admin': return '/admin/home';
+      case 'employee': return '/employee/home';
+      case 'accountant': return '/accountant/home';
+      case 'hr': return '/hr/home';
+      default: return '/login';
     }
   }
 }

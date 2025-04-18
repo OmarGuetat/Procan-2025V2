@@ -12,73 +12,70 @@ export const routes: Routes = [
   // 2. Reset Password page
   { path: 'reset-password', component: ResetPasswordComponent, canActivate: [AuthGuard] },
 
-  // 3. Default Layout with children (only after login, protected by AuthGuard)
+  // 3. Admin Routes
   {
-    path: 'main',
+    path: 'admin',
     component: DefaultLayoutComponent,
     canActivate: [AuthGuard],
     children: [
-    {
-      path: 'notifications',
-      loadChildren: () => import('./views/notifications/routes').then((m) => m.routes)
-    },
-    // Profile
-    {
-      path: 'profile',
-      loadChildren: () => import('./views/profile/routes').then((m) => m.routes)
-    },
-      {
-        path: '',
-        loadChildren: () => import('./views/invoices/routes').then(m => m.routes)
-      },
-    {
-      path: 'admin-home',
-      loadChildren: () => import('./views/admin-home/routes').then((m) => m.routes)
-    },
-    {
-      path: 'manage-holidays',
-      loadChildren: () => import('./views/manage-holidays/routes').then((m) => m.routes)
-    },
-    {
-      path: 'leave-balance',
-      loadChildren: () => import('./views/leave-balance/routes').then((m) => m.routes)
-    },
-    {
-      path: 'admin-home',
-      loadChildren: () => import('./views/admin-home/routes').then((m) => m.routes)
-    },
-    {
-      path: 'employee-home',
-      loadChildren: () => import('./views/employee-home/routes').then((m) => m.routes)
-    },
-    {
-      path: 'hr-home',
-      loadChildren: () => import('./views/hr-home/routes').then((m) => m.routes)
-    },
-    // Users Dashboard
-    {
-      path: 'users-dashboard',
-      loadChildren: () => import('./views/users-dashboard/routes').then((m) => m.routes)
-    },
-    // Leave Dashboard
-    {
-      path: 'leave-dashboard',
-      loadChildren: () => import('./views/leave-dashboard/routes').then((m) => m.routes)
-    },
-    // Leave Form
-    {
-      path: 'leave-form',
-      loadChildren: () => import('./views/leave-form/routes').then((m) => m.routes)
-    },
-    // Requests User Dashboard
-    {
-      path: 'requests-user-dashboard',
-      loadChildren: () => import('./views/requests-user-dashboard/routes').then((m) => m.routes)
-    }
+      { path: 'home', loadChildren: () => import('./views/admin-home/routes').then((m) => m.routes) },
+      { path: 'users-dashboard', loadChildren: () => import('./views/users-dashboard/routes').then((m) => m.routes) },
+      { path: 'leave-dashboard', loadChildren: () => import('./views/leave-dashboard/routes').then((m) => m.routes) },
+      { path: 'leave-balance', loadChildren: () => import('./views/leave-balance/routes').then((m) => m.routes) },
+      { path: 'manage-holidays', loadChildren: () => import('./views/manage-holidays/routes').then((m) => m.routes) },
+     
+      { path: '', loadChildren: () => import('./views/invoices/routes').then((m) => m.routes) },
+     
+      { path: 'notifications', loadChildren: () => import('./views/notifications/routes').then((m) => m.routes) },
+      { path: 'profile', loadChildren: () => import('./views/profile/routes').then((m) => m.routes) },
     ]
   },
 
-  // 4. Wildcard route to redirect any undefined paths to login
+  // 4. Employee Routes
+  {
+    path: 'employee',
+    component: DefaultLayoutComponent,
+    canActivate: [AuthGuard],
+    children: [
+      { path: 'home', loadChildren: () => import('./views/employee-home/routes').then((m) => m.routes) },
+      { path: 'leave-form', loadChildren: () => import('./views/leave-form/routes').then((m) => m.routes) },
+      { path: 'requests-user-dashboard', loadChildren: () => import('./views/requests-user-dashboard/routes').then((m) => m.routes) },
+      { path: 'notifications', loadChildren: () => import('./views/notifications/routes').then((m) => m.routes) },
+      { path: 'profile', loadChildren: () => import('./views/profile/routes').then((m) => m.routes) },
+    ]
+  },
+
+  // 5. HR Routes
+  {
+    path: 'hr',
+    component: DefaultLayoutComponent,
+    canActivate: [AuthGuard],
+    children: [
+      { path: 'hr-home', loadChildren: () => import('./views/hr-home/routes').then((m) => m.routes) },
+      { path: 'users-dashboard', loadChildren: () => import('./views/users-dashboard/routes').then((m) => m.routes) },
+      { path: 'leave-dashboard', loadChildren: () => import('./views/leave-dashboard/routes').then((m) => m.routes) },
+      { path: 'leave-form', loadChildren: () => import('./views/leave-form/routes').then((m) => m.routes) },
+      { path: 'requests-user-dashboard', loadChildren: () => import('./views/requests-user-dashboard/routes').then((m) => m.routes) },
+      { path: 'notifications', loadChildren: () => import('./views/notifications/routes').then((m) => m.routes) },
+      { path: 'profile', loadChildren: () => import('./views/profile/routes').then((m) => m.routes) },
+    ]
+  },
+
+  // 6. Accountant Routes
+  {
+    path: 'accountant',
+    component: DefaultLayoutComponent,
+    canActivate: [AuthGuard],
+    children: [
+      { path: 'home', loadChildren: () => import('./views/accountant-home/routes').then((m) => m.routes) },
+      { path: 'leave-form', loadChildren: () => import('./views/leave-form/routes').then((m) => m.routes) },
+      { path: 'requests-user-dashboard', loadChildren: () => import('./views/requests-user-dashboard/routes').then((m) => m.routes) },
+      { path: 'notifications', loadChildren: () => import('./views/notifications/routes').then((m) => m.routes) },
+      { path: 'profile', loadChildren: () => import('./views/profile/routes').then((m) => m.routes) },
+    ]
+  },
+
+  // 7. Wildcard route to redirect any undefined paths to login
   { path: '**', redirectTo: 'login' },
 ];
 

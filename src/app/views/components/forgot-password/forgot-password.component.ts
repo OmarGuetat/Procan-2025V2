@@ -44,7 +44,8 @@ export class ForgotPasswordComponent {
           this.error = error.error.email || 'No user found with this email';
           setTimeout(() => {
             this.message='';
-          }, 4000);
+            this.error='';
+          }, 3000);
         }
       );  
     }

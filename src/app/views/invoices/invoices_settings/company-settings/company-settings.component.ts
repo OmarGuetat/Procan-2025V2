@@ -27,7 +27,7 @@ export class CompanySettingsComponent {
   }
   constructor(private fb: FormBuilder, private companyService: CompanyService) {
     this.searchForm = this.fb.group({
-      name: [ {value:''}, Validators.required]
+      name: [ '', Validators.required]
     });
 
     this.companyForm = this.fb.group({

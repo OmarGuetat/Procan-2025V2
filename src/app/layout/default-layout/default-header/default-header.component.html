@@ -12,10 +12,9 @@
       <c-dropdown [popperOptions]="{ placement: 'bottom-start' }" variant="nav-item">
         <button [caret]="false" cDropdownToggle class="py-0 pe-0 position-relative" aria-label="Open notifications">
           <svg cIcon class="my-1" name="cilBell" size="lg"></svg>
-          <span *ngIf="unreadCount > 0" 
-                class="position-absolute top-0 start-100 translate-middle badge rounded-circle bg-danger 
+          <span *ngIf="unreadCount > 0" class="position-absolute top-0 start-100 translate-middle badge rounded-circle bg-danger 
                        d-flex justify-content-center align-items-center"
-                style="width: 16px; height: 16px; font-size: 10px;">
+            style="width: 16px; height: 16px; font-size: 10px;">
             {{ unreadCount }}
           </span>
         </button>
@@ -29,65 +28,52 @@
             </button>
           </li>
           <li *ngIf="notifications.length === 0" class="text-muted px-3 py-2">No notifications</li>
-        
-          <li *ngFor="let notification of notifications" 
-              (click)="markAsRead(notification.id)" 
-              class="d-flex align-items-center justify-content-between p-2 rounded position-relative"
-              [ngClass]="{'bg-light': !notification.is_read===true, 'bg-white': notification.is_read}"
-              (mouseenter)="notification.hover = true" 
-              (mouseleave)="notification.hover = false">
-            
+
+          <li *ngFor="let notification of notifications" (click)="markAsRead(notification.id)"
+            class="d-flex align-items-center justify-content-between p-2 rounded position-relative"
+            [ngClass]="{'bg-light': !notification.is_read===true, 'bg-white': notification.is_read}"
+            (mouseenter)="notification.hover = true" (mouseleave)="notification.hover = false">
+
             <!-- Notification Content -->
             <a cDropdownItem class="d-flex align-items-center flex-grow-1 text-decoration-none">
               <img *ngIf="notification?.sender_avatar_path" [src]="notification?.sender_avatar_path"
                 class="rounded-circle me-2 flex-shrink-0" width="40" height="40" alt="Sender Avatar" />
               <i *ngIf="!notification?.sender_avatar_path" class="bi bi-person-circle fs-4 text-muted me-2"></i>
-        
+
               <!-- Message -->
               <div class="text-wrap" style="white-space: normal; max-width: 200px;">
                 <small class="text-muted d-block">{{ notification?.message }}</small>
               </div>
             </a>
-        
+
             <!-- Delete Icon (Shown Only on Hover) -->
-            <button *ngIf="notification.hover" (click)="deleteNotification(notification.id, $event)" 
-                    class="btn btn-sm p-0 position-absolute top-50 end-0 translate-middle-y me-2" 
-                    aria-label="Delete">
+            <button *ngIf="notification.hover" (click)="deleteNotification(notification.id, $event)"
+              class="btn btn-sm p-0 position-absolute top-50 end-0 translate-middle-y me-2" aria-label="Delete">
               <i class="bi bi-x-lg text-muted"></i>
             </button>
           </li>
-        
-          
+
+
         </ul>
-        
+
       </c-dropdown>
 
       <!-- User Dropdown -->
-      <c-dropdown *ngIf="isAdmin===false" [popperOptions]="{ placement: 'bottom-start' }" variant="nav-item">
+      <c-dropdown [popperOptions]="{ placement: 'bottom-start' }" variant="nav-item">
         <button [caret]="false" cDropdownToggle class="py-0 pe-0" aria-label="Open user menu">
-          <ng-container *ngIf="isAdmin; else userAvatar">
-            <i class="bi bi-person-circle fs-4"></i>
-          </ng-container>
-
-          <ng-template #userAvatar>
-            <div style="width: 40px; height: 40px; overflow: hidden; border-radius: 50%;">
-              <img 
-                [src]="avatarPath" 
-                alt="User avatar" 
-                style="width: 100%; height: 100%; object-fit: cover;" 
-                *ngIf="avatarPath; else defaultAvatar"
-              />
-            </div>
-            <ng-template #defaultAvatar>
-              <i class="bi bi-person-circle fs-4 text-muted"></i>
-            </ng-template>
+          <div style="width: 40px; height: 40px; overflow: hidden; border-radius: 50%;">
+            <img [src]="avatarPath" alt="User avatar" style="width: 100%; height: 100%; object-fit: cover;"
+              *ngIf="avatarPath; else defaultAvatar" />
+          </div>
+          <ng-template #defaultAvatar>
+            <i class="bi bi-person-circle fs-4 text-muted"></i>
           </ng-template>
         </button>
 
         <!-- Dropdown Menu -->
-        <ul cDropdownMenu class="pt-0 w-auto" >
+        <ul cDropdownMenu class="pt-0 w-auto">
           <li>
-            <a   cDropdownItem (click)="goToProfile()" >
+            <a cDropdownItem (click)="goToProfile()">
               <svg cIcon class="me-2" name="cilUser"></svg>
               Profile
             </a>
@@ -100,10 +86,7 @@
           </li>
         </ul>
       </c-dropdown>
-      <button  *ngIf="isAdmin" class="btn btn-outline-danger d-flex align-items-center" (click)="logout()">
-        <svg cIcon class="me-2" name="cilAccountLogout"></svg>
-        Logout
-      </button>
+
     </div>
   </c-container>
 </ng-container>

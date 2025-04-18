@@ -69,12 +69,15 @@ dismissAlert() {
 redirectUser() {
   const role = localStorage.getItem('role');
   if (role === 'admin') {
-    this.router.navigate(['/main/admin-home']);
+    this.router.navigate(['/admin/home']);
   } else if (role === 'hr') {
-    this.router.navigate(['/main/hr-home']);
+    this.router.navigate(['/hr/hr-home']);
   } else if (role === 'employee') {
-    this.router.navigate(['/main/employee-home']);
-  } else {
+    this.router.navigate(['/employee/home']);
+  } else if (role === 'accountant') {
+    this.router.navigate(['/accountant/home']);
+  } 
+  else {
     this.router.navigate(['/login']);
   }
 }

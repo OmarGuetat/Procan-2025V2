@@ -1,10 +1,9 @@
 import { Component, OnInit } from '@angular/core';
 import { RouterLink, RouterOutlet } from '@angular/router';
 import { NgScrollbar } from 'ngx-scrollbar';
-import { IconDirective } from '@coreui/icons-angular';
 import { ContainerComponent, SidebarComponent, SidebarHeaderComponent, SidebarBrandComponent, SidebarNavComponent, SidebarFooterComponent, SidebarToggleDirective, SidebarTogglerDirective, ShadowOnScrollDirective } from '@coreui/angular';
 import { DefaultFooterComponent, DefaultHeaderComponent } from './';
-import { adminNavItems, employeeNavItems, hrNavItems } from './_nav'; // Import HR navigation items
+import { accountantNavItems, adminNavItems, employeeNavItems, hrNavItems } from './_nav'; // Import HR navigation items
 
 import { AuthService } from '../../services/auth.service';
 
@@ -24,7 +23,6 @@ import { AuthService } from '../../services/auth.service';
     DefaultFooterComponent,
     DefaultHeaderComponent,
     ShadowOnScrollDirective,
-    
     NgScrollbar,
     RouterOutlet,
     RouterLink
@@ -51,6 +49,8 @@ export class DefaultLayoutComponent implements OnInit {
       return employeeNavItems; // Employee role
     } else if (userRole === 'hr') {
       return hrNavItems; // HR role
+    } else if (userRole === 'accountant') {
+      return accountantNavItems; 
     } else {
       return []; // Return empty if no role found
     }

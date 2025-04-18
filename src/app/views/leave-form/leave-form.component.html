@@ -26,62 +26,70 @@
 
         <!-- Step 1: Basic Leave Info -->
         <form *ngIf="step === 1" [formGroup]="leaveForm" (ngSubmit)="submitLeaveRequest()">
-        <!-- Start Date -->
-<div class="mb-3">
-  <label for="startDate" class="form-label"><i class="bi bi-calendar-event"></i> Start Date</label>
-  <input type="date" id="startDate" class="form-control" formControlName="start_date" (change)="onDateChange()">
-  <div *ngIf="leaveForm.controls['start_date'].invalid && leaveForm.controls['start_date'].touched" class="text-danger">
-    Start date is required.
-  </div>
-</div>
+          <!-- Start Date -->
+          <div class="mb-3">
+            <label for="startDate" class="form-label"><i class="bi bi-calendar-event"></i> Start Date</label>
+            <input type="date" id="startDate" class="form-control" formControlName="start_date"
+              (change)="onDateChange()">
+            <div *ngIf="leaveForm.controls['start_date'].invalid && leaveForm.controls['start_date'].touched"
+              class="text-danger">
+              Start date is required.
+            </div>
+          </div>
 
-<!-- Start Time Selection -->
-<div class="mb-3">
-  <label class="form-label"><i class="bi bi-clock"></i> Start Time</label>
-  <div class="d-flex">
-    <div class="form-check mr-3">
-      <input type="radio" id="fullDayStart" class="form-check-input" name="startTime" value="full" (change)="setStartTime('full')" [checked]="leaveForm.value.start_time === '08:00:00'">
-      <label for="fullDayStart" class="form-check-label">Full Day</label>
-    </div>
-    <div class="form-check mx-3">
-      <input type="radio" id="firstHalfStart" class="form-check-input" name="startTime" value="first" (change)="setStartTime('first')" [checked]="leaveForm.value.start_time === '12:00:00'">
-      <label for="firstHalfStart" class="form-check-label">1st Half</label>
-    </div>
-    <div class="form-check mx-3">
-      <input type="radio" id="secondHalfStart" class="form-check-input" name="startTime" value="second" (change)="setStartTime('second')" [checked]="leaveForm.value.start_time === '17:00:00'">
-      <label for="secondHalfStart" class="form-check-label">2nd Half</label>
-    </div>
-  </div>
-</div>
+          <!-- Start Time Selection -->
+          <div class="mb-3">
+            <label class="form-label"><i class="bi bi-clock"></i> Start Time</label>
+            <div class="d-flex">
+              <div class="form-check mr-3">
+                <input type="radio" id="fullDayStart" class="form-check-input" name="startTime" value="full"
+                  (change)="setStartTime('full')" [checked]="leaveForm.value.start_time === '08:00:00'">
+                <label for="fullDayStart" class="form-check-label">Full Day</label>
+              </div>
+              <div class="form-check mx-3">
+                <input type="radio" id="firstHalfStart" class="form-check-input" name="startTime" value="first"
+                  (change)="setStartTime('first')" [checked]="leaveForm.value.start_time === '12:00:00'">
+                <label for="firstHalfStart" class="form-check-label">1st Half</label>
+              </div>
+              <div class="form-check mx-3">
+                <input type="radio" id="secondHalfStart" class="form-check-input" name="startTime" value="second"
+                  (change)="setStartTime('second')" [checked]="leaveForm.value.start_time === '17:00:00'">
+                <label for="secondHalfStart" class="form-check-label">2nd Half</label>
+              </div>
+            </div>
+          </div>
 
 
-<!-- End Date -->
-<div class="mb-3">
-  <label  for="endDate" class="form-label"><i class="bi bi-calendar-event"></i> End Date</label>
-  <input type="date" id="endDate" class="form-control" formControlName="end_date" (change)="onDateChange()">
-  <div *ngIf="leaveForm.controls['end_date'].invalid && leaveForm.controls['end_date'].touched" class="text-danger">
-    End date is required.
-  </div>
-</div>
-
-<!-- End Time Selection (if applicable) -->
-<div class="mb-3" *ngIf="showEndTime">
-  <label class="form-label"><i class="bi bi-clock"></i> End Time</label>
-  <div class="d-flex">
-    <div class="form-check mx-2">
-      <input type="radio" id="fullDayEnd" class="form-check-input" name="endTime" value="full" (change)="setEndTime('full')" [checked]="leaveForm.value.end_time === '08:00:00'">
-      <label for="fullDayEnd" class="form-check-label">Full Day</label>
-    </div>
-    <div class="form-check mx-2">
-      <input type="radio" id="firstHalfEnd" class="form-check-input" name="endTime" value="first" (change)="setEndTime('first')" [checked]="leaveForm.value.end_time === '12:00:00'">
-      <label for="firstHalfEnd" class="form-check-label">1st Half</label>
-    </div>
-    <div class="form-check mx-2">
-      <input type="radio" id="secondHalfEnd" class="form-check-input" name="endTime" value="second" (change)="setEndTime('second')" [checked]="leaveForm.value.end_time === '17:00:00'">
-      <label for="secondHalfEnd" class="form-check-label">2nd Half</label>
-    </div>
-  </div>
-</div>
+          <!-- End Date -->
+          <div class="mb-3" *ngIf="showEndFields">
+            <label for="endDate" class="form-label"><i class="bi bi-calendar-event"></i> End Date</label>
+            <input type="date" id="endDate" class="form-control" formControlName="end_date" (change)="onDateChange()">
+            <div *ngIf="leaveForm.controls['end_date'].invalid && leaveForm.controls['end_date'].touched"
+              class="text-danger">
+              End date is required.
+            </div>
+          </div>
+          <!-- End Time Selection (if applicable) -->
+          <div class="mb-3" *ngIf="showEndTime && showEndFields ">
+            <label class="form-label"><i class="bi bi-clock"></i> End Time</label>
+            <div class="d-flex">
+              <div class="form-check mx-2">
+                <input type="radio" id="fullDayEnd" class="form-check-input" name="endTime" value="full"
+                  (change)="setEndTime('full')" [checked]="leaveForm.value.end_time === '08:00:00'">
+                <label for="fullDayEnd" class="form-check-label">Full Day</label>
+              </div>
+              <div class="form-check mx-2">
+                <input type="radio" id="firstHalfEnd" class="form-check-input" name="endTime" value="first"
+                  (change)="setEndTime('first')" [checked]="leaveForm.value.end_time === '12:00:00'">
+                <label for="firstHalfEnd" class="form-check-label">1st Half</label>
+              </div>
+              <div class="form-check mx-2">
+                <input type="radio" id="secondHalfEnd" class="form-check-input" name="endTime" value="second"
+                  (change)="setEndTime('second')" [checked]="leaveForm.value.end_time === '17:00:00'">
+                <label for="secondHalfEnd" class="form-check-label">2nd Half</label>
+              </div>
+            </div>
+          </div>
           <!-- Error message for invalid date selection -->
           <div *ngIf="dateError" class="text-danger mb-3">
             {{ dateError }}
@@ -104,9 +112,9 @@
             Please select a leave reason.
           </div>
 
-          <!-- If "Other" is selected, show this text input -->
-          <div *ngIf="selectedReason === 'other'" class="mt-3">
-            <label for="other_type" class="form-label"><i class="bi bi-pencil"></i> Specify reason</label>
+          <!-- If "Personal" is selected, show this text input -->
+          <div *ngIf="selectedReason === 'personal_leave'" class="mt-3">
+            <label for="personal_type" class="form-label"><i class="bi bi-pencil"></i> Specify reason</label>
             <input type="text" id="other_type" formControlName="other_type" class="form-control">
             <div *ngIf="leaveForm.controls['other_type'].invalid && leaveForm.controls['other_type'].touched"
               class="text-danger">
@@ -122,25 +130,28 @@
 
         <!-- Step 2: Confirm Leave Details -->
         <div *ngIf="step === 2">
-
           <h4 class="mb-3">Confirm Your Leave Details</h4>
           <div class="card p-3 bg-light">
-            <p><i class="bi bi-calendar-event"></i>&nbsp; <strong>Start Date:</strong> {{ leaveDetails.start_date }}</p>
-            <p><i class="bi bi-calendar-event"></i> &nbsp;<strong>End Date:</strong> {{ leaveDetails.end_date }}</p>
+            <p><i class="bi bi-calendar-event"></i>&nbsp; <strong>Start Date:</strong> {{
+              formatDateTime(leaveDetails.start_date) }}</p>
+            <p><i class="bi bi-calendar-event"></i>&nbsp; <strong>End Date:</strong> {{
+              formatDateTime(leaveDetails.end_date) }}</p>
             <p><i class="bi bi-chat-left-text"></i>&nbsp; <strong>Leave Type:</strong> {{ leaveDetails.leave_type }}</p>
             <p><i class="bi bi-calendar-week"></i>&nbsp; <strong>Leave Days:</strong> {{ leaveDetails.leave_days }} days
             </p>
           </div>
           <div class="my-2">
             <label class="form-label">Remaining Balance:</label> {{ remainingDays }} days
-            <p [ngClass]="{'text-danger': remainingDays <= 0}">   
+            <p [ngClass]="{'text-danger': remainingDays <= 0}">
               <span *ngIf="remainingDays <= 0"> - No more balance left, but you can still send the request.</span>
             </p>
           </div>
-          <!-- File Upload for Sick Leave -->
-          <div *ngIf="leaveDetails.leave_type === 'sick_leave'" class="mt-3 mb-4">
-            <label for="attachment" class="form-label"><i class="bi bi-paperclip"></i> Attach medical
-              certificate</label>
+          <!-- File Upload for Sick, Maternity, or Paternity Leave -->
+          <div *ngIf="['sick_leave', 'maternity_leave', 'paternity_leave'].includes(leaveDetails.leave_type)"
+            class="mt-3 mb-4">
+            <label for="attachment" class="form-label">
+              <i class="bi bi-paperclip"></i> Attach Certificate
+            </label>
             <input type="file" id="attachment" (change)="onFileChange($event)" class="form-control">
           </div>
           <!-- Button Group for Back and Confirm -->
@@ -148,8 +159,7 @@
             <button class="btn btn-outline-secondary" (click)="goBackToStep1()">
               <i class="bi bi-arrow-left-circle"></i> Back to Step 1
             </button>
-
-            <button class="btn btn-success" (click)="confirmLeaveRequest()" >
+            <button class="btn btn-success" (click)="confirmLeaveRequest()">
               <i class="bi bi-check-circle"></i> Confirm Request
             </button>
           </div>

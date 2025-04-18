@@ -1,5 +1,5 @@
 import { Component, EventEmitter, Input, OnInit, Output } from '@angular/core';
-import { LeaveService } from '../../services/leave.service';
+import { LeaveService } from '../../../services/leave.service';
 import { CommonModule } from '@angular/common';
 
 interface Leave {

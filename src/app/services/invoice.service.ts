@@ -11,7 +11,6 @@ export class InvoiceService {
 
   constructor(private http: HttpClient) {}
   confirm(invoiceData: any): Observable<any> {
-    // Envoyer la requête avec les données de la facture
     return this.http.post(`${this.apiUrl}/store`, invoiceData, { withCredentials: true });
   }
   

@@ -23,16 +23,16 @@
         <ul class="list-group list-group-flush">
           <li class="list-group-item"><strong>Email:</strong> {{ profileData.email }}</li>
           <li class="list-group-item"><strong>Phone:</strong> {{ profileData.phone || 'N/A' }}</li>
-          <li class="list-group-item"><strong>Address:</strong> {{ profileData.address || 'N/A' }}</li>
+          <li *ngIf="!isAdmin" class="list-group-item"><strong>Job Description:</strong> {{ profileData.job_description }}</li>
         </ul>
       </div>
 
       <!-- Right Section -->
       <div class="col-md-6">
         <ul class="list-group list-group-flush">
+          <li class="list-group-item"><strong>Address:</strong> {{ profileData.address || 'N/A' }}</li>
           <li class="list-group-item"><strong>Company:</strong> {{ profileData.company }}</li>
-          <li class="list-group-item"><strong>Job Description:</strong> {{ profileData.job_description }}</li>
-          <li class="list-group-item"><strong>Start Date:</strong> {{ profileData.start_date }}</li>
+          <li *ngIf="!isAdmin" class="list-group-item"><strong>Start Date:</strong> {{ profileData.start_date }}</li>
         </ul>
       </div>
     </div>
