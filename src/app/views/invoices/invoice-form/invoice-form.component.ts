@@ -3,6 +3,7 @@ import { InvoiceService } from '../../../services/invoice.service';
 import { CommonModule } from '@angular/common';
 import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 
+declare var bootstrap: any;
 @Component({
   selector: 'app-invoice-form',
   imports:[CommonModule,ReactiveFormsModule,FormsModule],
@@ -43,12 +44,44 @@ export class InvoiceFormComponent {
   };
   confirmationMessage = '';
   confirmationError = '';
-  
+  clients: any[] = [];
  
 
   constructor(private invoiceService: InvoiceService) {}
 
-  
+  openExistingClientModal() {
+    this.invoiceService.getAllClients().subscribe({
+      next: (res: any) => {
+        this.clients = res;
+        const modal = new bootstrap.Modal(document.getElementById('existingClientModal')!);
+        modal.show();
+      },
+      error: (err) => {
+        console.error('Error loading clients', err);
+      }
+    });
+  }
+
+  selectClient(client: any) {
+    this.stepTwoData = {
+      ...this.stepTwoData,
+      name: client.name,
+      client_type: client.client_type || '',
+      tva_number_client: client.tva_number,
+      address: client.address,
+      postal_code: client.postal_code,
+      country: client.country,
+      rib_bank: client.rib_bank,
+      email: client.email,
+      phone_number: client.phone_number,
+      civility: client.civility || '',
+      first_name: client.first_name || '',
+      last_name: client.last_name || '',
+    };
+    console.log(client)
+    const modal = bootstrap.Modal.getInstance(document.getElementById('existingClientModal')!);
+    modal?.hide();
+  }
   goBack() {
     if (this.currentStep > 1) {
       this.currentStep--;

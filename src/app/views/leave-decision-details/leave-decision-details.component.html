@@ -1,0 +1,44 @@
+<!-- Alert Message -->
+<div *ngIf="alertMessage" class="alert alert-dismissible fade show position-absolute top-0 end-0 m-3 shadow"
+     [ngClass]="alertType" role="alert">
+  <i *ngIf="alertType === 'alert-danger'" class="bi-exclamation-octagon-fill"></i>
+  <strong class="mx-2">{{ alertMessage }}</strong>
+  <button type="button" class="btn-close" (click)="dismissAlert()" aria-label="Fermer"></button>
+</div>
+
+<!-- Leave Details -->
+<div *ngIf="leave; else loadingTemplate" class="container mt-4">
+  <div class="row">
+    <!-- Card -->
+    <div class="col-12">
+      <app-request-card [request]="leave" [showMenu]="false"></app-request-card>
+    </div>
+
+    <!-- Action Buttons -->
+    <div class="col-12 mt-3">
+      <div *ngIf="leave.status === 'on_hold'; else statusDisplay" class="d-flex justify-content-center">
+        <button class="btn btn-success me-2" (click)="updateStatus('approved')">Approve</button>
+        <button class="btn btn-danger" (click)="updateStatus('rejected')">Reject</button>
+      </div>
+      <ng-template #statusDisplay>
+        <div class="alert text-center"
+             [ngClass]="{'alert-success': leave.status === 'approved', 'alert-danger': leave.status === 'rejected'}">
+          <strong>{{ leave.status === 'approved' ? 'Approved' : 'Rejected' }}</strong>
+        </div>
+      </ng-template>
+    </div>
+  </div>
+</div>
+
+<!-- Loading Template -->
+<ng-template #loadingTemplate>
+  <div class="text-center">
+    <span class="spinner-border spinner-border-sm" role="status" aria-hidden="true"></span>
+    <span>Loading...</span>
+  </div>
+</ng-template>
+
+<!-- Error Message -->
+<div *ngIf="errorMessage" class="alert alert-danger mt-3">
+  {{ errorMessage }}
+</div>

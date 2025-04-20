@@ -22,9 +22,9 @@ export class LeaveCardComponent {
 
   constructor(private fb: FormBuilder, private leaveService: LeaveService) {
     this.leaveForm = this.fb.group({
-      leave_day_limit: ['', [Validators.required, Validators.min(1)]],
+      leave_day_limit: ['', [Validators.required, Validators.min(0.25)]],
       description: ['', [Validators.maxLength(255)]]
-    });
+    });    
     this.role = localStorage.getItem('role')!;
   }
   dismissAlert() {
@@ -59,6 +59,7 @@ export class LeaveCardComponent {
           setTimeout(() => {
             document.getElementById('closeModal-' + this.leaveEmployee.id)?.click();
             this.dismissAlert();
+            location.reload();
           }, 1500);
         },
         error: (error) => {
@@ -77,7 +78,10 @@ export class LeaveCardComponent {
         },
         complete: () => {
           setTimeout(() => {
-          this.isSubmitting = false;},4000)
+          this.isSubmitting = false;
+          
+        },3000)
+        
         }
         
       });}

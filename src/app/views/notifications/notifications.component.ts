@@ -25,11 +25,21 @@ export class NotificationsComponent implements OnInit {
     });
   }
   viewHistory(notification: any): void {
+    // Retrieve the user's role from localStorage
+    const userRole = localStorage.getItem('role') ?? 'guest'; // Default to 'guest' if no role is found
+  
+    // Determine the role prefix
+    const rolePrefix = userRole.toLowerCase();  // e.g. 'admin', 'employee', 'hr'
+  
+    // If notification is not read, mark it as read
     if (!notification.is_read) {
       this.markAsRead(notification.id);
     }
-    this.router.navigate(['/main/leave-decision-details',notification.sender_id]);
+  
+    // Navigate to the correct route with the role prefix
+    this.router.navigate([`/${rolePrefix}/leave-decision-details`, notification.leave_id]);
   }
+  
 
   markAsRead(notificationId: number, event?: Event): void {
     if (event) event.stopPropagation(); // Prevents unwanted clicks

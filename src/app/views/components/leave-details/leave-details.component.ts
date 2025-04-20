@@ -26,6 +26,7 @@ export class LeaveDetailsComponent implements OnInit {
   alertType: string = '';
   isSubmitting: boolean = false;
   perPage: number = 10; 
+  totalLeaveDayLimit: number = 0;
   user: { first_name: string; last_name: string } = { first_name: '', last_name: '' };
 
   constructor(private leaveService: LeaveService) {}
@@ -33,7 +34,6 @@ export class LeaveDetailsComponent implements OnInit {
   ngOnInit(): void {
     this.fetchLeaveData();
   }
-
   fetchLeaveData(): void {
     this.leaveService.getLeaveDetails(this.userId, this.currentPage).subscribe(response => {
       console.log('Leave Data:', response);
@@ -42,6 +42,7 @@ export class LeaveDetailsComponent implements OnInit {
         this.leaveData = response.data; // Set leave data
         this.totalPages = response.meta.total_pages;
         this.totalLeaves = response.meta.total_leaves;
+        this.totalLeaveDayLimit = response.total_leave_day_limit; // Set total leave day limit
       }
     }, error => {
       console.error('Error fetching leave details:', error);

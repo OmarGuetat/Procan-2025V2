@@ -23,44 +23,66 @@ export class LeaveBalanceComponent implements OnInit {
   ngOnInit(): void {
     this.getLeaveBalances();
   }
-
+  getLeaveIconClass(type: string): string {
+    const iconMap: { [key: string]: string } = {
+      paternity_leave: 'bi-person-badge',
+      maternity_leave: 'bi-person-heart',
+      sick_leave: 'bi-thermometer'
+    };
+    return iconMap[type] || 'bi-question-circle';
+  }
+  
   getLeaveBalances(): void {
     this.leaveBalanceService.getLeaveBalances().subscribe(
       (data) => {
         // Merge received data with default leave types
         this.leaveBalances = this.leaveBalances.map((defaultLeave) => {
           const existingLeave = data.find((l: any) => l.leave_type === defaultLeave.leave_type);
-          return existingLeave ? existingLeave : defaultLeave;
+  
+          if (existingLeave) {
+            return {
+              ...existingLeave,
+              max_days: existingLeave.leave_type === 'maternity_leave'
+                ? existingLeave.max_days / 30
+                : existingLeave.max_days
+            };
+          }
+          return defaultLeave;
         });
       },
       (error) => console.error('Error fetching leave balances:', error)
     );
   }
-
   updateLeaveBalance(leave: any): void {
     if (!leave.id) return;
-    
-    this.leaveBalanceService.updateLeaveBalance(leave.id, { max_days: leave.max_days })
+  
+    const adjustedLeave = {
+      max_days: leave.leave_type === 'maternity_leave' ? leave.max_days * 30 : leave.max_days
+    };
+  
+    this.leaveBalanceService.updateLeaveBalance(leave.id, adjustedLeave)
       .subscribe(
         () => this.getLeaveBalances(),
         (error) => console.error('Error updating leave:', error)
       );
   }
-
+  
   addLeaveBalance(leave: any): void {
-    this.leaveBalanceService.addLeaveBalance({ leave_type: leave.leave_type, max_days: leave.max_days })
+    const adjustedLeave = {
+      leave_type: leave.leave_type,
+      max_days: leave.leave_type === 'maternity_leave' ? leave.max_days * 30 : leave.max_days
+    };
+  
+    this.leaveBalanceService.addLeaveBalance(adjustedLeave)
       .subscribe(
         () => this.getLeaveBalances(),
         (error) => console.error('Error adding leave:', error)
       );
-  }
-
-  formatLeaveType(type: string): string {
-    const mapping: any = {
-      'paternity_leave': 'Paternity Leave',
-      'maternity_leave': 'Maternity Leave',
-      'sick_leave': 'Sick Leave'
-    };
-    return mapping[type] || type;
+  }  
+  formatLeaveType(leaveType: string): string {
+    // Replace underscores with spaces and capitalize each word
+    return leaveType
+      .replace(/_/g, ' ') // Replace underscores with spaces
+      .replace(/\b\w/g, (char) => char.toUpperCase()); // Capitalize each word
   }
 }

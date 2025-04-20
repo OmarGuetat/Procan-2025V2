@@ -10,17 +10,35 @@ export class AuthGuard implements CanActivate {
 
   canActivate(route: ActivatedRouteSnapshot): boolean {
     const isAuthenticated = this.authService.isAuthenticated();
-    const userRole = this.authService.getRole();
-    if (isAuthenticated) {
-      // Redirect to home page for authenticated users trying to access login or reset_password
-      if (route.routeConfig?.path === 'login' || route.routeConfig?.path === 'reset-password') {
-        this.router.navigate([this.getHomeRoute(userRole || 'guest')]);
+    const userRole = this.authService.getRole() ?? 'guest'; // Fallback to 'guest' if no role is set
+    const isLoginOrReset = route.routeConfig?.path === 'login' || route.routeConfig?.path === 'reset-password';
+
+    // If not authenticated
+    if (!isAuthenticated) {
+      if (!isLoginOrReset) {
+        this.router.navigate(['/login']);
         return false;
+      } else {
+        return true;
       }
     }
-    // If not authenticated, allow access to the route 
+
+    // Handle role-based route access
+    const rolePrefix = userRole; // role prefix like 'admin', 'employee', 'hr', etc.
+    const requestedRoutePath = route.url[0].path;
+
+    // Check if the requested route starts with the correct role prefix
+    if (!requestedRoutePath.startsWith(rolePrefix)) {
+      // Redirect user to their respective homepage if they try to access a route that doesn't match their role prefix
+      this.router.navigate([this.getHomeRoute(userRole)]);
+      return false;
+    }
+
+    // If route is valid for the user role, grant access
     return true;
   }
+
+  // Get home route based on user role
   private getHomeRoute(role: string): string {
     switch (role) {
       case 'admin': return '/admin/home';
@@ -31,4 +49,3 @@ export class AuthGuard implements CanActivate {
     }
   }
 }
-

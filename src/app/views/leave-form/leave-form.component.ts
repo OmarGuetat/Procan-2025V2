@@ -1,5 +1,5 @@
 import { Component } from '@angular/core';
-import { FormBuilder, FormGroup, ReactiveFormsModule, Validators } from '@angular/forms';
+import { FormBuilder, FormGroup, FormsModule, ReactiveFormsModule, Validators } from '@angular/forms';
 import { LeaveService } from '../../services/leave.service';
 import { CommonModule } from '@angular/common';
 import { Router } from '@angular/router';
@@ -8,7 +8,7 @@ import { Router } from '@angular/router';
 @Component({
   selector: 'app-leave-form',
   standalone: true,
-  imports: [CommonModule, ReactiveFormsModule],
+  imports: [CommonModule, ReactiveFormsModule,FormsModule],
   templateUrl: './leave-form.component.html',
   styleUrls: ['./leave-form.component.css']
 })
@@ -25,12 +25,15 @@ export class LeaveFormComponent {
   selectedEndTime: string = '08:00:00';
   isConfirming: boolean = false;
   isSubmitting: boolean = false;
+  alreadyTaken: boolean = false;
   showEndFields = true;
+  isSending: boolean = false;
+  rejectionMessage: string = '';
   leaveOptions = [
-    { value: 'personal_leave', icon: 'bi bi bi-person', label: 'Personal Leave' },
-    { value: 'maternity_leave', icon: 'bi bi-gender-female', label: 'Maternity Leave' },
     { value: 'paternity_leave', icon: 'bi bi-gender-male', label: 'Paternity Leave' },
-    { value: 'sick_leave', icon: 'bi bi-thermometer-half', label: 'Sick Leave' }
+    { value: 'maternity_leave', icon: 'bi bi-gender-female', label: 'Maternity Leave' },
+    { value: 'sick_leave', icon: 'bi bi-thermometer-half', label: 'Sick Leave' },
+    { value: 'personal_leave', icon: 'bi bi-person', label: 'Personal Leave' }
   ];
 
   step: number = 1;
@@ -53,8 +56,30 @@ export class LeaveFormComponent {
       start_time: this.selectedStartTime,
       end_time: this.selectedEndTime
     });
+    this.alreadyTaken=false;
   }
-
+  sendExplanationToHR() {
+    console.log("DONE");
+    /*this.isSending = true;
+    const body = {
+      message: this.alertMessage
+    };
+  
+    this.leaveService.notifyRejectionToHR(selectedLeaveId, body).subscribe({
+      next: (res) => {
+        this.isSending = false;
+        this.alertMessage = 'Message successfully sent to HR.';
+        this.alertType = 'alert-success';
+        this.rejectionMessage = '';
+      },
+      error: (err) => {
+        this.isSending = false;
+        this.alertMessage = 'Error sending message to HR.';
+        this.alertType = 'alert-danger';
+        console.error(err);
+      }
+    });*/
+  }
   dismissAlert() {
     this.alertMessage = '';
   }
@@ -63,10 +88,11 @@ export class LeaveFormComponent {
     const today = new Date();
     return today.toISOString().split('T')[0];
   }
-  onReasonChange(leave_type: string) {
+   // Update the onReasonChange method to handle personal_leave instead of other
+   onReasonChange(leave_type: string) {
     this.selectedReason = leave_type;
 
-    if (leave_type !== 'other') {
+    if (leave_type !== 'personal_leave') {
       this.leaveForm.patchValue({ other_type: '' });
     }
 
@@ -87,8 +113,6 @@ export class LeaveFormComponent {
 
     endDateControl?.updateValueAndValidity();
   }
-
-
   // Set start time based on radio selection
   setStartTime(time: string) {
     let timeValue = '08:00:00';
@@ -145,60 +169,98 @@ export class LeaveFormComponent {
 
     return `${date} ${timeLabel}`;
   }
-
+  formatLeaveType(leaveType: string): string {
+    // Replace underscores with spaces and capitalize each word
+    return leaveType
+      .replace(/_/g, ' ') // Replace underscores with spaces
+      .replace(/\b\w/g, (char) => char.toUpperCase()); // Capitalize each word
+  }
+  
   submitLeaveRequest() {
-    if (this.isSubmitting) return; // Prevent double click
-
+    if (this.isSubmitting) return;
+  
     this.isSubmitting = true;
-    if (this.leaveForm.invalid) {
-      return;
-    }
-    // Ensure start_date and end_date include time (combine separately)
+    if (this.leaveForm.invalid) return;
+  
     let startDate = `${this.leaveForm.value.start_date} ${this.leaveForm.value.start_time}`;
     let endDate = `${this.leaveForm.value.end_date} ${this.leaveForm.value.end_time}`;
-    // Check if the start and end dates are the same
+  
     if (this.leaveForm.value.start_date === this.leaveForm.value.end_date) {
-      // If they are the same, set the end time to 23:00:00
       endDate = `${this.leaveForm.value.end_date} 23:00:00`;
     }
+  
     const formData = new FormData();
-    formData.append('start_date', startDate); // Send combined date and time
-    formData.append('end_date', endDate);     // Send combined date and time
+    formData.append('start_date', startDate);
+    formData.append('end_date', endDate);
     formData.append('leave_type', this.leaveForm.value.leave_type);
-
-    if (this.selectedReason === 'other') {
+  
+    if (this.selectedReason === 'personal_leave') {
       formData.append('other_type', this.leaveForm.value.other_type);
     }
-
+  
     this.leaveService.calculateLeaveDays(formData).subscribe({
       next: (response) => {
         this.isSubmitting = false;
-        if (response && response.leave_days) {
+  
+        if (response) {
           this.leaveDays = response.leave_days;
           this.leaveDetails = response;
-          this.remainingDays = response.remaining_days;
+  
+          this.leaveForm.patchValue({
+            start_date: response.start_date.split(' ')[0],
+            end_date: response.end_date.split(' ')[0],
+            leave_type: response.leave_type,
+            other_type: response.other_type || ''
+          });
+  
+          this.selectedStartTime = response.start_date.split(' ')[1];
+          this.selectedEndTime = response.end_date.split(' ')[1];
+  
+          this.leaveForm.patchValue({
+            start_time: this.selectedStartTime,
+            end_time: this.selectedEndTime
+          });
+  
+          this.alreadyTaken = false;
           this.step = 2;
         } else {
+          console.log(response);
           this.alertMessage = 'Invalid response format';
           this.alertType = 'alert-danger';
         }
       },
       error: (error) => {
-        console.error(error);
-        this.alertMessage = error.error?.message || 'Error calculating leave days';
-        this.alertType = 'alert-danger';
         this.isSubmitting = false;
+  
+        const errorMessage = error?.error?.message || '';
+  
+        if (
+          errorMessage.includes(
+            'already taken'
+          )
+        ) {
+          this.alreadyTaken = true;
+          this.step = 2; // go to alternate view
+          return;
+        }
+  
+        // any other actual errors
+        console.error(error);
+        this.alertMessage = errorMessage || 'Error calculating leave days';
+        this.alertType = 'alert-danger';
       }
     });
   }
-
+  
   onFileChange(event: any) {
     const file = event.target.files[0];
     if (file) {
       this.leaveDetails.attachment = file;
     }
   }
-
+  isAttachmentRequired(): boolean {
+    return ['sick_leave', 'maternity_leave', 'paternity_leave'].includes(this.leaveForm.value.leave_type);
+  }
   confirmLeaveRequest() {
     if (this.isConfirming) return; // Prevent double click
 
@@ -215,12 +277,17 @@ export class LeaveFormComponent {
     formData.append('end_date', endDate);      // Use combined end date and time
     formData.append('leave_type', this.leaveForm.value.leave_type);
     formData.append('leave_days', this.leaveDetails.leave_days.toString());
-    if (this.selectedReason === 'other') {
+    if (this.selectedReason === 'personal_leave') {
       formData.append('other_type', this.leaveForm.value.other_type);
     }
-    if (this.leaveDetails.leave_type === 'sick_leave' && this.leaveDetails.attachment) {
+    if (this.isAttachmentRequired() && this.leaveDetails.attachment) {
       formData.append('attachment', this.leaveDetails.attachment);
     }
+    console.log('FormData being sent:');
+    formData.forEach((value, key) => {
+      console.log(`${key}:`, value);
+    });
+
     this.leaveService.storeLeaveRequest(formData).subscribe({
       next: (response) => {
         this.step = 3; // Move to Step 3 (confirmation)
@@ -233,11 +300,12 @@ export class LeaveFormComponent {
       complete: () => { }
     });
   }
-
-
-  // Placeholder function for future history navigation logic
   viewHistory() {
-    this.router.navigate(['/main/requests-user-dashboard']);
+    const userRole = localStorage.getItem('role') ?? 'guest';
+    const rolePrefix = userRole.toLowerCase();
+  
+    this.router.navigate([`/${rolePrefix}/requests-user-dashboard`]);
   }
-
+  
+  
 }

@@ -38,7 +38,7 @@ export class UsersDashboardComponent implements OnInit {
           Validators.pattern(/^(?=.*[A-Za-z])(?=.*\d)[A-Za-z\d]+$/), // alphanumeric only
         ],
       ],
-      phone_number: [
+      phone: [
         '',
         [
           Validators.pattern(/^\d{8}$/), // exactly 8 digits

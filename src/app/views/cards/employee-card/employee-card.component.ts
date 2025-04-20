@@ -38,8 +38,11 @@ constructor(private fb: FormBuilder, private employeeService: EmployeeService) {
   this.updateForm = this.fb.group({
     company: ['', Validators.required],
     role: ['', Validators.required],
-    job_description:['', Validators.required],
+    job_description: ['', Validators.required],
+    phone: ['', [Validators.required, Validators.pattern('^[0-9]{8}$')]],
+    email: ['', [Validators.required, Validators.email]],
   });
+  
   this.userId = +localStorage.getItem('userId')!;
 }
 
@@ -48,9 +51,12 @@ ngOnInit(): void {
   this.updateForm.patchValue({
     company: this.employee.company,
     role: this.employee.role,
-    job_description:this.employee.job_description
+    job_description: this.employee.job_description,
+    phone: this.employee.phone,
+    email: this.employee.email,
   });
 }
+
 dismissAlert() {
   this.alertMessage = '';
 }
@@ -74,8 +80,11 @@ submitUpdate() {
     const updatedEmployee = {
       company: this.updateForm.value.company,
       role: this.updateForm.value.role,
-      job_description:this.updateForm.value.job_description
+      job_description: this.updateForm.value.job_description,
+      phone: this.updateForm.value.phone,
+      email: this.updateForm.value.email
     };
+    
 
     this.employeeService.updateEmployee(this.employee.id, updatedEmployee).subscribe(
       response => {

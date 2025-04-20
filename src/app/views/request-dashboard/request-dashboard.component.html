@@ -1,90 +1,131 @@
-
 <div class="container mt-3">
-    <button class="btn rounded-circle border-custom" (click)="goBack()">
-      <i class="bi bi-arrow-left"></i>
-    </button>
-    <h3 class="mx-auto fw-bold mt-3">{{ employeeName }}'s Leave Requests</h3>
+  <button class="btn rounded-circle border-custom" (click)="goBack()">
+    <i class="bi bi-arrow-left"></i>
+  </button>
+  <h3 class="mx-auto fw-bold mt-3">{{ employeeName }}'s Leave Requests</h3>
 
-    <div class="d-flex my-3">
-      <!-- Year Filter -->
-      <div class="mr-3">
-        <h5 class="fw-bold"><i class="bi bi-filter"></i> Filter by Year</h5>
-        <select id="yearFilter" class="form-control w-100" [(ngModel)]="selectedYear" (change)="onYearChange()">
-          <option [ngValue]="null" selected>Select Year</option>
-          <option *ngFor="let year of availableYears" [value]="year">{{ year }}</option>
-        </select>
-        
-      </div>
-    
-      <!-- Leave Type Filter -->
-      <div class="mx-3">
-        <h5 for="leaveTypeFilter" class="fw-bold"><i class="bi bi-filter"></i> Filter by Leave Type</h5>
-        <select id="leaveTypeFilter" class="form-control w-100" [(ngModel)]="selectedType" (change)="onLeaveTypeChange()">
-          <option [ngValue]="null" selected>Select Leave Type</option>
-          <option *ngFor="let type of leaveTypes" [value]="type">{{ type | titlecase }}</option>
-        </select>
-      </div>
+  <div class="row my-3">
+    <!-- Year Filter -->
+    <div class="col-md-3 mb-3">
+      <h5 class="fw-bold">
+        <i class="bi bi-filter"></i> Filter by Year
+      </h5>
+      <select id="yearFilter" class="form-control" [(ngModel)]="selectedYear" (change)="onYearChange()">
+        <option [ngValue]="null" selected>All</option>
+        <option *ngFor="let year of availableYears" [value]="year">{{ year }}</option>
+      </select>
     </div>
-<!-- Total Leave Days: Show only when a year is selected -->
-<p *ngIf="selectedYear" class="mt-1"><strong>Total Leave Days:</strong> {{ totalLeaveDays }}</p>
-  <!-- Leave Requests Table -->
+  
+    <!-- Leave Type Filter -->
+    <div class="col-md-3 mb-3">
+      <h5 class="fw-bold">
+        <i class="bi bi-filter"></i> Filter by Leave Type
+      </h5>
+      <select id="leaveTypeFilter" class="form-control" [(ngModel)]="selectedType" (change)="onLeaveTypeChange()">
+        <option [ngValue]="null" selected>All</option>
+        <option *ngFor="let type of leaveTypes" [value]="type">{{ formatLeaveType(type) }}</option>
+      </select>
+    </div>
+  
+    <!-- Status Filter -->
+    <div class="col-md-3 mb-3">
+      <h5 class="fw-bold">
+        <i class="bi bi-filter"></i> Filter by Status
+      </h5>
+      <select class="form-control" [(ngModel)]="selectedStatus" (change)="onStatusChange()">
+        <option [ngValue]="null" selected>All</option>
+        <option value="approved">Approved</option>
+        <option value="rejected">Rejected</option>
+        <option value="on_hold">On Hold</option>
+      </select>
+    </div>
+  </div>
+  
+  <!-- Total Leave Days: Show only when a year is selected -->
+  <p *ngIf="selectedYear" class="mt-1"><strong>Total Leave Days:</strong> {{ totalLeaveDays }}</p>
   <table class="table table-bordered">
     <thead class="thead-dark">
       <tr>
-        <th>Start Date</th>
-        <th>End Date</th>
-        <th>Reason</th>
-        <th>Requested Days</th>
-        <th>Effective Days</th>
-        <th>Attachment</th>
-        <th>Status</th>
+        <th><i class="bi bi-calendar-event me-1"></i>Start Date</th>
+        <th><i class="bi bi-calendar-event-fill me-1"></i>End Date</th>
+        <th><i class="bi bi-card-text me-1"></i>Reason</th>
+        <th><i class="bi bi-calendar3 me-1 text-primary"></i>Requested Days</th>
+        <th><i class="bi bi-patch-check-fill me-1 text-success"></i>Effective Days</th>
+        <th><i class="bi bi-paperclip me-1"></i>Attachment</th>
+        <th><i class="bi bi-flag-fill me-1"></i>Status</th>
       </tr>
     </thead>
     <tbody>
       <tr *ngFor="let leave of leaveRequests">
-        <td>{{ leave.start_date }}</td>
-        <td>{{ leave.end_date }}</td>
+        <td>{{ formatDateTime(leave.start_date) }}</td>
+        <td>{{ formatDateTime(leave.end_date) }}</td>
 
-        <!-- Reason -->
         <td>
-          <ng-container *ngIf="leave.leave_type; else showOther">
-            {{ leave.leave_type }}
+          <ng-container *ngIf="leave.leave_type !== 'personal_leave'; else showOther">
+            {{ formatLeaveType(leave.leave_type) }}
           </ng-container>
           <ng-template #showOther>
             {{ leave.other_type || 'N/A' }}
           </ng-template>
         </td>
 
-        <!-- Requested Days -->
         <td>{{ leave.leave_days_requested || '0' }}</td>
-
-        <!-- Effective Days -->
         <td>{{ leave.effective_leave_days || '0' }}</td>
 
-        <!-- Attachment -->
-          <td>
-            <ng-container *ngIf="leave.leave_type === 'sick_leave' && leave.attachment_path; else noAttachment">
-              <a [href]="leave.attachment_path" target="_blank" class="btn btn-info btn-sm">View Attachment</a>
-            </ng-container>
-            <ng-template #noAttachment>
-              N/A
-            </ng-template>
-          </td>
-
-
-        <!-- Status & Action Buttons -->
         <td>
-          <!-- If userRole is not HR, show buttons for status change, otherwise show the status -->
-          <ng-container>
-            <div class="btn-group">
-              <button class="btn btn-success btn-sm me-1" (click)="updateLeaveStatus(leave.id, 'approved')">Accept</button>
-              <button class="btn btn-danger btn-sm me-1" (click)="updateLeaveStatus(leave.id, 'rejected')">Reject</button>
-              <button class="btn btn-warning btn-sm me-1 " (click)="openUpdateModal(leave)">Update</button>
-            </div>
+          <ng-container *ngIf="leave.attachment_path; else noAttachment">
+            <a [href]="leave.attachment_path" target="_blank" class="btn btn-info btn-sm">
+              <i class="bi bi-eye me-1"></i>View
+            </a>
           </ng-container>
+          <ng-template #noAttachment>
+            N/A
+          </ng-template>
+        </td>
+
+        <td>
+          <ng-container *ngIf="leave.status === 'approved'; else checkRejected">
+            <span class="badge bg-success p-2">
+              <i class="bi bi-check-circle me-1"></i>Approved
+            </span>
+          </ng-container>
+
+          <ng-template #checkRejected>
+            <ng-container *ngIf="leave.status === 'rejected'; else actionButtons">
+              <span class="badge bg-danger p-2">
+                <i class="bi bi-x-circle me-1"></i>Rejected
+              </span>
+            </ng-container>
+          </ng-template>
+
+          <ng-template #actionButtons>
+            <div class="btn-group">
+              <button class="btn btn-success btn-sm me-1" (click)="updateLeaveStatus(leave.id, 'approved')">
+                <i class="bi bi-check-lg me-1"></i>Accept
+              </button>
+              <button class="btn btn-danger btn-sm me-1" (click)="updateLeaveStatus(leave.id, 'rejected')">
+                <i class="bi bi-x-lg me-1"></i>Reject
+              </button>
+              <button *ngIf="leave.leave_type === 'sick_leave'" class="btn btn-warning btn-sm me-1"
+                (click)="openUpdateModal(leave)">
+                <i class="bi bi-pencil-square me-1"></i>Update
+              </button>
+
+            </div>
+          </ng-template>
         </td>
       </tr>
     </tbody>
+
+    <!-- Totals Row -->
+    <tfoot>
+      <tr class="table-light fw-bold">
+        <td colspan="3" class="text-end">Totals:</td>
+        <td>{{ totalRequestedLeaveDays }}</td>
+        <td>{{ totalEffectiveLeaveDays }}</td>
+        <td colspan="2"></td>
+      </tr>
+    </tfoot>
   </table>
 
   <!-- Pagination Controls -->
@@ -99,57 +140,88 @@
   [ngClass]="alertType" role="alert">
   <i *ngIf="alertType === 'alert-danger'" class="bi-exclamation-octagon-fill"></i>
   <strong class="mx-2">{{ alertMessage }}</strong>
-  <button type="button" class="btn-close"(click)="dismissAlert()" aria-label="Close"></button>
+  <button type="button" class="btn-close" (click)="dismissAlert()" aria-label="Close"></button>
 </div>
 <!-- Modal for Update -->
 <div class="modal fade" id="updateLeaveModal" tabindex="-1" aria-labelledby="updateLeaveModalLabel" aria-hidden="true">
   <div class="modal-dialog">
     <div class="modal-content">
       <div class="modal-header">
-        <h5 class="modal-title" id="updateLeaveModalLabel">Update Leave Request</h5>
-        <button type="button" class="btn-close btn-close-white"data-bs-dismiss="modal" aria-label="Close"></button>
+        <h5 class="modal-title" id="updateLeaveModalLabel">
+          <i class="bi bi-pencil-square me-2"></i>Update Leave Request
+        </h5>
+        <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal" aria-label="Close"></button>
       </div>
       <div class="modal-body">
-        <form (ngSubmit)="submitUpdatedLeave()">
+        <form #updateLeaveForm="ngForm" (ngSubmit)="submitUpdatedLeave()" novalidate>
+
+          <!-- Start Date (formatted view only) -->
           <div class="mb-3">
-            <label for="start_date" class="form-label">Start Date</label>
-            <input type="date" class="form-control" id="start_date" [(ngModel)]="selectedLeave.start_date" name="start_date" required>
+            <label class="form-label">
+              <i class="bi bi-calendar me-2"></i>Start Date
+            </label>
+            <p class="form-control bg-light">{{ formatDateTime(selectedLeave.start_date) }}</p>
           </div>
+
+          <!-- End Date (formatted view only) -->
           <div class="mb-3">
-            <label for="end_date" class="form-label">End Date</label>
-            <input type="date" class="form-control" id="end_date" [(ngModel)]="selectedLeave.end_date" name="end_date" required>
+            <label class="form-label">
+              <i class="bi bi-calendar-check me-2"></i>End Date
+            </label>
+            <p class="form-control bg-light">{{ formatDateTime(selectedLeave.end_date) }}</p>
           </div>
+
+          <!-- Leave Type (display only) -->
           <div class="mb-3">
-            <label for="leave_type" class="form-label">Leave Type</label>
-            <select class="form-control" id="leave_type" [(ngModel)]="selectedLeave.leave_type" name="leave_type" required>
-              <option value="vacation">Vacation</option>
-              <option value="travel_leave">Travel Leave</option>
-              <option value="paternity_leave">Paternity Leave</option>
-              <option value="maternity_leave">Maternity Leave</option>
-              <option value="sick_leave">Sick Leave</option>
-              <option value="other">Other</option>
-            </select>
+            <label class="form-label">
+              <i class="bi bi-card-text me-2"></i>Reason
+            </label>
+            <p class="form-control bg-light">Sick Leave</p>
           </div>
-          <div class="mb-3" *ngIf="selectedLeave.leave_type === 'other'">
-            <label for="other_type" class="form-label">Other Leave Type</label>
-            <input type="text" class="form-control" id="other_type" [(ngModel)]="selectedLeave.other_type" name="other_type">
-          </div>
+
+          <!-- Requested Days (display only) -->
           <div class="mb-3">
-            <label for="leave_days_requested" class="form-label">Requested Days</label>
-            <input type="number" class="form-control" id="leave_days_requested" [(ngModel)]="selectedLeave.leave_days_requested" name="leave_days_requested" required min="1">
+            <label class="form-label">
+              <i class="bi bi-calendar-day me-2"></i>Requested Days
+            </label>
+            <p class="form-control bg-light">{{ selectedLeave.leave_days_requested }}</p>
           </div>
+
+          <!-- Effective Days (editable & validated) -->
           <div class="mb-3">
-            <label for="effective_leave_days" class="form-label">Effective Leave Days</label>
-            <input type="number" class="form-control" id="effective_leave_days" [(ngModel)]="selectedLeave.effective_leave_days" name="effective_leave_days">
+            <label for="effective_leave_days" class="form-label">
+              <i class="bi bi-check-circle me-2"></i>Effective Leave Days
+            </label>
+            <input type="number" class="form-control" [(ngModel)]="selectedLeave.effective_leave_days"
+              name="effective_leave_days" #effectiveDays="ngModel" [min]="0"
+              [max]="selectedLeave.leave_days_requested || 0" required class="form-control"
+              [class.is-invalid]="effectiveDays.invalid && effectiveDays.touched">
+            <div class="invalid-feedback" *ngIf="effectiveDays.invalid && effectiveDays.touched">
+              Must be between 0 and {{ selectedLeave.leave_days_requested || 0 }} days.
+            </div>
           </div>
-          <button type="submit" class="btn btn-primary">Submit Update</button>
+
+          <!-- Show Other Leave Type (display only if applicable) -->
+          <div class="mb-3" *ngIf="selectedLeave.leave_type === 'personal_leave'">
+            <label class="form-label">
+              <i class="bi bi-file-earmark-text me-2"></i>Other Leave Type
+            </label>
+            <p class="form-control bg-light">{{ selectedLeave.other_type || 'N/A' }}</p>
+          </div>
+
+          <!-- Submit button (disabled if invalid) -->
+          <button type="submit" class="btn btn-primary" [disabled]="updateLeaveForm.invalid">
+            <i class="bi bi-save me-2"></i>Submit Update
+          </button>
         </form>
       </div>
     </div>
   </div>
 </div>
-  <!-- Confirmation Modal -->
-<div class="modal fade" id="confirmationModal" tabindex="-1" aria-labelledby="confirmationModalLabel" aria-hidden="true">
+
+<!-- Confirmation Modal -->
+<div class="modal fade" id="confirmationModal" tabindex="-1" aria-labelledby="confirmationModalLabel"
+  aria-hidden="true">
   <div class="modal-dialog">
     <div class="modal-content">
       <div class="modal-header">
@@ -166,5 +238,3 @@
     </div>
   </div>
 </div>
-
-

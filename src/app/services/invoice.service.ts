@@ -8,12 +8,14 @@ import { environment } from '../../environments/environment';
 })
 export class InvoiceService {
   private apiUrl = environment.apiUrl + '/invoices';
-
+  private GlobalUrl = environment.apiUrl ;
   constructor(private http: HttpClient) {}
   confirm(invoiceData: any): Observable<any> {
     return this.http.post(`${this.apiUrl}/store`, invoiceData, { withCredentials: true });
   }
-  
+  getAllClients() {
+    return this.http.get(`${this.GlobalUrl}/clients`);
+  }
   stepOne(data: any): Observable<any> {
     return this.http.post(`${this.apiUrl}/step-one`, data, { withCredentials: true });
   }

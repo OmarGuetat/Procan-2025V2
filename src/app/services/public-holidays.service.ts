@@ -18,9 +18,26 @@ export class PublicHolidayService {
 
   constructor(private http: HttpClient) {}
 
-  getHolidays(): Observable<PublicHoliday[]> {
-    return this.http.get<PublicHoliday[]>(this.apiUrl);
+  getHolidays(page: number = 1): Observable<{
+    data: PublicHoliday[],
+    meta: {
+      current_page: number;
+      per_page: number;
+      total_pages: number;
+      total_holidays: number;
+    }
+  }> {
+    return this.http.get<{
+      data: PublicHoliday[],
+      meta: {
+        current_page: number;
+        per_page: number;
+        total_pages: number;
+        total_holidays: number;
+      }
+    }>(`${this.apiUrl}?page=${page}`);
   }
+  
 
   addHoliday(holiday: PublicHoliday): Observable<any> {
     return this.http.post(this.apiUrl, holiday);

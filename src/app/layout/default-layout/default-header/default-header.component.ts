@@ -110,12 +110,28 @@ export class DefaultHeaderComponent extends HeaderComponent implements OnInit {
   }
 
   showAllNotifications() {
-    this.router.navigate(['/main/notifications']);
+    const role = this.authService.getRole();
+    const rolePrefix = this.getRolePrefix(role);
+    this.router.navigate([`/${rolePrefix}/notifications`]);
   }
-
+  
   goToProfile() {
-    this.router.navigate(['/main/profile']);
+    const role = this.authService.getRole();
+    const rolePrefix = this.getRolePrefix(role);
+    this.router.navigate([`/${rolePrefix}/profile`]);
   }
+  
+  // Add this helper if it's not already available
+  private getRolePrefix(role: string | null): string {
+    switch (role) {
+      case 'admin': return 'admin';
+      case 'employee': return 'employee';
+      case 'accountant': return 'accountant';
+      case 'hr': return 'hr';
+      default: return 'login';
+    }
+  }
+  
 
   private updateUnreadCount(): void {
     this.unreadCount = this.notifications.filter(n => !n.is_read).length;

@@ -1,57 +1,59 @@
-<!-- Dynamic Bootstrap Alert -->
-<div *ngIf="alertMessage" class="alert alert-dismissible fade show position-fixed top-0 end-0 m-3 shadow" 
-     [ngClass]="alertType" role="alert">
-  <i *ngIf="alertType === 'alert-danger'" class="bi-exclamation-octagon-fill"></i>
-  <strong class="mx-2">{{ alertMessage }}</strong>
-  <button type="button" class="btn-close" (click)="dismissAlert()" aria-label="Close"></button>
-</div>
 <div class="container mt-2">
-  <button class="btn rounded-circle border-custom mb-2 " (click)="onBackClick()">
-    <i class="bi bi-arrow-left "></i>
+  <!-- Back Button -->
+  <button class="btn btn-outline-secondary rounded-circle mb-2" (click)="onBackClick()">
+    <i class="bi bi-arrow-left"></i>
   </button>
   
-    <div *ngIf="leaveData.length > 0; else noResults">
-      <div class="card">
-        <div class="card-header">
-            <h5 class="fw-semibold">{{ user.first_name }} {{ user.last_name }} - Leave Details</h5> 
-        </div>
-        <div class="card-body">
-          <table class="table table-bordered">
-            <thead>
-              <tr>
-                <th>Leave Date</th>
-                <th>Leave Days</th>
-                <th>Description</th>
-                <th>Actions</th>
-              </tr>
-            </thead>
-            <tbody>
-              <tr *ngFor="let leave of leaveData">
-                <td>{{ leave.created_at | date: 'short' }}</td>
-                <td>{{ leave.leave_day_limit }}</td>
-                <td>{{ leave.description || 'No description' }}</td>
-                <td>
-                  <button class="btn btn-danger" (click)="cancelLeave(leave.id)">Cancel</button>
-                </td>
-              </tr>
-            </tbody>
-          </table>
-  
-           <!-- Pagination Controls -->
-  <div class="d-flex justify-content-between mt-3">
-    <button class="button-primary" (click)="goToPreviousPage()" [disabled]="currentPage === 1">Previous</button>
-    <span class="fw-semibold">Page {{ currentPage }} of {{ totalPages }}</span>
-    <button class="button-primary" (click)="goToNextPage()" [disabled]="currentPage === totalPages">Next</button>
-  </div>
+  <div *ngIf="leaveData.length > 0; else noResults">
+    <div class="card shadow-sm">
+      <div class="card-header d-flex justify-content-between align-items-center">
+        <h5 class="fw-semibold mb-0">{{ user.first_name }} {{ user.last_name }} - Leave Details</h5> 
+        <!-- Display Total Leave Day Limit -->
+        <p class="fw-semibold mb-0">Total Leave Days: {{ totalLeaveDayLimit }}</p>
+      </div>
+      
+      <div class="card-body">
+        <table class="table table-striped table-bordered">
+          <thead class="table-light">
+            <tr>
+              <th><i class="bi bi-calendar-check me-1 text-secondary"></i> Leave Date</th>
+              <th><i class="bi bi-calendar-day me-1 text-secondary"></i> Leave Days</th>
+              <th><i class="bi bi-file-earmark-text me-1 text-secondary"></i> Description</th>
+              <th><i class="bi bi-gear me-1 text-secondary"></i> Actions</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr *ngFor="let leave of leaveData">
+              <td>{{ leave.created_at | date: 'short' }}</td>
+              <td>{{ leave.leave_day_limit }}</td>
+              <td>{{ leave.description || 'No description' }}</td>
+              <td>
+                <button class="btn btn-outline-danger btn-sm" (click)="cancelLeave(leave.id)">
+                  <i class="bi bi-x-circle"></i> Cancel
+                </button>
+              </td>
+            </tr>
+          </tbody>
+        </table>
+
+        <!-- Pagination Controls -->
+        <div class="d-flex justify-content-between align-items-center mt-3">
+          <button class="btn btn-outline-primary" (click)="goToPreviousPage()" [disabled]="currentPage === 1">
+            <i class="bi bi-arrow-left-circle"></i> Previous
+          </button>
+          <span class="fw-semibold">Page {{ currentPage }} of {{ totalPages }}</span>
+          <button class="btn btn-outline-primary" (click)="goToNextPage()" [disabled]="currentPage === totalPages">
+            <i class="bi bi-arrow-right-circle"></i> Next
+          </button>
         </div>
       </div>
     </div>
-  
-    <!-- No Results Template -->
-    <ng-template #noResults>
-      <div class="text-center mt-4">
-        <h5>No leave records found.</h5>
-      </div>
-    </ng-template>
   </div>
-  
+
+  <!-- No Results Template -->
+  <ng-template #noResults>
+    <div class="text-center mt-4">
+      <h5><i class="bi bi-exclamation-triangle-fill text-warning me-2"></i>No leave records found.</h5>
+    </div>
+  </ng-template>
+</div>

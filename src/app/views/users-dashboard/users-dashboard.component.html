@@ -84,11 +84,11 @@
 
         <!-- Phone Number (optional) -->
         <div class="mb-3 col-6">
-          <label for="phone_number" class="form-label">
+          <label for="phone" class="form-label">
             <i class="bi bi-telephone-fill me-1"></i> Phone Number
           </label>
-          <input type="text" class="form-control" id="phone_number" formControlName="phone_number">
-          <div *ngIf="candidateForm.get('phone_number')?.touched && candidateForm.get('phone_number')?.errors?.['pattern']" class="text-danger">
+          <input type="text" class="form-control" id="phone" formControlName="phone">
+          <div *ngIf="candidateForm.get('phone')?.touched && candidateForm.get('phone')?.errors?.['pattern']" class="text-danger">
             Phone number must be exactly 8 digits.
           </div>
           
@@ -128,7 +128,7 @@
           <select class="form-select" id="role" formControlName="role">
             <option value="employee">Employee</option>
             <option value="hr">Hr</option>
-            <option value="accountat">Accountat</option>
+            <option value="accountant">Accountant</option>
           </select>
         </div>
 

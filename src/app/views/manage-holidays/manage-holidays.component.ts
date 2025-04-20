@@ -21,6 +21,10 @@ export class ManageHolidaysComponent implements OnInit {
   holidayForm: FormGroup;
   isEditing = false;
   selectedHolidayId?: number;
+  dateInvalid = false;
+
+  currentPage = 1;
+  totalPages = 1;
 
   constructor(
     private holidayService: PublicHolidayService,
@@ -37,14 +41,38 @@ export class ManageHolidaysComponent implements OnInit {
     this.loadHolidays();
   }
 
-  loadHolidays(): void {
-    this.holidayService.getHolidays().subscribe(data => {
-      this.holidays = data;
+  loadHolidays(page: number = 1): void {
+    this.holidayService.getHolidays(page).subscribe(response => {
+      this.holidays = response.data;
+      this.currentPage = response.meta.current_page;
+      this.totalPages = response.meta.total_pages;
     });
+  }
+
+  goToPreviousPage(): void {
+    if (this.currentPage > 1) {
+      this.loadHolidays(this.currentPage - 1);
+    }
+  }
+
+  goToNextPage(): void {
+    if (this.currentPage < this.totalPages) {
+      this.loadHolidays(this.currentPage + 1);
+    }
   }
 
   formatDate(date: string): string {
     return `${date} 08:00:00`;
+  }
+
+  checkDateValidity(): void {
+    const startDate = this.holidayForm.value.start_date;
+    const endDate = this.holidayForm.value.end_date;
+    if (startDate && endDate) {
+      this.dateInvalid = new Date(endDate) < new Date(startDate);
+    } else {
+      this.dateInvalid = false;
+    }
   }
 
   addHoliday(): void {
@@ -59,12 +87,12 @@ export class ManageHolidaysComponent implements OnInit {
     if (this.isEditing) {
       this.holidayService.updateHoliday(this.selectedHolidayId!, holiday).subscribe(() => {
         this.resetForm();
-        this.loadHolidays();
+        this.loadHolidays(this.currentPage);
       });
     } else {
       this.holidayService.addHoliday(holiday).subscribe(() => {
         this.resetForm();
-        this.loadHolidays();
+        this.loadHolidays(this.currentPage);
       });
     }
   }
@@ -74,7 +102,7 @@ export class ManageHolidaysComponent implements OnInit {
     this.selectedHolidayId = holiday.id;
     this.holidayForm.patchValue({
       name: holiday.name,
-      start_date: holiday.start_date.split(' ')[0], // Remove time for display
+      start_date: holiday.start_date.split(' ')[0],
       end_date: holiday.end_date.split(' ')[0]
     });
   }
@@ -91,9 +119,8 @@ export class ManageHolidaysComponent implements OnInit {
   confirmDelete() {
     if (this.selectedHolidayId !== null) {
       this.holidayService.deleteHoliday(this.selectedHolidayId!).subscribe(() => {
-        this.loadHolidays();
+        this.loadHolidays(this.currentPage);
       });
-      this.selectedHolidayId != null;
     }
   }
 

@@ -1,27 +1,26 @@
 <!-- ALERT -->
-  <div *ngIf="alertMessage" class="alert alert-dismissible fade show position-fixed top-0 end-0 m-3 shadow"
-       [ngClass]="alertType" role="alert">
-    <i *ngIf="alertType === 'alert-danger'" class="bi-exclamation-octagon-fill"></i>
-    <strong class="mx-2">{{ alertMessage }}</strong>
-    <button type="button" class="btn-close" (click)="dismissAlert()" aria-label="Close"></button>
-  </div>
-
+<div *ngIf="alertMessage" class="alert alert-dismissible fade show position-fixed top-0 end-0 m-3 shadow"
+  [ngClass]="alertType" role="alert">
+  <i *ngIf="alertType === 'alert-danger'" class="bi-exclamation-octagon-fill"></i>
+  <strong class="mx-2">{{ alertMessage }}</strong>
+  <button type="button" class="btn-close" (click)="dismissAlert()" aria-label="Close"></button>
+</div>
 
 <!-- Main Card -->
-<div class="card shadow-sm ">
-  
+<div class="card shadow-sm">
   <!-- Card Header -->
   <div class="card-header d-flex align-items-center justify-content-between">
     <h5 class="card-title my-1">
       <i class="bi bi-calendar-check me-2"></i>Leave Request
     </h5>
-    
+
     <!-- Three-Dot Menu -->
-    <div class="dropdown ms-auto" *ngIf="request.status !== 'rejected'">
-      <button class="btn btn-light btn-sm rounded-circle shadow-sm transition-all" type="button" data-bs-toggle="dropdown">
+    <div class="dropdown ms-auto" *ngIf="showMenu && request.status !== 'rejected'">
+      <button class="btn btn-light btn-sm rounded-circle shadow-sm transition-all" type="button"
+        data-bs-toggle="dropdown">
         <i class="bi bi-three-dots-vertical"></i>
       </button>
-      <ul class="dropdown-menu" >
+      <ul class="dropdown-menu">
         <li *ngIf="request.leave_type === 'sick_leave'">
           <a [href]="request.attachment_path" target="_blank" class="btn dropdown-item">
             <i class="bi bi-eye me-2"></i>See Attachment
@@ -49,30 +48,23 @@
   <!-- Card Body -->
   <div class="card-body">
     <div class="row align-items-center">
-      
       <!-- Leave Details -->
       <div class="col-md-8">
         <p class="d-flex align-items-center">
           <i class="bi bi-calendar-event me-2"></i>
-          <strong>Start Date:</strong>&nbsp;{{ request.start_date }}
+          <strong>Start Date:</strong>&nbsp;{{ formatDateTime(request.start_date) }}
         </p>
         <p class="d-flex align-items-center">
           <i class="bi bi-calendar-event me-2"></i>
-          <strong>End Date:</strong>&nbsp;{{ request.end_date }}
+          <strong>End Date:</strong>&nbsp;{{ formatDateTime(request.end_date) }}
         </p>
         <p class="d-flex align-items-center">
           <i class="bi bi-chat-left-text me-2"></i>
           <strong>Reason:</strong>&nbsp;
-          <span [ngSwitch]="request.leave_type">
-            <span *ngSwitchCase="'paternity_leave'">Paternity Leave</span>
-            <span *ngSwitchCase="'maternity_leave'">Maternity Leave</span>
-            <span *ngSwitchCase="'vacation'">Vacation</span>
-            <span *ngSwitchCase="'sick_leave'">Sick Leave</span>
-            <span *ngSwitchCase="'travel_leave'">Travel</span>
-            <span *ngSwitchDefault>{{ request.other_type || 'N/A' }}</span>
+          <span>
+            {{ formatLeaveType(request.leave_type) }}
           </span>
         </p>
-        
         <p class="d-flex align-items-center">
           <i class="bi bi-info-circle me-2"></i>
           <strong>Status:</strong>&nbsp;
@@ -99,14 +91,13 @@
           </div>
         </div>
       </div>
-
     </div>
   </div>
 </div>
 
-  
 <!-- Update Leave Modal-->
-<div class="modal fade" [id]="'updateLeaveModal-' + request.id" tabindex="-1" aria-labelledby="updateLeaveModalLabel" aria-hidden="true">
+<div class="modal fade" [id]="'updateLeaveModal-' + request.id" tabindex="-1" aria-labelledby="updateLeaveModalLabel"
+  aria-hidden="true">
   <div class="modal-dialog">
     <div class="modal-content">
       <div class="modal-header">
@@ -119,26 +110,27 @@
           <div class="mb-3">
             <label for="leave_type" class="form-label">Reason</label>
             <select formControlName="leave_type" class="form-select" (change)="onReasonChange()">
-              <option value="vacation">Vacation</option>
-              <option value="travel_leave">Travel</option>
               <option value="paternity_leave">Paternity Leave</option>
               <option value="maternity_leave">Maternity Leave</option>
               <option value="sick_leave">Sick Leave</option>
-              <option value="other">Other</option>
+              <option value="personal_leave">Personal Leave</option>
             </select>
           </div>
-          <!-- Other Reason Input (Only if "Other" is selected) -->
-          <div class="mb-3" *ngIf="updateForm.value.leave_type === 'other'">
+          <!-- Other Reason Input (Only if "Personal Leave" is selected) -->
+          <div class="mb-3" *ngIf="updateForm.value.leave_type === 'personal_leave'">
             <label for="other_type" class="form-label">Specify Reason</label>
             <input type="text" formControlName="other_type" class="form-control">
-            <small *ngIf="updateForm.controls['other_type'].errors?.['required']" class="text-danger">Please provide a leave_type.</small>
+            <small *ngIf="updateForm.controls['other_type'].errors?.['required']" class="text-danger">Please provide a
+              reason.</small>
           </div>
-          <!-- Attachment (Only if "Sick Leave" is selected) -->
-          <div class="mb-3" *ngIf="updateForm.value.leave_type === 'sick_leave'">
+          <!-- Attachment (Only if "Sick Leave", "Maternity Leave", or "Paternity Leave" is selected) -->
+          <div class="mb-3"
+            *ngIf="['sick_leave', 'maternity_leave', 'paternity_leave'].includes(updateForm.value.leave_type)">
             <label for="attachment" class="form-label">Medical Certificate (PDF, JPG, PNG)</label>
             <input type="file" (change)="onFileChange($event)" class="form-control">
             <small *ngIf="attachmentError" class="text-danger">{{ attachmentError }}</small>
           </div>
+
           <!-- Submit Button -->
           <button type="submit" class="btn button-primary">Update Leave</button>
         </form>

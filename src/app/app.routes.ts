@@ -27,6 +27,9 @@ export const routes: Routes = [
       { path: '', loadChildren: () => import('./views/invoices/routes').then((m) => m.routes) },
      
       { path: 'notifications', loadChildren: () => import('./views/notifications/routes').then((m) => m.routes) },
+      {
+        path: 'leave-decision-details/:id',loadChildren: () =>import('./views/leave-decision-details/routes').then(m => m.routes)
+      },
       { path: 'profile', loadChildren: () => import('./views/profile/routes').then((m) => m.routes) },
     ]
   },

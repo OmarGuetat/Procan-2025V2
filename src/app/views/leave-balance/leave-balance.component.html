@@ -1,33 +1,67 @@
-<div class="card">
-    <div class="card-header">
-      <strong>Manage Leave Balances</strong>
-    </div>
-    <div class="card-body">
-      <table class="table table-striped">
-        <thead>
-          <tr>
-            <th>Leave Type</th>
-            <th>Max Days</th>
-            <th>Actions</th>
-          </tr>
-        </thead>
-        <tbody>
-          <tr *ngFor="let leave of leaveBalances">
-            <td>{{ formatLeaveType(leave.leave_type) }}</td>
-            <td>
-              <input type="number" class="form-control" [(ngModel)]="leave.max_days">
-            </td>
-            <td>
-              <button *ngIf="leave.id" class="btn btn-primary btn-sm" (click)="updateLeaveBalance(leave)">
-                Update
-              </button>
-              <button *ngIf="!leave.id" class="btn btn-success btn-sm" (click)="addLeaveBalance(leave)">
-                Add
-              </button>
-            </td>
-          </tr>
-        </tbody>
-      </table>
-    </div>
+<div class="card shadow-sm mt-2">
+  <div class="card-header d-flex justify-content-between align-items-center ">
+    <strong>Manage Leave Balances</strong>
+    <i class="bi bi-calendar-check fs-5 text-primary"></i>
   </div>
-  
+  <div class="card-body">
+    <table class="table table-hover table-bordered align-middle">
+      <thead class="table-light">
+        <tr>
+          <th>
+            <i class="bi bi-tags me-1 text-secondary"></i>
+            Leave Type
+          </th>
+          <th>Max</th>
+          <th>Actions</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr *ngFor="let leave of leaveBalances; let i = index">
+          <td>
+            <i [ngClass]="getLeaveIconClass(leave.leave_type)" class="me-1 text-primary"></i>
+            {{ formatLeaveType(leave.leave_type) }}
+          </td>
+          <td>
+            <div class="input-group">
+              <input
+                type="number"
+                class="form-control"
+                name="maxDays{{ i }}"
+                [(ngModel)]="leave.max_days"
+                #maxDays="ngModel"
+                required
+                min="1"
+              />
+              <span class="input-group-text rounded-0">
+                {{ leave.leave_type === 'maternity_leave' ? 'Months' : 'Days' }}
+              </span>
+            </div>
+            <small *ngIf="maxDays.invalid && maxDays.touched" class="text-danger">
+              Value must be at least 1
+            </small>
+          </td>
+          <td>
+            <button
+              *ngIf="leave.id"
+              type="button"
+              class="btn btn-sm btn-outline-primary d-flex align-items-center gap-1"
+              (click)="updateLeaveBalance(leave)"
+              [disabled]="maxDays.invalid"
+            >
+              <i class="bi bi-arrow-repeat"></i> Update
+            </button>
+            <button
+              *ngIf="!leave.id"
+              type="button"
+              class="btn btn-sm btn-outline-success d-flex align-items-center gap-1"
+              (click)="addLeaveBalance(leave)"
+              [disabled]="maxDays.invalid"
+            >
+              <i class="bi bi-plus-circle"></i> Add
+            </button>
+          </td>
+        </tr>
+      </tbody>
+    </table>
+  </div>
+</div>

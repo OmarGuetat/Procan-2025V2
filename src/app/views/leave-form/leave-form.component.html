@@ -14,14 +14,16 @@
         <!-- Step Controls in the top-right corner -->
         <div class="step-controls position-absolute top-0 end-0 p-3">
           <span *ngIf="step === 1" class="badge bg-primary">Step 1</span>
-          <span *ngIf="step === 2" class="badge bg-secondary">Step 2</span>
+          <span *ngIf="step === 2 && !alreadyTaken" class="badge bg-secondary">Step 2</span>
           <span *ngIf="step === 3" class="badge bg-success">Step 3</span>
         </div>
 
         <!-- Leave Request Form Title -->
-        <h3 class="animated-title" *ngIf="step === 1 || step === 2">
-          <i class="bi bi-file-earmark-text"></i> Leave Request Form
-        </h3>
+        <h3 class="animated-title" *ngIf="step === 1 || step === 2 && !alreadyTaken"><i
+            class="bi bi-file-earmark-text"></i> Leave Request Form</h3>
+        <!-- Alternative Title If Error -->
+        <h4 *ngIf="alreadyTaken" class="mb-3 text-danger animated-title"><i class="bi bi-exclamation-circle-fill"></i>
+          Request Not Allowed</h4>
         <hr *ngIf="step === 1 || step === 2">
 
         <!-- Step 1: Basic Leave Info -->
@@ -129,16 +131,16 @@
         </form>
 
         <!-- Step 2: Confirm Leave Details -->
-        <div *ngIf="step === 2">
+        <div *ngIf="step === 2 && !alreadyTaken">
           <h4 class="mb-3">Confirm Your Leave Details</h4>
           <div class="card p-3 bg-light">
             <p><i class="bi bi-calendar-event"></i>&nbsp; <strong>Start Date:</strong> {{
               formatDateTime(leaveDetails.start_date) }}</p>
             <p><i class="bi bi-calendar-event"></i>&nbsp; <strong>End Date:</strong> {{
               formatDateTime(leaveDetails.end_date) }}</p>
-            <p><i class="bi bi-chat-left-text"></i>&nbsp; <strong>Leave Type:</strong> {{ leaveDetails.leave_type }}</p>
-            <p><i class="bi bi-calendar-week"></i>&nbsp; <strong>Leave Days:</strong> {{ leaveDetails.leave_days }} days
-            </p>
+            <p><i class="bi bi-chat-left-text"></i>&nbsp; <strong>Leave Type:</strong> {{ formatLeaveType(leaveDetails.leave_type) }}</p>
+            <p><i class="bi bi-calendar-week"></i>&nbsp; <strong>Leave Days:</strong> {{ leaveDetails.leave_days }} days</p>
+            
           </div>
           <div class="my-2">
             <label class="form-label">Remaining Balance:</label> {{ remainingDays }} days
@@ -147,8 +149,7 @@
             </p>
           </div>
           <!-- File Upload for Sick, Maternity, or Paternity Leave -->
-          <div *ngIf="['sick_leave', 'maternity_leave', 'paternity_leave'].includes(leaveDetails.leave_type)"
-            class="mt-3 mb-4">
+          <div *ngIf="isAttachmentRequired()" class="mt-3 mb-4">
             <label for="attachment" class="form-label">
               <i class="bi bi-paperclip"></i> Attach Certificate
             </label>
@@ -164,23 +165,68 @@
             </button>
           </div>
         </div>
+      <!-- Step 2: Already Taken Leave -->
+<ng-container *ngIf="step === 2 && alreadyTaken">
+  <div class="card bg-warning bg-opacity-10 border border-warning p-4">
+    <p class="fs-5 text-dark mb-4">
+      You have already taken a <strong>{{ leaveForm.value.leave_type === 'paternity_leave' ? 'paternity' : 'maternity' }}</strong> leave
+      either this year or during the previous calendar year. <br>
+      You cannot request it again.
+    </p>
 
+    <form (ngSubmit)="sendExplanationToHR( )" #contactForm="ngForm">
+      <div class="mb-3">
+        <label for="message" class="form-label">Explain your situation (optional):</label>
+        <textarea
+          id="message"
+          class="form-control"
+          [(ngModel)]="rejectionMessage"
+          name="rejectionMessage"
+          rows="4"
+          placeholder="Type your message to HR here..."></textarea>
+      </div>
+
+      <div class="d-flex justify-content-between align-items-center mt-3">
+        <button type="button" class="btn btn-outline-secondary" (click)="goBackToStep1()">
+          <i class="bi bi-arrow-left-circle"></i> Modify Request
+        </button>
+
+        <button type="submit" class="btn btn-primary" [disabled]="isSending">
+          <i class="bi bi-send me-1"></i> Contact HR or Admin
+        </button>
+      </div>
+    </form>
+  </div>
+</ng-container>
 
         <!-- Step 3: Success Message -->
-        <div *ngIf="step === 3" class="text-center">
-          <h4 class="text-success"><i class="bi bi-check-circle"></i> Request Submitted!</h4>
-          <hr class="my-4"> <!-- HR for Step 3 -->
-          <p>Your leave request has been successfully recorded.</p>
-          <button class="btn btn-primary mt-3" (click)="viewHistory()">
-            <i class="bi bi-clock-history"></i> View Leave History
-          </button>
-        </div>
+      <div *ngIf="step === 3" class="text-center">
+        <h4 class="text-success"><i class="bi bi-check-circle"></i> Request Submitted!</h4>
+        <hr class="my-4"> <!-- HR for Step 3 -->
+        <p>Your leave request has been successfully recorded.</p>
+        <button class="btn btn-primary mt-3" (click)="viewHistory()">
+          <i class="bi bi-clock-history"></i> View Leave History
+        </button>
+      </div>
       </div>
     </div>
-
+      
+    
+  
     <!-- Image Section (Right) -->
-    <div class="col-lg-6 d-flex justify-content-center align-items-center" *ngIf="step !== 3">
+    <div class="col-lg-6 d-flex justify-content-center align-items-center" *ngIf="step !== 3 && !alreadyTaken">
       <img src="assets/leaveCallender.svg" alt="Leave Calendar" class="img-fluid img-container" style="max-width: 80%;">
     </div>
+    <!-- Image Section for Maternity Leave -->
+    <div class="col-lg-6 d-flex justify-content-center align-items-center"
+      *ngIf="step === 2 && alreadyTaken && leaveForm.value.leave_type === 'maternity_leave'">
+      <img src="assets/sadEmployee.svg" alt="Leave Calendar" class="img-fluid img-container" style="max-width: 80%;">
+    </div>
+
+    <!-- Image Section for Paternity Leave -->
+    <div class="col-lg-6 d-flex justify-content-center align-items-center"
+      *ngIf="step === 2 && alreadyTaken && leaveForm.value.leave_type === 'paternity_leave'">
+      <img src="assets/sadManEmployee.svg" alt="Leave Calendar" class="img-fluid img-container" style="max-width: 80%;">
+    </div>
   </div>
-</div>
+  </div>

@@ -1,61 +1,76 @@
 <!-- Dynamic Bootstrap Alert -->
-<div *ngIf="alertMessage" class="alert alert-dismissible fade show position-fixed top-0 end-0 m-3 shadow" 
-     [ngClass]="alertType" role="alert">
-  <i *ngIf="alertType === 'alert-danger'" class="bi-exclamation-octagon-fill"></i>
-  <strong class="mx-2">{{ alertMessage }}</strong>
+<div *ngIf="alertMessage" class="alert alert-dismissible fade show position-fixed top-0 end-0 m-3 shadow"
+  [ngClass]="alertType" role="alert" style="z-index: 1055;">
+  <i *ngIf="alertType === 'alert-danger'" class="bi bi-exclamation-octagon-fill me-2"></i>
+  <strong>{{ alertMessage }}</strong>
   <button type="button" class="btn-close" (click)="dismissAlert()" aria-label="Close"></button>
 </div>
-<div class="card leave-card text-center shadow-sm align-items-center p-3 ">
-  <img [src]="leaveEmployee.avatar_path" alt="Profile Image" 
-  class="rounded-circle border-custom shadow-sm" 
-  style="width: 95px; height: 95px;object-fit: cover;">
+<!-- Leave Card -->
+<div class="card leave-card text-center shadow-sm p-3">
+  <!-- Profile Image -->
+  <div class="d-flex flex-column align-items-center">
+    <img [src]="leaveEmployee.avatar_path" alt="Profile Image"
+      class="rounded-circle border-custom shadow-sm mb-2" style="width: 80px; height: 80px; object-fit: cover;">
+    <div class="fw-semibold small">{{ leaveEmployee.first_name }} {{ leaveEmployee.last_name }}</div>
+  </div>
 
-  <div class="card-body ">
-    <h6 class="card-title">{{ leaveEmployee.first_name }} {{ leaveEmployee.last_name }}</h6>
-    
-    <div class="btn-group">
-      <button class="btn button-secondary" (click)="seeDetails()">Details</button>
-      <button 
-        class="btn button-success text-nowrap" 
-        *ngIf="role !== 'hr'" 
-        (click)="addLeaveDays()">
-        <i class="bi bi-plus-circle"></i> Days
-      </button>
-      <button class="btn button-primary text-nowrap"(click)="viewRequests()">Requests</button>
-    </div>
-  </div>    
+  <!-- Leave Balances - Compact -->
+  <div class="d-flex justify-content-center gap-2 mt-2 flex-wrap">
+    <span class="badge bg-primary px-2 py-1 small">
+      <i class="bi bi-person-check me-1"></i> {{ leaveEmployee.personal_leave_remaining }}d
+    </span>
+    <span class="badge bg-warning text-dark px-2 py-1 small">
+      <i class="bi bi-thermometer-half me-1"></i> {{ leaveEmployee.sick_leave_remaining }}d
+    </span>
+  </div>
+
+  <!-- Action Buttons -->
+  <div class="btn-group mt-3">
+    <button class="btn button-secondary btn-sm" (click)="seeDetails()">Details</button>
+    <button class="btn button-success btn-sm text-nowrap" *ngIf="role !== 'hr'" (click)="addLeaveDays()">
+      <i class="bi bi-plus-circle me-1"></i> Days
+    </button>
+    <button class="btn button-primary btn-sm text-nowrap" (click)="viewRequests()">Requests</button>
+  </div>
 </div>
+
 <!-- Add Leave Days Modal -->
 <div class="modal fade" [id]="'leaveModal-' + leaveEmployee.id" tabindex="-1" aria-hidden="true">
   <div class="modal-dialog">
     <div class="modal-content">
+      <!-- Modal Header -->
       <div class="modal-header">
         <h5 class="modal-title">Add Leave Days</h5>
         <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal" aria-label="Close"></button>
       </div>
+
+      <!-- Modal Body -->
       <div class="modal-body">
         <form [formGroup]="leaveForm">
           <!-- Leave Days Input -->
           <div class="mb-3">
             <label for="leaveDays" class="form-label">Leave Days</label>
-            <input type="number" id="leaveDays" class="form-control" formControlName="leave_day_limit" 
-                   placeholder="Enter number of leave days" min="1">
-            <div *ngIf="leaveForm.controls['leave_day_limit'].invalid && leaveForm.controls['leave_day_limit'].touched" class="text-danger">
-              Leave days are required and must be at least 1.
+            <input type="number" id="leaveDays" class="form-control" formControlName="leave_day_limit"
+              placeholder="Enter number of leave days" min="0.25" step="0.25">
+            <div *ngIf="leaveForm.controls['leave_day_limit'].invalid && leaveForm.controls['leave_day_limit'].touched"
+              class="text-danger">
+              Leave days are required and must be at least 0.25.
             </div>
           </div>
 
           <!-- Description Input -->
           <div class="mb-3">
             <label for="description" class="form-label">Description (Optional)</label>
-            <textarea id="description" class="form-control" formControlName="description" 
-                      placeholder="Enter description (max 255 characters)"></textarea>
+            <textarea id="description" class="form-control" formControlName="description"
+              placeholder="Enter description"></textarea>
           </div>
         </form>
-
       </div>
+
+      <!-- Modal Footer -->
       <div class="modal-footer">
-        <button type="button" class="btn btn-secondary" id="closeModal-{{ leaveEmployee.id }}" data-bs-dismiss="modal">Close</button>
+        <button type="button" class="btn btn-secondary" id="closeModal-{{ leaveEmployee.id }}"
+          data-bs-dismiss="modal">Close</button>
         <button type="button" class="button-primary" (click)="submitLeave()">Submit</button>
       </div>
     </div>

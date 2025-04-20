@@ -3,6 +3,7 @@ import { HttpClient } from '@angular/common/http';
 import { Observable } from 'rxjs';
 import { environment } from '../../environments/environment';  // Import environment
 
+
 @Injectable({
   providedIn: 'root',
 })
@@ -37,13 +38,16 @@ export class LeaveService {
     return this.http.delete<any>(`${this.apiUrl}/leave-balances/${leaveId}`);
   }
 
-  getLeaveRequests(userId: number, year?: number, page: number = 1,type_leave?:string): Observable<any> {
+  getLeaveRequests(userId: number, year?: number, page: number = 1,type_leave?:string,status?:string): Observable<any> {
     const params: any = { page };
     if (year) {
       params.year = year;
     }
     if (type_leave) {
       params.type_leave = type_leave;
+    }
+    if (status) {
+      params.status = status;
     }
     return this.http.get<any>(`${this.apiUrl}/admin/employees/${userId}/leaves`, { params });
   }
@@ -52,14 +56,22 @@ export class LeaveService {
     const url = `${this.apiUrl}/admin/leaves/${leaveId}/status`;
     return this.http.patch(url, { status });
   }
-
-  getUserLeaveRequests( page: number = 1, year?: number): Observable<any> {
-    const params: any = { page };
-    if (year) {
-      params.year = year;
-    }
-    return this.http.get<any>(`${this.apiUrl}/employee/leaves?page=${page}`, { params });
+  // Get leave details by leave ID
+  getLeaveDetail(leaveId: number): Observable<any> {
+    return this.http.get<any>(`${this.apiUrl}/leaves/${leaveId}`);
   }
+  getUserLeaveRequests(page: number, year?: number, status?: string, leaveType?: string) {
+  let params: any = { page };
+  if (year) params.year = year;
+  if (status) params.status = status;
+  if (leaveType) params.leave_type = leaveType;
+
+  return this.http.get<any>(`${this.apiUrl}/employee/leaves`, { params });
+}
+
+notifyRejectionToHR(leaveId: number, payload: { message: string }) {
+  return this.http.post(`${this.apiUrl}/leaves/${leaveId}/notify-rejection`, payload);
+}
 
   updateLeave(leaveId: number, formData: FormData): Observable<any> {
     return this.http.post(`${this.apiUrl}/employee/leaves/${leaveId}`, formData);
