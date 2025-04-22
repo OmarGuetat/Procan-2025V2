@@ -2,13 +2,14 @@ import { Component } from '@angular/core';
 import { InvoiceService } from '../../../services/invoice.service';
 import { CommonModule } from '@angular/common';
 import { FormsModule, ReactiveFormsModule } from '@angular/forms';
+import { StepIndicatorComponent } from '../../components/step-indicator/step-indicator.component';
 
 declare var bootstrap: any;
 @Component({
   selector: 'app-invoice-form',
-  imports:[CommonModule,ReactiveFormsModule,FormsModule],
+  imports:[CommonModule,ReactiveFormsModule,FormsModule,StepIndicatorComponent],
   templateUrl: './invoice-form.component.html',
-  styleUrls: ['./invoice-form.component.css'],
+  styleUrls: ['./invoice-form.component.scss'],
 })
 export class InvoiceFormComponent {
   currentStep = 1;
@@ -42,6 +43,8 @@ export class InvoiceFormComponent {
     TTotal_TVA: 0,
     TTotal_TTC: 0,
   };
+  alertMessage: string = '';
+  alertType: string = '';
   confirmationMessage = '';
   confirmationError = '';
   clients: any[] = [];
@@ -52,6 +55,7 @@ export class InvoiceFormComponent {
   openExistingClientModal() {
     this.invoiceService.getAllClients().subscribe({
       next: (res: any) => {
+        console.log(res);
         this.clients = res;
         const modal = new bootstrap.Modal(document.getElementById('existingClientModal')!);
         modal.show();
@@ -151,7 +155,9 @@ export class InvoiceFormComponent {
   this.stepThreeData.TTotal_TVA = totalTVA;
   this.stepThreeData.TTotal_TTC = totalTTC;
   }
-  
+  dismissAlert() {
+    this.alertMessage = '';
+  }
   confirmInvoice() {
     const invoiceData = {
       step1: this.stepOneData,
@@ -161,13 +167,17 @@ export class InvoiceFormComponent {
   
     this.invoiceService.confirm(invoiceData).subscribe({
       next: (res: any) => {
+        this.alertMessage = res.message || 'Invoice created successfully!';
+        this.alertType = 'alert-success';
         this.confirmationMessage = res.message;
-        this.confirmationError = '';
-        this.currentStep = 5; // Passer à l'étape de confirmation ou effectuer une redirection
+        setTimeout(() => {
+          this.dismissAlert();
+          this.currentStep = 1; 
+        }, 500);
       },
       error: (err) => {
-        this.confirmationError = err?.error?.error || 'Une erreur inattendue est survenue.';
-        this.confirmationMessage = '';
+        this.alertMessage = err?.error?.error || 'Une erreur inattendue est survenue.';
+        this.alertType = 'alert-danger';
       }
     });
   }

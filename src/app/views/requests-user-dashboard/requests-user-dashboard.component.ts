@@ -37,6 +37,7 @@ export class RequestsUserDashboardComponent implements OnInit {
         this.selectedType ?? undefined
       )
       .subscribe(response => {
+        console.log(response);
         this.leaveRequests = response.data;
         this.availableYears = response.available_years;
         this.totalPages = response.meta.total_pages;

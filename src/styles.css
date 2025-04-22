@@ -133,6 +133,30 @@ h4, h5, h6 {
 .button-error:hover {
     background: darken(var(--color-error), 10%);
 }
+.button-outline-primary {
+    background: transparent;
+    color: var(--color-primary);
+    padding: 10px 16px;
+    border-radius: 6px;
+    border: 2px solid var(--color-primary);
+    cursor: pointer;
+    font-weight: 600;
+    transition: background 0.3s ease-in-out, color 0.3s ease-in-out;
+    font-family: var(--font-family-accent);
+}
+
+.button-outline-primary:hover {
+    background: var(--color-hover);
+    color: var(--color-primary-dark);
+    border-color: var(--color-primary-dark);
+}
+
+.button-outline-primary:disabled {
+    color: var(--color-muted-text);
+    border-color: var(--color-border);
+    cursor: not-allowed;
+    background: transparent;
+}
 
 /* ===== Forms & Inputs ===== */
 input, textarea, select {

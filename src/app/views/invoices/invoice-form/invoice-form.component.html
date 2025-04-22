@@ -1,31 +1,25 @@
-<div class="container py-5">
+<!-- ALERTS -->
+<!-- Dynamic Bootstrap Alert -->
+<div *ngIf="alertMessage" class="alert alert-dismissible fade show position-fixed top-0 end-0 m-3 shadow"
+  [ngClass]="alertType" role="alert">
+  <i *ngIf="alertType === 'alert-danger'" class="bi-exclamation-octagon-fill"></i>
+  <strong class="mx-2">{{ alertMessage }}</strong>
+  <button type="button" class="btn-close" (click)="dismissAlert()" aria-label="Close"></button>
+</div>
+<div class="container py-3">
   <div class="row mb-4">
     <!-- Back Arrow Button (Visible if not on step 1) -->
-    <div *ngIf="currentStep > 1" class="col-12 text-start">
-      <button class="btn btn-outline-primary" (click)="goBack()">
-        <i class="bi bi-arrow-left"></i> Back
+    <div *ngIf="currentStep > 1" class="col-md-2 text-start">
+      <button class="btn button-outline-primary" (click)="goBack()">
+        <i class="bi bi-arrow-left"></i>
       </button>
     </div>
-
-    <!-- Step Indicator -->
-    <div class="col-12 d-flex justify-content-center">
-      <ul class="nav nav-pills mb-1">
-        <li class="nav-item">
-          <a class="nav-link" [ngClass]="{'active': currentStep === 1}" (click)="goToStep(1)">Step 1</a>
-        </li>
-        <li class="nav-item">
-          <a class="nav-link" [ngClass]="{'active': currentStep === 2}" (click)="goToStep(2)">Step 2</a>
-        </li>
-        <li class="nav-item">
-          <a class="nav-link" [ngClass]="{'active': currentStep === 3}" (click)="goToStep(3)">Step 3</a>
-        </li>
-        <li class="nav-item">
-          <a class="nav-link" [ngClass]="{'active': currentStep === 4}" (click)="goToStep(4)">Step 4</a>
-        </li>
-      </ul>
+    <div class="col-md-10">
+      <app-step-indicator [currentStep]="currentStep"
+        [steps]="['Invoice Info', 'Client Info', 'Services', 'Confirmation']">
+      </app-step-indicator>
     </div>
   </div>
-
 
   <!-- Step 1: Invoice Details -->
   <div *ngIf="currentStep === 1">
@@ -131,7 +125,7 @@
     <form (ngSubmit)="onSubmitStepTwo()" #stepTwoForm="ngForm">
       <div class="row g-3">
         <!-- Client Type -->
-        <div class="form-group col-6">
+        <div class="form-group col-12">
           <label for="client_type" class="form-label">
             <i class="bi bi-person-circle me-1"></i> Client Type
           </label>
@@ -142,12 +136,12 @@
             <option value="individual">Individual</option>
           </select>
         </div>
-        <div class="mb-3 text-end col-6">
+       <!-- <div class="mb-3 text-end col-6">
           <button type="button" class="btn btn-outline-primary" (click)="openExistingClientModal()">
             <i class="bi bi-search"></i> Select Existing Client
           </button>
-        </div>
-        
+        </div>-->
+
 
         <!-- PROFESSIONAL Fields -->
         <div *ngIf="stepTwoData.client_type === 'professional'">
@@ -316,7 +310,7 @@
             <td><strong><i class="bi bi-telephone-fill me-1"></i> Phone:</strong> {{ stepTwoData.phone_number }}</td>
             <!-- Only if individual -->
             <td *ngIf="stepTwoData.client_type === 'individual'">
-              <strong><i class="bi bi-person-lines-fill me-1"></i> Full Name:</strong> 
+              <strong><i class="bi bi-person-lines-fill me-1"></i> Full Name:</strong>
               {{ stepTwoData.civility }} {{ stepTwoData.first_name }} {{ stepTwoData.last_name }}
             </td>
           </tr>
@@ -339,121 +333,122 @@
 
 
     <!-- Step 3 Form -->
-<form (ngSubmit)="onSubmitStepThree()">
-  <!-- Card Structure -->
-  <div class="card">
-    <!-- Card Header with Services Label -->
-    <div class="card-header bg-light">
-      <i class="bi bi-gear me-2"></i>
-      <strong>Services</strong>
-    </div>
-    
+    <form (ngSubmit)="onSubmitStepThree()">
+      <!-- Card Structure -->
+      <div class="card">
+        <!-- Card Header with Services Label -->
+        <div class="card-header bg-light">
+          <i class="bi bi-gear me-2"></i>
+          <strong>Services</strong>
+        </div>
 
-    <!-- Card Body with Table -->
-    <div class="card-body">
-      <div class="table-responsive">
-        <table class="table table-bordered align-middle text-center">
-          <thead class="table-light">
-            <tr>
-              <th>Service Name</th>
-              <th>Quantity</th>
-              <th>Unit</th>
-              <th>Price HT</th>
-              <th>TVA %</th>
-              <th>Total HT</th>
-              <th>Total TTC</th>
-              <th>Comment</th>
-              <th>
-                <button type="button" class="btn btn-sm btn-success" (click)="addService()">
-                  <i class="bi bi-plus-circle"></i>
-                </button>
-              </th>
-            </tr>
-          </thead>
-          <tbody>
-            <tr *ngFor="let service of stepThreeData.services; let i = index">
-              <td>
-                <input type="text" class="form-control" [(ngModel)]="service.name" name="services[{{i}}].name" required
-                  (input)="updateCalculations()" />
-              </td>
-              <td>
-                <input type="number" class="form-control" [(ngModel)]="service.quantity" name="services[{{i}}].quantity"
-                  required (input)="updateCalculations()" />
-              </td>
-              <td>
-                <select class="form-control" [(ngModel)]="service.unit" name="services[{{i}}].unit" required
-                  (change)="updateCalculations()">
-                  <option value="hours">Hours</option>
-                  <option value="days">Days</option>
-                </select>
-              </td>
-              <td>
-                <input type="number" class="form-control" [(ngModel)]="service.price_ht" name="services[{{i}}].price_ht"
-                  required (input)="updateCalculations()" />
-              </td>
-              <td>
-                <input type="number" class="form-control" [(ngModel)]="service.tva" name="services[{{i}}].tva" required
-                  (input)="updateCalculations()" />
-              </td>
-              <td>
-                <input type="number" class="form-control" [(ngModel)]="service.total_ht" name="services[{{i}}].total_ht"
-                  readonly />
-              </td>
-              <td>
-                <input type="number" class="form-control" [(ngModel)]="service.total_ttc"
-                  name="services[{{i}}].total_ttc" readonly />
-              </td>
-              <td>
-                <input type="text" class="form-control" [(ngModel)]="service.comment" name="services[{{i}}].comment" />
-              </td>
-              <td>
-                <button type="button" class="btn btn-sm btn-outline-danger" (click)="removeService(i)">
-                  <i class="bi bi-x-circle"></i>
-                </button>
-              </td>
-            </tr>
-          </tbody>
-        </table>
-      </div>
 
-      <!-- Totals Section -->
-      <div class="row text-end mt-3">
-        <div class="col-md-4 offset-md-8">
-          <table class="table table-sm">
-            <tr>
-              <th>Total HT:</th>
-              <td>
-                <input type="number" class="form-control" [(ngModel)]="stepThreeData.TTotal_HT" name="TTotal_HT"
-                  readonly />
-              </td>
-            </tr>
-            <tr>
-              <th>Total TVA:</th>
-              <td>
-                <input type="number" class="form-control" [(ngModel)]="stepThreeData.TTotal_TVA" name="TTotal_TVA"
-                  readonly />
-              </td>
-            </tr>
-            <tr>
-              <th>Total TTC:</th>
-              <td>
-                <input type="number" class="form-control" [(ngModel)]="stepThreeData.TTotal_TTC" name="TTotal_TTC"
-                  readonly />
-              </td>
-            </tr>
-          </table>
+        <!-- Card Body with Table -->
+        <div class="card-body">
+          <div class="table-responsive">
+            <table class="table table-bordered align-middle text-center">
+              <thead class="table-light">
+                <tr>
+                  <th>Service Name</th>
+                  <th>Quantity</th>
+                  <th>Unit</th>
+                  <th>Price HT</th>
+                  <th>TVA %</th>
+                  <th>Total HT</th>
+                  <th>Total TTC</th>
+                  <th>Comment</th>
+                  <th>
+                    <button type="button" class="btn btn-sm btn-success" (click)="addService()">
+                      <i class="bi bi-plus-circle"></i>
+                    </button>
+                  </th>
+                </tr>
+              </thead>
+              <tbody>
+                <tr *ngFor="let service of stepThreeData.services; let i = index">
+                  <td>
+                    <input type="text" class="form-control" [(ngModel)]="service.name" name="services[{{i}}].name"
+                      required (input)="updateCalculations()" />
+                  </td>
+                  <td>
+                    <input type="number" class="form-control" [(ngModel)]="service.quantity"
+                      name="services[{{i}}].quantity" required (input)="updateCalculations()" />
+                  </td>
+                  <td>
+                    <select class="form-control" [(ngModel)]="service.unit" name="services[{{i}}].unit" required
+                      (change)="updateCalculations()">
+                      <option value="hours">Hours</option>
+                      <option value="days">Days</option>
+                    </select>
+                  </td>
+                  <td>
+                    <input type="number" class="form-control" [(ngModel)]="service.price_ht"
+                      name="services[{{i}}].price_ht" required (input)="updateCalculations()" />
+                  </td>
+                  <td>
+                    <input type="number" class="form-control" [(ngModel)]="service.tva" name="services[{{i}}].tva"
+                      required (input)="updateCalculations()" />
+                  </td>
+                  <td>
+                    <input type="number" class="form-control" [(ngModel)]="service.total_ht"
+                      name="services[{{i}}].total_ht" readonly />
+                  </td>
+                  <td>
+                    <input type="number" class="form-control" [(ngModel)]="service.total_ttc"
+                      name="services[{{i}}].total_ttc" readonly />
+                  </td>
+                  <td>
+                    <input type="text" class="form-control" [(ngModel)]="service.comment"
+                      name="services[{{i}}].comment" />
+                  </td>
+                  <td>
+                    <button type="button" class="btn btn-sm btn-outline-danger" (click)="removeService(i)">
+                      <i class="bi bi-x-circle"></i>
+                    </button>
+                  </td>
+                </tr>
+              </tbody>
+            </table>
+          </div>
+
+          <!-- Totals Section -->
+          <div class="row text-end mt-3">
+            <div class="col-md-4 offset-md-8">
+              <table class="table table-sm">
+                <tr>
+                  <th>Total HT:</th>
+                  <td>
+                    <input type="number" class="form-control" [(ngModel)]="stepThreeData.TTotal_HT" name="TTotal_HT"
+                      readonly />
+                  </td>
+                </tr>
+                <tr>
+                  <th>Total TVA:</th>
+                  <td>
+                    <input type="number" class="form-control" [(ngModel)]="stepThreeData.TTotal_TVA" name="TTotal_TVA"
+                      readonly />
+                  </td>
+                </tr>
+                <tr>
+                  <th>Total TTC:</th>
+                  <td>
+                    <input type="number" class="form-control" [(ngModel)]="stepThreeData.TTotal_TTC" name="TTotal_TTC"
+                      readonly />
+                  </td>
+                </tr>
+              </table>
+            </div>
+          </div>
         </div>
       </div>
-    </div>
-  </div>
-  <!-- Submit Button -->
-  <div class="mt-4 text-end">
-    <button type="submit" class="btn button-primary">
-      Finish <i class="bi bi-arrow-right-circle ms-1"></i>
-    </button>
-  </div>
+      <!-- Submit Button -->
+      <div class="mt-4 text-end">
+        <button type="submit" class="btn button-primary">
+          Finish <i class="bi bi-arrow-right-circle ms-1"></i>
+        </button>
+      </div>
     </form>
-  
+
   </div>
 
 
@@ -578,18 +573,12 @@
       </button>
     </div>
 
-    <!-- Success/Error Messages -->
-    <div *ngIf="confirmationMessage" class="alert alert-success mt-4">
-      {{ confirmationMessage }}
-    </div>
-    <div *ngIf="confirmationError" class="alert alert-danger mt-4">
-      {{ confirmationError }}
-    </div>
   </div>
 
 </div>
 <!-- Existing Client Modal -->
-<div class="modal fade" id="existingClientModal" tabindex="-1" aria-labelledby="existingClientModalLabel" aria-hidden="true">
+<div class="modal fade" id="existingClientModal" tabindex="-1" aria-labelledby="existingClientModalLabel"
+  aria-hidden="true">
   <div class="modal-dialog modal-dialog-scrollable">
     <div class="modal-content">
       <div class="modal-header">

@@ -1,0 +1,100 @@
+.step-indicator {
+    margin-top: 20px;
+    display: flex;
+    align-items: center;
+    padding: 0 10px;
+    max-width: 700px;
+    margin-left: auto;
+    margin-right: auto;
+  }
+  
+  .step {
+    display: flex;
+    align-items: center;
+    flex-direction: column;
+    position: relative;
+    z-index: 1;
+    min-width: 50px;
+  }
+  
+  .step-icon {
+    height: 40px;
+    width: 40px;
+    border-radius: 50%;
+    background: var(--color-muted-text);
+    font-size: 16px;
+    text-align: center;
+    color: #ffffff;
+    line-height: 40px;
+    transition: background-color 0.3s ease-in-out;
+  }
+  
+  .step.active .step-icon {
+    background: var(--color-primary);
+    animation: pop 0.3s ease-in-out;
+  }
+  
+  .step p {
+    text-align: center;
+    position: absolute;
+    bottom: -38px;
+    color: var(--color-muted-text);
+    font-size: 13px;
+    font-weight: 500;
+    white-space: nowrap;
+  }
+  
+  .step.active p {
+    color: var(--color-primary);
+  }
+  
+  .step p {
+    left: 50%;
+    transform: translateX(-50%);
+  }
+  
+  .indicator-line {
+    height: 2px;
+    background: var(--color-muted-text);
+    flex: 1;
+    margin: 0 8px;
+    position: relative;
+    overflow: hidden;
+  }
+  
+  .indicator-line::before {
+    content: '';
+    position: absolute;
+    left: 0;
+    top: 0;
+    height: 100%;
+    width: 0%;
+    background-color: var(--color-primary);
+    transition: width 0.5s ease-in-out;
+    z-index: 1;
+  }
+  
+  .indicator-line.active::before {
+    width: 100%;
+  }
+  
+  @keyframes pop {
+    0% { transform: scale(1); }
+    50% { transform: scale(1.3); }
+    100% { transform: scale(1); }
+  }
+  
+  @media screen and (max-width: 500px) {
+    .step p {
+      font-size: 11px;
+      bottom: -22px;
+    }
+  
+    .step-icon {
+      height: 30px;
+      width: 30px;
+      font-size: 14px;
+      line-height: 30px;
+    }
+  }
+  
