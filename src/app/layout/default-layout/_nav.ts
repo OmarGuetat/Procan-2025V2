@@ -129,7 +129,7 @@ export const hrNavItems: INavData[] = [
   },
   {
     name: 'Users Dashboard',
-    url: '/admin/users-dashboard',
+    url: '/hr/users-dashboard',
     icon: 'bi-people'
   },
   {
@@ -151,7 +151,7 @@ export const hrNavItems: INavData[] = [
         children: [
           {
             name: 'Leave Balances',
-            url: '/admin/leave-balance',
+            url: '/hr/leave-balance',
             icon: 'bi-table'
           }
         ]

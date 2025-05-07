@@ -56,6 +56,7 @@ export const routes: Routes = [
     children: [
       { path: 'hr-home', loadChildren: () => import('./views/hr-home/routes').then((m) => m.routes) },
       { path: 'users-dashboard', loadChildren: () => import('./views/users-dashboard/routes').then((m) => m.routes) },
+      { path: 'leave-balance', loadChildren: () => import('./views/leave-balance/routes').then((m) => m.routes) },
       { path: 'leave-dashboard', loadChildren: () => import('./views/leave-dashboard/routes').then((m) => m.routes) },
       { path: 'leave-form', loadChildren: () => import('./views/leave-form/routes').then((m) => m.routes) },
       { path: 'requests-user-dashboard', loadChildren: () => import('./views/requests-user-dashboard/routes').then((m) => m.routes) },
