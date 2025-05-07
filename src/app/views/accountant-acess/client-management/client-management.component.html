@@ -1,0 +1,313 @@
+<div class="container mt-5">
+    <h2 class="mb-4">Client Management</h2>
+  
+   <!-- Button to Open Add Client Modal -->
+  <button type="button" class="btn btn-primary mb-3" (click)="openAddClientModal()">
+    Add New Client
+  </button>
+  
+    <div class="table-responsive">
+      <table class="table table-hover align-middle">
+        <thead class="table-light">
+          <tr>
+            <th>Name</th>
+            <th>Type</th>
+            <th>Country</th>
+            <th>Phone</th>
+            <th>Email</th>
+            <th>Postal Code</th>
+            <th>Actions</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr *ngFor="let client of clients">
+            <td>{{ client.name }}</td>
+            <td>{{ client.client_type }}</td>
+            <td>{{ client.country }}</td>
+            <td>{{ client.phone_number }}</td>
+            <td>{{ client.email || '-' }}</td>
+            <td>{{ client.postal_code }}</td>
+            <td>
+              <button class="btn btn-sm btn-warning me-2" (click)="openEditClientModal(client)">Edit</button>
+              <button class="btn btn-sm btn-danger" (click)="openDeleteConfirmation(client.id)">Delete</button>
+            </td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+  
+    <nav *ngIf="totalPages > 1">
+      <ul class="pagination justify-content-center mt-4">
+        <li class="page-item" [class.disabled]="currentPage === 1">
+          <button class="page-link" (click)="changePage(currentPage - 1)">Previous</button>
+        </li>
+        <li class="page-item" *ngFor="let page of [].constructor(totalPages); let i = index" [class.active]="currentPage === i + 1">
+          <button class="page-link" (click)="changePage(i + 1)">{{ i + 1 }}</button>
+        </li>
+        <li class="page-item" [class.disabled]="currentPage === totalPages">
+          <button class="page-link" (click)="changePage(currentPage + 1)">Next</button>
+        </li>
+      </ul>
+    </nav>
+  </div>
+    <!-- Delete Confirmation Modal -->
+    <div class="modal fade" id="deleteConfirmationModal" tabindex="-1" aria-labelledby="deleteConfirmationModalLabel" aria-hidden="true">
+        <div class="modal-dialog">
+          <div class="modal-content">
+            <div class="modal-header">
+              <h5 class="modal-title" id="deleteConfirmationModalLabel">Confirm Deletion</h5>
+              <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <div class="modal-body">
+              Are you sure you want to delete this client? This action cannot be undone.
+            </div>
+            <div class="modal-footer">
+              <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancel</button>
+              <button type="button" class="btn btn-danger" (click)="confirmDelete()">Confirm</button>
+            </div>
+          </div>
+        </div>
+      </div>
+      <!-- Add Client Modal -->
+  <div class="modal fade" id="addClientModal" tabindex="-1" aria-labelledby="addClientModalLabel" aria-hidden="true">
+    <div class="modal-dialog modal-lg"> <!-- Large Modal -->
+      <div class="modal-content">
+        <div class="modal-header">
+          <h5 class="modal-title" id="addClientModalLabel">Add Client</h5>
+          <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+        </div>
+        <div class="modal-body">
+          <!-- Client Form -->
+          <form [formGroup]="clientForm" (ngSubmit)="saveClient()">
+            <div class="row">
+              <!-- Client Type -->
+              <div class="col-12 mb-3">
+                <label for="client_type" class="form-label">
+                  <i class="bi bi-person-fill"></i> Client Type
+                </label>
+                <select id="client_type" class="form-select" formControlName="client_type" required>
+                  <option value="individual">Individual</option>
+                  <option value="professional">Professional</option>
+                </select>
+              </div>
+
+              <!-- Client Name or Individual Details -->
+              <div class="col-12 col-md-6 mb-3" *ngIf="clientForm.value.client_type === 'professional'">
+                <label for="name" class="form-label">
+                  <i class="bi bi-person"></i> Client Name
+                </label>
+                <input type="text" id="name" class="form-control" formControlName="name" />
+              </div>
+
+              <div class="col-12 col-md-6 mb-3" *ngIf="clientForm.value.client_type === 'individual'">
+                <label for="civility" class="form-label">
+                  <i class="bi bi-person-circle"></i> Civility
+                </label>
+                <select id="civility" class="form-control" formControlName="civility" required>
+                    <option value="" disabled selected>Select civility</option>
+                    <option value="Mr">Mr</option>
+                    <option value="Mrs">Mrs</option>
+                    <option value="Ms">Ms</option>
+                    <option value="Miss">Miss</option>
+                  </select>
+              </div>
+              <div class="col-12 col-md-6 mb-3" *ngIf="clientForm.value.client_type === 'individual'">
+                <label for="first_name" class="form-label">
+                  <i class="bi bi-person-fill"></i> First Name
+                </label>
+                <input type="text" id="first_name" class="form-control" formControlName="first_name" />
+              </div>
+              <div class="col-12 col-md-6 mb-3" *ngIf="clientForm.value.client_type === 'individual'">
+                <label for="last_name" class="form-label">
+                  <i class="bi bi-person-fill"></i> Last Name
+                </label>
+                <input type="text" id="last_name" class="form-control" formControlName="last_name" />
+              </div>
+
+              <!-- Address -->
+              <div class="col-12 mb-3">
+                <label for="address" class="form-label">
+                  <i class="bi bi-house-door"></i> Address
+                </label>
+                <input type="text" id="address" class="form-control" formControlName="address" required />
+              </div>
+
+              <!-- Postal Code and Country -->
+              <div class="col-12 col-md-6 mb-3">
+                <label for="postal_code" class="form-label">
+                  <i class="bi bi-envelope"></i> Postal Code
+                </label>
+                <input type="text" id="postal_code" class="form-control" formControlName="postal_code" required />
+              </div>
+
+              <div class="col-12 col-md-6 mb-3">
+                <label for="country" class="form-label">
+                  <i class="bi bi-globe"></i> Country
+                </label>
+                <select id="country" class="form-select" formControlName="country" required>
+                  <option *ngFor="let country of countries" [value]="country">{{ country }}</option>
+                </select>
+              </div>
+
+              <!-- Phone Number -->
+              <div class="col-12 mb-3">
+                <label for="phone_number" class="form-label">
+                  <i class="bi bi-telephone"></i> Phone Number
+                </label>
+                <input type="text" id="phone_number" class="form-control" formControlName="phone_number" required />
+              </div>
+
+              <!-- TVA Number (Professional Only) -->
+              <div class="col-12 col-md-6 mb-3" *ngIf="clientForm.value.client_type === 'professional'">
+                <label for="tva_number_client" class="form-label">
+                  <i class="bi bi-file-earmark"></i> TVA Number
+                </label>
+                <input type="text" id="tva_number_client" class="form-control" formControlName="tva_number_client" />
+              </div>
+
+              <!-- RIB Bank -->
+              <div class="col-12 col-md-6 mb-3">
+                <label for="rib_bank" class="form-label">
+                  <i class="bi bi-credit-card"></i> RIB Bank
+                </label>
+                <input type="text" id="rib_bank" class="form-control" formControlName="rib_bank" />
+              </div>
+
+              <!-- Email -->
+              <div class="col-12 mb-3">
+                <label for="email" class="form-label">
+                  <i class="bi bi-envelope"></i> Email
+                </label>
+                <input type="email" id="email" class="form-control" formControlName="email" />
+              </div>
+            </div>
+
+            <!-- Submit Button -->
+            <div class="text-center">
+              <button type="submit" class="btn btn-primary" [disabled]="clientForm.invalid">Save Client</button>
+            </div>
+          </form>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Edit Client Modal -->
+<div class="modal fade" id="editClientModal" tabindex="-1" aria-labelledby="editClientModalLabel" aria-hidden="true">
+    <div class="modal-dialog modal-lg">
+      <div class="modal-content">
+        <div class="modal-header">
+          <h5 class="modal-title" id="editClientModalLabel">Edit Client</h5>
+          <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+        </div>
+        <div class="modal-body">
+          <form [formGroup]="clientForm" (ngSubmit)="updateClient()">
+            <div class="row">
+              <!-- Client Type -->
+              <div class="col-12 mb-3">
+                <label for="client_type" class="form-label">
+                  <i class="bi bi-person-fill"></i> Client Type
+                </label>
+                <select id="client_type" class="form-select" formControlName="client_type" required>
+                  <option value="individual" *ngIf="isIndividual" >Individual</option>
+                  <option value="professional" *ngIf="!isIndividual">Professional</option>
+                </select>
+              </div>
+  
+              <!-- Client Name or Individual Details -->
+              <div class="col-12 col-md-6 mb-3" *ngIf="clientForm.value.client_type === 'professional'">
+                <label for="name" class="form-label">
+                  <i class="bi bi-person"></i> Client Name
+                </label>
+                <input type="text" id="name" class="form-control" formControlName="name" />
+              </div>
+  
+              <div class="col-12 col-md-6 mb-3" *ngIf="clientForm.value.client_type === 'individual'">
+                <label for="civility" class="form-label">
+                  <i class="bi bi-person-circle"></i> Civility
+                </label>
+                <input type="text" id="civility" class="form-control" formControlName="civility" />
+              </div>
+              <div class="col-12 col-md-6 mb-3" *ngIf="clientForm.value.client_type === 'individual'">
+                <label for="first_name" class="form-label">
+                  <i class="bi bi-person-fill"></i> First Name
+                </label>
+                <input type="text" id="first_name" class="form-control" formControlName="first_name" />
+              </div>
+              <div class="col-12 col-md-6 mb-3" *ngIf="clientForm.value.client_type === 'individual'">
+                <label for="last_name" class="form-label">
+                  <i class="bi bi-person-fill"></i> Last Name
+                </label>
+                <input type="text" id="last_name" class="form-control" formControlName="last_name" />
+              </div>
+  
+              <!-- Address -->
+              <div class="col-12 mb-3">
+                <label for="address" class="form-label">
+                  <i class="bi bi-house-door"></i> Address
+                </label>
+                <input type="text" id="address" class="form-control" formControlName="address" required />
+              </div>
+  
+              <!-- Postal Code and Country -->
+              <div class="col-12 col-md-6 mb-3">
+                <label for="postal_code" class="form-label">
+                  <i class="bi bi-envelope"></i> Postal Code
+                </label>
+                <input type="text" id="postal_code" class="form-control" formControlName="postal_code" required />
+              </div>
+  
+              <div class="col-12 col-md-6 mb-3">
+                <label for="country" class="form-label">
+                  <i class="bi bi-globe"></i> Country
+                </label>
+                <select id="country" class="form-select" formControlName="country" required>
+                  <option *ngFor="let country of countries" [value]="country">{{ country }}</option>
+                </select>
+              </div>
+  
+              <!-- Phone Number -->
+              <div class="col-12 mb-3">
+                <label for="phone_number" class="form-label">
+                  <i class="bi bi-telephone"></i> Phone Number
+                </label>
+                <input type="text" id="phone_number" class="form-control" formControlName="phone_number" required />
+              </div>
+  
+              <!-- TVA Number (Professional Only) -->
+              <div class="col-12 col-md-6 mb-3" *ngIf="clientForm.value.client_type === 'professional'">
+                <label for="tva_number_client" class="form-label">
+                  <i class="bi bi-file-earmark"></i> TVA Number
+                </label>
+                <input type="text" id="tva_number_client" class="form-control" formControlName="tva_number_client" />
+              </div>
+  
+              <!-- RIB Bank -->
+              <div class="col-12 col-md-6 mb-3">
+                <label for="rib_bank" class="form-label">
+                  <i class="bi bi-credit-card"></i> RIB Bank
+                </label>
+                <input type="text" id="rib_bank" class="form-control" formControlName="rib_bank" />
+              </div>
+  
+              <!-- Email -->
+              <div class="col-12 mb-3">
+                <label for="email" class="form-label">
+                  <i class="bi bi-envelope"></i> Email
+                </label>
+                <input type="email" id="email" class="form-control" formControlName="email" />
+              </div>
+  
+              <!-- Submit Button -->
+              <div class="text-center">
+                <button type="submit" class="btn btn-primary" [disabled]="clientForm.invalid">Save Client</button>
+              </div>
+            </div>
+            </form>
+          </div>
+        </div>
+      </div>
+    </div>
+    
+
+  

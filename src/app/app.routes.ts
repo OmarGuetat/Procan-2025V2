@@ -64,19 +64,27 @@ export const routes: Routes = [
     ]
   },
 
-  // 6. Accountant Routes
-  {
-    path: 'accountant',
-    component: DefaultLayoutComponent,
-    canActivate: [AuthGuard],
-    children: [
-      { path: 'home', loadChildren: () => import('./views/accountant-home/routes').then((m) => m.routes) },
-      { path: 'leave-form', loadChildren: () => import('./views/leave-form/routes').then((m) => m.routes) },
-      { path: 'requests-user-dashboard', loadChildren: () => import('./views/requests-user-dashboard/routes').then((m) => m.routes) },
-      { path: 'notifications', loadChildren: () => import('./views/notifications/routes').then((m) => m.routes) },
-      { path: 'profile', loadChildren: () => import('./views/profile/routes').then((m) => m.routes) },
-    ]
-  },
+ // 6. Accountant Routes
+{
+  path: 'accountant',
+  component: DefaultLayoutComponent,
+  canActivate: [AuthGuard],
+  children: [
+    { 
+      path: '', 
+      loadChildren: () => import('./views/accountant-acess/routes').then(m => m.routes) 
+    },
+    { 
+      path: 'notifications', 
+      loadChildren: () => import('./views/notifications/routes').then(m => m.routes) 
+    },
+    { 
+      path: 'profile', 
+      loadChildren: () => import('./views/profile/routes').then(m => m.routes) 
+    }
+  ]
+},
+
 
   // 7. Wildcard route to redirect any undefined paths to login
   { path: '**', redirectTo: 'login' },

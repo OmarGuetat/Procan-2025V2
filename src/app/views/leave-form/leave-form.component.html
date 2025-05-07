@@ -9,7 +9,7 @@
 <div class="container">
   <div class="row">
     <!-- Form Section (Left) -->
-    <div class="col-lg-6 p-4" [ngClass]="{'col-lg-12': step === 3}">
+    <div class="col-xl-6 p-4" [ngClass]="{'col-xl-12': step === 3}">
       <div class="card shadow-sm p-4">
         <!-- Step Controls in the top-right corner -->
         <div class="step-controls position-absolute top-0 end-0 p-3">
@@ -115,7 +115,7 @@
           </div>
 
           <!-- If "Personal" is selected, show this text input -->
-          <div *ngIf="selectedReason === 'personal_leave'" class="mt-3">
+          <div *ngIf="selectedReason === 'other'" class="mt-3">
             <label for="personal_type" class="form-label"><i class="bi bi-pencil"></i> Specify reason</label>
             <input type="text" id="other_type" formControlName="other_type" class="form-control">
             <div *ngIf="leaveForm.controls['other_type'].invalid && leaveForm.controls['other_type'].touched"
@@ -125,7 +125,7 @@
           </div>
 
           <!-- Submit Button -->
-          <button type="submit" class="btn btn-primary w-100 my-3" [disabled]="leaveForm.invalid">
+          <button type="submit" class="btn button-primary w-100 my-3" [disabled]="leaveForm.invalid">
             <i class="bi bi-check-circle"></i> Submit
           </button>
         </form>
@@ -142,12 +142,33 @@
             <p><i class="bi bi-calendar-week"></i>&nbsp; <strong>Leave Days:</strong> {{ leaveDetails.leave_days }} days</p>
             
           </div>
-          <div class="my-2">
-            <label class="form-label">Remaining Balance:</label> {{ remainingDays }} days
-            <p [ngClass]="{'text-danger': remainingDays <= 0}">
-              <span *ngIf="remainingDays <= 0"> - No more balance left, but you can still send the request.</span>
+          <div class="my-3">
+            <label class="form-label d-flex align-items-center">
+              <i class="bi bi-calendar-check me-2"></i> <strong>Remaining Balance:</strong>
+            </label>
+          
+            <div class="d-flex align-items-center">
+              <span class="fs-5 me-2">{{ leaveDetails.remaining_days }} days</span>
+              
+              <span *ngIf="leaveDetails.remaining_days <= 0" class="badge text-bg-danger">
+                <i class="bi bi-exclamation-circle me-1"></i>No balance left
+              </span>
+          
+              <span *ngIf="leaveDetails.remaining_days > 0" class="badge text-bg-success">
+                <i class="bi bi-check-circle me-1"></i>Available
+              </span>
+            </div>
+          
+            <p [ngClass]="{'text-danger': leaveDetails.remaining_days <= 0, 'text-muted': leaveDetails.remaining_days > 0}" class="mt-2">
+              <span *ngIf="leaveDetails.remaining_days <= 0">
+                <i class="bi bi-info-circle-fill me-1"></i> No more balance left, but you can still send the request.
+              </span>
+              <span *ngIf="leaveDetails.remaining_days > 0">
+                <i class="bi bi-info-circle me-1"></i> You have enough balance for the leave request.
+              </span>
             </p>
           </div>
+          
           <!-- File Upload for Sick, Maternity, or Paternity Leave -->
           <div *ngIf="isAttachmentRequired()" class="mt-3 mb-4">
             <label for="attachment" class="form-label">
@@ -174,7 +195,7 @@
       You cannot request it again.
     </p>
 
-    <form (ngSubmit)="sendExplanationToHR( )" #contactForm="ngForm">
+    <form (ngSubmit)="sendExplanationToHR()" #contactForm="ngForm">
       <div class="mb-3">
         <label for="message" class="form-label">Explain your situation (optional):</label>
         <textarea
@@ -183,17 +204,17 @@
           [(ngModel)]="rejectionMessage"
           name="rejectionMessage"
           rows="4"
-          placeholder="Type your message to HR here..."></textarea>
+          placeholder="Type your message here..."></textarea>
       </div>
 
       <div class="d-flex justify-content-between align-items-center mt-3">
         <button type="button" class="btn btn-outline-secondary" (click)="goBackToStep1()">
           <i class="bi bi-arrow-left-circle"></i> Modify Request
         </button>
-
         <button type="submit" class="btn btn-primary" [disabled]="isSending">
-          <i class="bi bi-send me-1"></i> Contact HR or Admin
-        </button>
+          <i class="bi bi-send me-1"></i> 
+          Contact {{ userRole === 'employee' ? 'HR' : 'Admin' }}
+        </button> 
       </div>
     </form>
   </div>
@@ -214,17 +235,17 @@
     
   
     <!-- Image Section (Right) -->
-    <div class="col-lg-6 d-flex justify-content-center align-items-center" *ngIf="step !== 3 && !alreadyTaken">
+    <div class="col-xl-6 d-flex justify-content-center align-items-center" *ngIf="step !== 3 && !alreadyTaken">
       <img src="assets/leaveCallender.svg" alt="Leave Calendar" class="img-fluid img-container" style="max-width: 80%;">
     </div>
     <!-- Image Section for Maternity Leave -->
-    <div class="col-lg-6 d-flex justify-content-center align-items-center"
+    <div class="col-xl-6 d-flex justify-content-center align-items-center"
       *ngIf="step === 2 && alreadyTaken && leaveForm.value.leave_type === 'maternity_leave'">
       <img src="assets/sadEmployee.svg" alt="Leave Calendar" class="img-fluid img-container" style="max-width: 80%;">
     </div>
 
     <!-- Image Section for Paternity Leave -->
-    <div class="col-lg-6 d-flex justify-content-center align-items-center"
+    <div class="col-xl-6 d-flex justify-content-center align-items-center"
       *ngIf="step === 2 && alreadyTaken && leaveForm.value.leave_type === 'paternity_leave'">
       <img src="assets/sadManEmployee.svg" alt="Leave Calendar" class="img-fluid img-container" style="max-width: 80%;">
     </div>

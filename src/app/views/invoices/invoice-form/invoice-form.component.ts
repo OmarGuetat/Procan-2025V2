@@ -20,6 +20,7 @@ export class InvoiceFormComponent {
     company_name: '',
     additional_date: '',
     additional_date_type: '',
+    number: 'F-',
   };
   stepTwoData = {
     client_type: '',
@@ -37,21 +38,58 @@ export class InvoiceFormComponent {
   };
   stepThreeData = {
     services: [
-      { name: '', quantity: 0, unit: 'hours', price_ht: 0, tva: 0, total_ht: 0, total_ttc: 0, comment: '' }
+      { name: '', quantity: 0, unit: '', price_ht: 0, tva: 0, total_ht: 0, total_ttc: 0, comment: '' }
     ],
     TTotal_HT: 0,
     TTotal_TVA: 0,
     TTotal_TTC: 0,
+    payment_mode: '',
+    due_date: '',
+    payment_status: 'paid',
+    amount_paid: 0,
   };
+  
   alertMessage: string = '';
   alertType: string = '';
   confirmationMessage = '';
   confirmationError = '';
   clients: any[] = [];
- 
+  lastSavedInvoiceId: number | null = null;
+
 
   constructor(private invoiceService: InvoiceService) {}
-
+  onTypeChange() {
+    this.updateInvoiceNumber();
+  }
+  
+  onCreationDateChange() {
+    this.updateInvoiceNumber();
+  }
+  
+  updateInvoiceNumber() {
+    const prefix = this.stepOneData.type === 'facture' ? 'F-' : 'D-';
+  
+    if (!this.stepOneData.creation_date) {
+      this.stepOneData.number = prefix;
+      return;
+    }
+  
+    const date = new Date(this.stepOneData.creation_date);
+    const yearMonth = `${date.getFullYear()}${('0' + (date.getMonth() + 1)).slice(-2)}`; // YYYYMM
+  
+    // Only override if empty or matches default pattern
+    if (
+      !this.stepOneData.number ||
+      this.stepOneData.number.startsWith('F-') ||
+      this.stepOneData.number.startsWith('D-')
+    ) {
+      this.stepOneData.number = `${prefix}${yearMonth}`;
+    }
+  }
+  showAlert(message: string, type: string) {
+    this.alertMessage = message;
+    this.alertType = type;
+  }
   openExistingClientModal() {
     this.invoiceService.getAllClients().subscribe({
       next: (res: any) => {
@@ -65,26 +103,33 @@ export class InvoiceFormComponent {
       }
     });
   }
-
   selectClient(client: any) {
-    this.stepTwoData = {
-      ...this.stepTwoData,
-      name: client.name,
-      client_type: client.client_type || '',
-      tva_number_client: client.tva_number,
-      address: client.address,
-      postal_code: client.postal_code,
-      country: client.country,
-      rib_bank: client.rib_bank,
-      email: client.email,
-      phone_number: client.phone_number,
-      civility: client.civility || '',
-      first_name: client.first_name || '',
-      last_name: client.last_name || '',
-    };
-    console.log(client)
-    const modal = bootstrap.Modal.getInstance(document.getElementById('existingClientModal')!);
-    modal?.hide();
+    this.invoiceService.getClientById(client.id).subscribe({
+      next: (res: any) => {
+        console.log(res)
+        this.stepTwoData = {
+          ...this.stepTwoData,
+          name: res.data.name,
+          client_type: res.data.client_type || '',
+          tva_number_client: res.data.tva_number_client,
+          address: res.data.address,
+          postal_code: res.data.postal_code,
+          country: res.data.country,
+          rib_bank: res.data.rib_bank,
+          email: res.data.email,
+          phone_number: res.data.phone_number,
+          civility: res.data.civility || '',
+          first_name: res.data.first_name || '',
+          last_name: res.data.last_name || '',
+        };
+  
+        const modal = bootstrap.Modal.getInstance(document.getElementById('existingClientModal')!);
+        modal?.hide();
+      },
+      error: (err) => {
+        console.error('Failed to fetch client by ID', err);
+      }
+    });
   }
   goBack() {
     if (this.currentStep > 1) {
@@ -119,6 +164,26 @@ export class InvoiceFormComponent {
   }
 
   onSubmitStepThree() {
+    const hasNegative = this.stepThreeData.services.some(service =>
+      service.quantity < 0 || service.price_ht < 0 || service.tva < 0
+    );
+    const isServiceValid = this.stepThreeData.services.some(service =>
+      service.name && service.quantity !== null && service.price_ht !== null
+    );
+    if (!isServiceValid) {
+      this.showAlert('Please fill in at least one valid service.', 'alert-danger');
+      setTimeout(() => {
+        this.dismissAlert();
+      }, 2000);
+      return;
+    }
+    if (hasNegative || (this.stepThreeData.amount_paid < 0)) {
+      this.showAlert('Values cannot be negative.', 'alert-danger');
+      setTimeout(() => {
+        this.dismissAlert();
+      }, 2000);
+      return;
+    }
     this.updateCalculations();
     
     this.invoiceService.stepThree(this.stepThreeData).subscribe(
@@ -138,23 +203,31 @@ export class InvoiceFormComponent {
   }
   updateCalculations() {
     let totalHT = 0;
-  let totalTVA = 0;
-  let totalTTC = 0;
-
-  this.stepThreeData.services.forEach(service => {
-    service.total_ht = service.quantity * service.price_ht;
-    const serviceTVA = (service.total_ht * service.tva) / 100;
-    service.total_ttc = service.total_ht + serviceTVA;
-
-    totalHT += service.total_ht;
-    totalTVA += serviceTVA;
-    totalTTC += service.total_ttc;
-  });
-
-  this.stepThreeData.TTotal_HT = totalHT;
-  this.stepThreeData.TTotal_TVA = totalTVA;
-  this.stepThreeData.TTotal_TTC = totalTTC;
+    let totalTVA = 0;
+    let totalTTC = 0;
+  
+    this.stepThreeData.services.forEach(service => {
+      service.total_ht = service.quantity * service.price_ht;
+      const serviceTVA = (service.total_ht * service.tva) / 100;
+      service.total_ttc = service.total_ht + serviceTVA;
+  
+      totalHT += service.total_ht;
+      totalTVA += serviceTVA;
+      totalTTC += service.total_ttc;
+    });
+  
+    this.stepThreeData.TTotal_HT = totalHT;
+    this.stepThreeData.TTotal_TVA = totalTVA;
+    this.stepThreeData.TTotal_TTC = totalTTC;
+  
+    // Auto-fill if paid
+    if (this.stepThreeData.payment_status === 'paid') {
+      this.stepThreeData.amount_paid = totalTTC;
+    } else if (this.stepThreeData.payment_status === 'unpaid') {
+      this.stepThreeData.amount_paid = 0;
+    }
   }
+  
   dismissAlert() {
     this.alertMessage = '';
   }
@@ -167,12 +240,14 @@ export class InvoiceFormComponent {
   
     this.invoiceService.confirm(invoiceData).subscribe({
       next: (res: any) => {
+        console.log(res);
         this.alertMessage = res.message || 'Invoice created successfully!';
         this.alertType = 'alert-success';
         this.confirmationMessage = res.message;
+        this.lastSavedInvoiceId = res.invoice_id;
+        this.currentStep = 5;
         setTimeout(() => {
           this.dismissAlert();
-          this.currentStep = 1; 
         }, 500);
       },
       error: (err) => {
@@ -195,5 +270,53 @@ export class InvoiceFormComponent {
   }
   
 
- 
+  goToDashboard() {
+    console.log("aa");
+  }
+  
+  printInvoice(): void {
+    if (this.lastSavedInvoiceId !== null) {
+      this.invoiceService.downloadInvoicePdf(this.lastSavedInvoiceId).subscribe({
+        next: (blob: Blob) => {
+          const url = window.URL.createObjectURL(blob);
+          const a = document.createElement('a');
+          a.href = url;
+          a.download = `invoice_${this.lastSavedInvoiceId}.pdf`;
+          a.click();
+          window.URL.revokeObjectURL(url);
+        },
+        error: (err) => {
+          console.error('Error downloading PDF:', err);
+          this.alertMessage = err?.error?.error || 'Error downloading PDF!';
+          this.alertType = 'alert-danger';
+          setTimeout(() => {
+            this.dismissAlert();
+          }, 3000);
+        }
+        
+      });
+    }
+  }
+  
+  
+  sendInvoiceEmail() {
+    this.invoiceService.sendInvoiceEmail(this.lastSavedInvoiceId!).subscribe({
+      next: (res) => {
+        this.alertMessage = res.message || 'Invoice sent to client successfully!';
+        this.alertType = 'alert-success';
+        setTimeout(() => {
+          this.dismissAlert();
+        }, 1000);
+      },
+      error: (err) => {
+        console.error('Error sending invoice:', err);
+        this.alertMessage = err?.error?.error || 'Failed To Send Email!';
+        this.alertType = 'alert-danger';
+        setTimeout(() => {
+          this.dismissAlert();
+        }, 3000);
+      }
+    });
+  }
+  
 }

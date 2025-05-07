@@ -1,12 +1,12 @@
 <div class="container my-2">
- <!-- Show employee list when neither details nor requests are open -->
+<!-- Show employee list when neither details nor requests are open -->
 <div *ngIf="!selectedUserId && !selectedRequestsUserId">
-  <div *ngIf="employees.length > 0; else noResults">
-    <div class="row row-cols-1 row-cols-md-2  row-cols-xl-3 g-4">
+  <div *ngIf="!loading && employees.length > 0; else loadingOrNoResults">
+    <div class="row row-cols-1 row-cols-md-2 row-cols-xl-3 g-4">
       <div class="col" *ngFor="let employee of employees">
         <app-employee-card *ngIf="cardType === 'employee'" [employee]="employee"></app-employee-card>
-        <app-leave-card *ngIf="cardType === 'leave'" 
-                        [leaveEmployee]="employee" 
+        <app-leave-card *ngIf="cardType === 'leave'"
+                        [leaveEmployee]="employee"
                         (onSeeDetails)="onSeeDetails($event)"
                         (onViewRequests)="onViewRequests($event)">
         </app-leave-card>
@@ -14,6 +14,25 @@
     </div>
   </div>
 </div>
+
+<!-- Fallback: Show skeleton or "No results" -->
+<ng-template #loadingOrNoResults>
+  <div *ngIf="loading; else noResults">
+    <div class="row row-cols-1 row-cols-md-2 row-cols-xl-3 g-4">
+      <div class="col" *ngFor="let skeleton of [1, 2, 3, 4, 5, 6]">
+        <app-employee-card-skeleton *ngIf="cardType === 'employee'"></app-employee-card-skeleton>
+        <app-leave-card-skeleton *ngIf="cardType === 'leave'"></app-leave-card-skeleton>
+      </div>
+    </div>
+  </div>
+</ng-template>
+  <!-- No Results Template -->
+  <ng-template #noResults>
+    <div class="text-center mt-4">
+      <h5 style="color: black;">No employees found.</h5>
+    </div>
+  </ng-template>
+
 <!-- Show Requests Dashboard when viewingRequests is true -->
 <div *ngIf="selectedRequestsUserId">
   <app-request-dashboard [userId]="selectedRequestsUserId" (backToList)="onBackToList()"></app-request-dashboard>
@@ -24,12 +43,6 @@
   <app-leave-details [userId]="selectedUserId" (backToList)="onBackToList()"></app-leave-details>
 </div>
 
-  <!-- No Results Template -->
-  <ng-template #noResults>
-    <div class="text-center mt-4">
-      <h5 style="color: black;">No employees found.</h5>
-    </div>
-  </ng-template>
 
   <!-- Pagination Controls (Hidden if there is only one page) -->
   <div class="d-flex justify-content-center"  

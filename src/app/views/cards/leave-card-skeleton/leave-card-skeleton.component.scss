@@ -1,0 +1,35 @@
+.skeleton-text,
+.skeleton-badge,
+.skeleton-button {
+  height: 14px;
+  background-color: #e0e0e0;
+  border-radius: 4px;
+  animation: pulse 1.5s infinite ease-in-out;
+}
+
+.skeleton-badge {
+  height: 20px;
+}
+
+.skeleton-button {
+  height: 30px;
+  border-radius: 6px;
+}
+
+.skeleton-circle {
+  background-color: #e0e0e0;
+  border-radius: 50%;
+  animation: pulse 1.5s infinite ease-in-out;
+}
+
+@keyframes pulse {
+  0% {
+    background-color: #e0e0e0;
+  }
+  50% {
+    background-color: #f5f5f5;
+  }
+  100% {
+    background-color: #e0e0e0;
+  }
+}

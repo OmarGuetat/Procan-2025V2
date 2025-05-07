@@ -80,6 +80,7 @@ export class DefaultHeaderComponent extends HeaderComponent implements OnInit {
   fetchNotifications(): void {
     this.notificationService.getNotifications().subscribe((response) => {
       this.notifications = response;
+      const role = this.authService.getRole();
       console.log('📩 Fetched notifications:', response);
       this.updateUnreadCount();
     });

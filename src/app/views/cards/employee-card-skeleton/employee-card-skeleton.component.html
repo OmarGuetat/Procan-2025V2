@@ -1,0 +1,27 @@
+<div class="flip-card m-4 shadow-sm skeleton-card" *ngIf="isLoading">
+    <div class="flip-card-inner">
+      <!-- FRONT SIDE -->
+      <div class="flip-card-front card text-center">
+        <div class="rounded-circle skeleton-avatar mb-2 mx-auto"></div>
+        <div class="card-body">
+          <div class="skeleton-text w-50 mx-auto mb-2"></div>
+          <div class="skeleton-text w-25 mx-auto"></div>
+        </div>
+      </div>
+  
+      <!-- BACK SIDE -->
+      <div class="flip-card-back card text-center">
+        <div class="card-body p-2">
+          <div class="skeleton-text w-75 mb-2 mx-auto" *ngFor="let i of [1,2,3,4,5]"></div>
+        </div>
+      </div>
+    </div>
+  
+    <!-- ACTION BAR -->
+    <div class="action-bar d-flex justify-content-around p-3">
+      <div class="skeleton-icon"></div>
+      <div class="skeleton-icon"></div>
+      <div class="skeleton-icon"></div>
+    </div>
+  </div>
+  

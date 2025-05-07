@@ -13,8 +13,11 @@ export class InvoiceService {
   confirm(invoiceData: any): Observable<any> {
     return this.http.post(`${this.apiUrl}/store`, invoiceData, { withCredentials: true });
   }
+  getClientById(id: number) {
+    return this.http.get(`${this.GlobalUrl}/clients/${id}`);
+  }  
   getAllClients() {
-    return this.http.get(`${this.GlobalUrl}/clients`);
+    return this.http.get(`${this.GlobalUrl}/clients`, { withCredentials: true });
   }
   stepOne(data: any): Observable<any> {
     return this.http.post(`${this.apiUrl}/step-one`, data, { withCredentials: true });
@@ -27,4 +30,16 @@ export class InvoiceService {
   stepThree(data: any): Observable<any> {
     return this.http.post(`${this.apiUrl}/step-three`, data, { withCredentials: true });
   }
+  sendInvoiceEmail(invoiceId: number): Observable<any> {
+    return this.http.get(`${this.GlobalUrl}/invoices/${invoiceId}/send-email`, {
+      withCredentials: true
+    });
+  }
+  // invoice.service.ts
+downloadInvoicePdf(id: number): Observable<Blob> {
+  return this.http.get(`${this.GlobalUrl}/invoices/${id}/download-pdf`, {
+    responseType: 'blob'
+  });
+}
+
 }

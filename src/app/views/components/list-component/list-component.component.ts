@@ -9,11 +9,12 @@ import { RequestDashboardComponent } from '../../request-dashboard/request-dashb
 import { EmployeeCardComponent } from '../../cards/employee-card/employee-card.component';
 import { LeaveCardComponent } from '../../cards/leave-card/leave-card.component';
 import { LeaveDetailsComponent } from '../leave-details/leave-details.component';
-
+import { LeaveCardSkeletonComponent } from '../../cards/leave-card-skeleton/leave-card-skeleton.component';
+import { EmployeeCardSkeletonComponent } from '../../cards/employee-card-skeleton/employee-card-skeleton.component';
 
 @Component({
   selector: 'app-list-component',
-  imports: [LeaveDetailsComponent, EmployeeCardComponent, LeaveCardComponent, CommonModule,RequestDashboardComponent],
+  imports: [LeaveDetailsComponent, EmployeeCardComponent, LeaveCardComponent, CommonModule,RequestDashboardComponent,EmployeeCardSkeletonComponent,LeaveCardSkeletonComponent],
   templateUrl: './list-component.component.html',
   styleUrls: ['./list-component.component.css']
 })
@@ -30,7 +31,8 @@ export class ListComponent implements OnInit, OnChanges {
   totalEmployees: number = 0;
   perPage: number = 6;
   pages: number[] = [];
-  
+  loading: boolean = true;
+
 
   constructor(
     private employeeService: EmployeeService,
@@ -49,14 +51,16 @@ export class ListComponent implements OnInit, OnChanges {
   }
   
   loadData(page: number, query: string = ''): void {
+    this.loading = true;
+    const callback = (response: any) => {
+      this.processResponse(response);
+      this.loading = false;
+    };
+  
     if (this.cardType === 'employee') {
-      this.employeeService.searchEmployees(query, page).subscribe(response => {
-        this.processResponse(response);
-      });
+      this.employeeService.searchEmployees(query, page).subscribe(callback);
     } else {
-      this.leaveService.getLeaveEmployees(query, page).subscribe(response => {
-        this.processResponse(response);
-      });
+      this.leaveService.getLeaveEmployees(query, page).subscribe(callback);
     }
   }
 

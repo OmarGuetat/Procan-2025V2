@@ -8,17 +8,21 @@ export const adminNavItems: INavData[] = [
   },
   {
     title: true,
+    name: 'Users Management'
+  },
+  {
+    name: 'Users Dashboard',
+    url: '/admin/users-dashboard',
+    icon: 'bi-people'
+  },
+  {
+    title: true,
     name: 'Leave Management'
   },
   {
     name: 'Leave Management',
     icon: 'bi-calendar',
     children: [
-      {
-        name: 'Users Dashboard',
-        url: '/admin/users-dashboard',
-        icon: 'bi-people'
-      },
       {
         name: 'Leave Dashboard',
         url: '/admin/leave-dashboard',
@@ -93,6 +97,7 @@ export const employeeNavItems: INavData[] = [
   }
 ];
 
+
 export const accountantNavItems: INavData[] = [
   {
     name: 'Home',
@@ -100,16 +105,17 @@ export const accountantNavItems: INavData[] = [
     icon: 'bi-house'
   },
   {
-    name: 'Leave Form',
-    url: '/accountant/leave-form',
-    icon: 'bi-file-earmark'
+    name: 'Client Management',
+    url: '/accountant/client-management',
+    icon: 'bi-people'
   },
   {
-    name: 'My Requests',
-    url: '/accountant/requests-user-dashboard',
-    icon: 'bi-list-check'
+    name: 'Invoices Dashboard', 
+    url: '/accountant/invoices-dashboard',
+    icon: 'bi-file-earmark-text'
   }
 ];
+
 
 export const hrNavItems: INavData[] = [
   {

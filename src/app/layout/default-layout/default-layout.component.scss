@@ -11,7 +11,11 @@
   .ng-scroll-content {
     display: flex;
   }
-
+ .sidebar-logo{
+  height: fit-content;
+  width: fit-content;
+ }
+ 
   //.sidebar-nav {
   //  scrollbar-color: var(--cui-gray-500, #444) transparent;
   //}

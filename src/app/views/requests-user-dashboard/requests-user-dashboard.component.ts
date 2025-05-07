@@ -14,6 +14,10 @@ export class RequestsUserDashboardComponent implements OnInit {
   userId: number = +localStorage.getItem('userId')!;
   leaveRequests: any[] = [];
   availableYears: number[] = [];
+  totalLeaveDays: number = 0;
+  totalRejectedTimes: number = 0;
+  totalApprovedTimes: number = 0;
+  totalOnHoldTimes: number = 0;
   selectedYear: number | null = null;
   selectedType: string | null = null;
   selectedStatus: string | null = null;
@@ -40,12 +44,16 @@ export class RequestsUserDashboardComponent implements OnInit {
         console.log(response);
         this.leaveRequests = response.data;
         this.availableYears = response.available_years;
+        this.totalLeaveDays = this.selectedYear ? response.stats.total_effective_days : 0;
+        this.totalRejectedTimes = this.selectedYear ? response.stats.status_counts.approved : 0;
+        this.totalApprovedTimes = this.selectedYear ? response.stats.status_counts.rejected : 0;
+        this.totalOnHoldTimes = this.selectedYear ? response.stats.status_counts.on_hold : 0;
         this.totalPages = response.meta.total_pages;
       });
   }
   
   changePage(page: number): void {
-    if (page >= 1 && page <= this.totalPages) {
+    if (page >= 1 && page <= this.totalPages) { 
       this.currentPage = page;
       this.fetchLeaveRequests();
     }

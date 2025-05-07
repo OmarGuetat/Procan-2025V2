@@ -46,7 +46,7 @@
   </div>
 
   <!-- Card Body -->
-  <div class="card-body">
+  <div class="card-body ">
     <div class="row align-items-center">
       <!-- Leave Details -->
       <div class="col-md-8">
@@ -63,6 +63,13 @@
           <strong>Reason:</strong>&nbsp;
           <span>
             {{ formatLeaveType(request.leave_type) }}
+          </span>
+        </p>
+        <p class="d-flex align-items-center">
+          <i class="bi bi-calendar-range me-2"></i>
+          <strong>Requested:</strong>&nbsp;
+          <span>
+            {{ request.leave_days_requested }}
           </span>
         </p>
         <p class="d-flex align-items-center">
@@ -87,7 +94,7 @@
         <div class="calendar text-center">
           <div class="calendar__month">Days</div>
           <div class="calendar__day">
-            {{ request.leave_type === 'sick_leave' ? request.effective_leave_days : request.leave_days_requested }}
+            {{request.effective_leave_days }}
           </div>
         </div>
       </div>

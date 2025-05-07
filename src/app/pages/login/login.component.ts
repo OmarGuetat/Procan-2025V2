@@ -11,7 +11,7 @@ import { ForgotPasswordComponent } from '../../views/components/forgot-password/
 
 @Component({
   selector: 'app-login',
-  imports: [ReactiveFormsModule,CommonModule,ForgotPasswordComponent,ContainerComponent, RowComponent, ColComponent, CardGroupComponent, TextColorDirective, CardComponent, CardBodyComponent,  InputGroupComponent, InputGroupTextDirective, IconDirective, FormControlDirective, ButtonDirective, NgStyle],
+  imports: [ReactiveFormsModule,CommonModule,ForgotPasswordComponent],
   templateUrl: './login.component.html',
   styleUrls: ['./login.component.css']
 })
@@ -48,6 +48,7 @@ export class LoginComponent implements OnInit {
         this.authService.saveToken(response.access_token);
         localStorage.setItem('role', response.role);
         localStorage.setItem('userId', response.id);
+        localStorage.setItem('gender', response.gender);
         setTimeout(() => this.redirectUser(), 100);
       },
       (error) => {

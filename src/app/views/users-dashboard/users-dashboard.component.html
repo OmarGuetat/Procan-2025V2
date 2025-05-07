@@ -1,7 +1,7 @@
 <!-- ALERTS -->
 <!-- Dynamic Alert -->
-<div *ngIf="alertMessage" class="alert alert-dismissible fade show position-fixed top-0 end-0 m-3 shadow" 
-     [ngClass]="alertType" role="alert">
+<div *ngIf="alertMessage" class="alert alert-dismissible fade show position-fixed top-0 end-0 m-3 shadow"
+  [ngClass]="alertType" role="alert">
   <i *ngIf="alertType === 'alert-danger'" class="bi-exclamation-octagon-fill"></i>
   <strong class="mx-2">{{ alertMessage }}</strong>
   <button type="button" class="btn-close" (click)="dismissAlert()" aria-label="Close"></button>
@@ -22,7 +22,8 @@
             <i class="bi bi-person-fill me-1"></i> First Name
           </label>
           <input type="text" class="form-control" id="first_name" formControlName="first_name">
-          <div *ngIf="candidateForm.get('first_name')?.invalid && candidateForm.get('first_name')?.touched" class="text-danger">
+          <div *ngIf="candidateForm.get('first_name')?.invalid && candidateForm.get('first_name')?.touched"
+            class="text-danger">
             First name is required.
           </div>
         </div>
@@ -33,7 +34,8 @@
             <i class="bi bi-person-fill me-1"></i> Last Name
           </label>
           <input type="text" class="form-control" id="last_name" formControlName="last_name">
-          <div *ngIf="candidateForm.get('last_name')?.invalid && candidateForm.get('last_name')?.touched" class="text-danger">
+          <div *ngIf="candidateForm.get('last_name')?.invalid && candidateForm.get('last_name')?.touched"
+            class="text-danger">
             Last name is required.
           </div>
         </div>
@@ -44,7 +46,8 @@
             <i class="bi bi-person-circle me-1"></i> Username
           </label>
           <input type="text" class="form-control" id="username" formControlName="username">
-          <div *ngIf="candidateForm.get('username')?.invalid && candidateForm.get('username')?.touched" class="text-danger">
+          <div *ngIf="candidateForm.get('username')?.invalid && candidateForm.get('username')?.touched"
+            class="text-danger">
             Username is required.
           </div>
         </div>
@@ -67,19 +70,21 @@
             <i class="bi bi-lock-fill me-1"></i> Password
           </label>
           <div class="input-group">
-            <input [type]="showPassword ? 'text' : 'password'" class="form-control" id="password" formControlName="password">
+            <input [type]="showPassword ? 'text' : 'password'" class="form-control" id="password"
+              formControlName="password">
             <span class="input-group-text toggle-icon bg-white border" (click)="togglePasswordVisibility()">
               <i class="bi" [ngClass]="showPassword ? 'bi-eye' : 'bi-eye-slash'"></i>
             </span>
           </div>
-          <div *ngIf="candidateForm.get('password')?.touched && candidateForm.get('password')?.invalid" class="text-danger">
+          <div *ngIf="candidateForm.get('password')?.touched && candidateForm.get('password')?.invalid"
+            class="text-danger">
             <div *ngIf="candidateForm.get('password')?.errors?.['required']">Password is required.</div>
             <div *ngIf="candidateForm.get('password')?.errors?.['minlength']">Minimum 6 characters required.</div>
             <div *ngIf="candidateForm.get('password')?.errors?.['pattern']">
               Password must contain letters and numbers only.
             </div>
           </div>
-          
+
         </div>
 
         <!-- Phone Number (optional) -->
@@ -88,10 +93,11 @@
             <i class="bi bi-telephone-fill me-1"></i> Phone Number
           </label>
           <input type="text" class="form-control" id="phone" formControlName="phone">
-          <div *ngIf="candidateForm.get('phone')?.touched && candidateForm.get('phone')?.errors?.['pattern']" class="text-danger">
+          <div *ngIf="candidateForm.get('phone')?.touched && candidateForm.get('phone')?.errors?.['pattern']"
+            class="text-danger">
             Phone number must be exactly 8 digits.
           </div>
-          
+
         </div>
 
         <!-- Gender -->
@@ -127,7 +133,7 @@
           </label>
           <select class="form-select" id="role" formControlName="role">
             <option value="employee">Employee</option>
-            <option value="hr">Hr</option>
+            <option value="hr">Human resources</option>
             <option value="accountant">Accountant</option>
           </select>
         </div>
@@ -146,7 +152,8 @@
             <i class="bi bi-briefcase-fill me-1"></i> Job Description
           </label>
           <input type="text" class="form-control" id="job_description" formControlName="job_description">
-          <div *ngIf="candidateForm.get('job_description')?.touched && candidateForm.get('job_description')?.errors" class="text-danger">
+          <div *ngIf="candidateForm.get('job_description')?.touched && candidateForm.get('job_description')?.errors"
+            class="text-danger">
             <div *ngIf="candidateForm.get('job_description')?.errors?.['required']">Job description is required.</div>
             <div *ngIf="candidateForm.get('job_description')?.errors?.['maxlength']">Max 15 characters allowed.</div>
           </div>
@@ -157,29 +164,29 @@
 
   <c-modal-footer>
     <button type="button" class="btn btn-secondary" (click)="closeModal()">Close</button>
-    <button type="submit" class="btn button-primary" (click)="onSubmit()" [disabled]="candidateForm.invalid">Save Candidate</button>
+    <button type="submit" class="btn button-primary" (click)="onSubmit()" [disabled]="candidateForm.invalid">Save
+      Candidate</button>
   </c-modal-footer>
 </c-modal>
 
 
 <!-- Search Bar and Add Candidate Button -->
 
-  <div class="row align-items-center justify-content-between mt-1">
-    <!-- Search Bar -->
-    <div class="col-12 col-md-8 col-lg-6 ">
-      <div class="input-group">
-        <input type="text" class="form-control" [(ngModel)]="searchQuery" placeholder="Search..." />
-        <span class="input-group-text search">
-          <i class="bi bi-search"></i>
-        </span>
-      </div>
-    </div>
-
-    <!-- Add Candidate Button -->
-    <div class="col-12 col-md-auto mt-2 d-flex justify-content-md-end justify-content-center">
-      <button class="btn button-success" (click)="openModal()">Add Candidate</button>
+<div class="row align-items-center justify-content-between mt-1">
+  <!-- Search Bar -->
+  <div class="col-12 col-md-8 col-lg-6 ">
+    <div class="input-group">
+      <input type="text" class="form-control" [(ngModel)]="searchQuery" placeholder="Search..." />
+      <span class="input-group-text search">
+        <i class="bi bi-search"></i>
+      </span>
     </div>
   </div>
-  
-  <app-list-component [searchQuery]="searchQuery" cardType="employee"></app-list-component>
 
+  <!-- Add Candidate Button -->
+  <div class="col-12 col-md-auto mt-2 d-flex justify-content-md-end justify-content-center">
+    <button class="btn button-success" (click)="openModal()">Add Candidate</button>
+  </div>
+</div>
+
+<app-list-component [searchQuery]="searchQuery" cardType="employee"></app-list-component>

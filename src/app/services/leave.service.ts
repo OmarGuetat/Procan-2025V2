@@ -68,10 +68,11 @@ export class LeaveService {
 
   return this.http.get<any>(`${this.apiUrl}/employee/leaves`, { params });
 }
-
-notifyRejectionToHR(leaveId: number, payload: { message: string }) {
-  return this.http.post(`${this.apiUrl}/leaves/${leaveId}/notify-rejection`, payload);
+// Send Email To HR or Admin
+notifyRejectionToHR(payload: { start_date: string, leave_type: string, message: string }) {
+  return this.http.post(`${this.apiUrl}/leaves/notify-rejection`, payload);
 }
+
 
   updateLeave(leaveId: number, formData: FormData): Observable<any> {
     return this.http.post(`${this.apiUrl}/employee/leaves/${leaveId}`, formData);

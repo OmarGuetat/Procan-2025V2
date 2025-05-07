@@ -37,6 +37,7 @@ export class LeaveCardComponent {
     this.onViewRequests.emit(this.leaveEmployee.id);
   }
   addLeaveDays() {
+    console.log(this.leaveEmployee)
     const modal = new bootstrap.Modal(document.getElementById('leaveModal-' + this.leaveEmployee.id)!);
     modal.show();
   }

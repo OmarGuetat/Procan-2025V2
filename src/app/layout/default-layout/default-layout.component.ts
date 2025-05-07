@@ -6,6 +6,7 @@ import { DefaultFooterComponent, DefaultHeaderComponent } from './';
 import { accountantNavItems, adminNavItems, employeeNavItems, hrNavItems } from './_nav'; // Import HR navigation items
 
 import { AuthService } from '../../services/auth.service';
+import { CommonModule } from '@angular/common';
 
 @Component({
   selector: 'app-dashboard',
@@ -25,7 +26,8 @@ import { AuthService } from '../../services/auth.service';
     ShadowOnScrollDirective,
     NgScrollbar,
     RouterOutlet,
-    RouterLink
+    RouterLink,
+    CommonModule
   ]
 })
 export class DefaultLayoutComponent implements OnInit {
