@@ -13,12 +13,12 @@
           <div class="card rounded-5">
             <div class="row g-0">
               <div class="d-flex justify-content-center align-items-center h-100 col-md-6 col-lg-5 d-none d-md-block mb-4">
-                <img src="assets/signInImage.svg" alt="login form" class="img-fluid" />
+                <img src="assets/athentification-images/sign-in-image.svg" alt="login form" class="img-fluid" />
               </div>
               <div class="col-md-6 col-lg-7 d-flex align-items-center">
                 <div class="card-body  p-lg-5">
                   <div class="d-flex justify-content-center mb-5 ">
-                    <img src="assets/procanLogo.png" alt="Procan Logo" class="w-75 " />
+                    <img src="assets/procan-logo.png" alt="Procan Logo" class="w-75 " />
                   </div>
                   <div *ngIf="!isForgotPasswordMode">
                     <form [formGroup]="loginForm" (ngSubmit)="onSubmit($event)">

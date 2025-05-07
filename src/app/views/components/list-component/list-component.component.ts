@@ -52,17 +52,34 @@ export class ListComponent implements OnInit, OnChanges {
   
   loadData(page: number, query: string = ''): void {
     this.loading = true;
-    const callback = (response: any) => {
-      this.processResponse(response);
-      this.loading = false;
-    };
   
     if (this.cardType === 'employee') {
-      this.employeeService.searchEmployees(query, page).subscribe(callback);
+      this.employeeService.searchEmployees(query, page).subscribe({
+        next: (response) => {
+          this.processResponse(response);
+        },
+        error: (err) => {
+          console.error('Error fetching employees:', err);
+        },
+        complete: () => {
+          this.loading = false;
+        }
+      });
     } else {
-      this.leaveService.getLeaveEmployees(query, page).subscribe(callback);
+      this.leaveService.getLeaveEmployees(query, page).subscribe({
+        next: (response) => {
+          this.processResponse(response);
+        },
+        error: (err) => {
+          console.error('Error fetching leave employees:', err);
+        },
+        complete: () => {
+          this.loading = false;
+        }
+      });
     }
   }
+  
 
   processResponse(response: any): void {
     this.employees = response.data;

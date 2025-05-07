@@ -30,7 +30,7 @@
     </div>
   </div>
 <!-- Totals Information: Show only when a year is selected -->
-<div *ngIf="selectedYear" class="row g-4 align-items-center mb-3">
+<div *ngIf="selectedYear && leaveRequests.length > 0 && !isLoading" class="row g-4 align-items-center mb-3">
   <div class="col-auto">
     <p class="mb-0">
       <i class="bi bi-calendar3 me-1"></i> 
@@ -57,6 +57,18 @@
   </div>
 </div>
 
+ <!-- Skeleton Loader -->
+<div *ngIf="isLoading">
+  <div class="row row-cols-1 row-cols-xxl-3 row-cols-xl-2 g-4">
+    <div class="col" *ngFor="let i of [1,2,3,4,5,6]">
+      <app-request-card-skeleton></app-request-card-skeleton>
+    </div>
+  </div>
+</div>
+
+<!-- Data Display -->
+<div *ngIf="!isLoading">
+  <!-- Requests Found -->
   <div *ngIf="leaveRequests.length > 0; else noRequests">
     <div class="row row-cols-1 row-cols-xxl-3 row-cols-xl-2 g-4">
       <div class="col" *ngFor="let request of leaveRequests">
@@ -65,11 +77,15 @@
     </div>
   </div>
 
+  <!-- No Requests -->
   <ng-template #noRequests>
     <div class="text-center mt-4">
       <h5 style="color: black;">No leave requests found.</h5>
     </div>
   </ng-template>
+</div>
+
+
 
   <!-- Pagination Controls -->
   <div class="d-flex justify-content-center mt-3" *ngIf="totalPages > 1">

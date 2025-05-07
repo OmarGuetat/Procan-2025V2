@@ -125,6 +125,15 @@ export const hrNavItems: INavData[] = [
   },
   {
     title: true,
+    name: 'Users Management'
+  },
+  {
+    name: 'Users Dashboard',
+    url: '/admin/users-dashboard',
+    icon: 'bi-people'
+  },
+  {
+    title: true,
     name: 'Work Management'
   },
   {
@@ -132,14 +141,20 @@ export const hrNavItems: INavData[] = [
     icon: 'bi-people',
     children: [
       {
-        name: 'Users Dashboard',
-        url: '/hr/users-dashboard',
-        icon: 'nav-icon-bullet'
-      },
-      {
         name: 'Leave Dashboard',
         url: '/hr/leave-dashboard',
         icon: 'nav-icon-bullet'
+      },
+      {
+        name: 'Leave Settings',
+        icon: 'bi-gear',
+        children: [
+          {
+            name: 'Leave Balances',
+            url: '/admin/leave-balance',
+            icon: 'bi-table'
+          }
+        ]
       }
     ]
   },

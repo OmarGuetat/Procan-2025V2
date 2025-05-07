@@ -236,18 +236,18 @@
   
     <!-- Image Section (Right) -->
     <div class="col-xl-6 d-flex justify-content-center align-items-center" *ngIf="step !== 3 && !alreadyTaken">
-      <img src="assets/leaveCallender.svg" alt="Leave Calendar" class="img-fluid img-container" style="max-width: 80%;">
+      <img src="assets/material/leave-callender2.svg" alt="Leave Calendar" class="img-fluid img-container" style="max-width: 80%;">
     </div>
     <!-- Image Section for Maternity Leave -->
     <div class="col-xl-6 d-flex justify-content-center align-items-center"
       *ngIf="step === 2 && alreadyTaken && leaveForm.value.leave_type === 'maternity_leave'">
-      <img src="assets/sadEmployee.svg" alt="Leave Calendar" class="img-fluid img-container" style="max-width: 80%;">
+      <img src="assets/material/sad-employee.svg" alt="Leave Calendar" class="img-fluid img-container" style="max-width: 80%;">
     </div>
 
     <!-- Image Section for Paternity Leave -->
     <div class="col-xl-6 d-flex justify-content-center align-items-center"
       *ngIf="step === 2 && alreadyTaken && leaveForm.value.leave_type === 'paternity_leave'">
-      <img src="assets/sadManEmployee.svg" alt="Leave Calendar" class="img-fluid img-container" style="max-width: 80%;">
+      <img src="assets/material/sad-man-employee.svg" alt="Leave Calendar" class="img-fluid img-container" style="max-width: 80%;">
     </div>
   </div>
   </div>

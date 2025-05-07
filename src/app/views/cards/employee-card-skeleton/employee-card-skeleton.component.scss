@@ -1,36 +1,23 @@
-.skeleton-card {
-    min-height: 300px;
-    background-color: #fff;
-    border-radius: 8px;
-    overflow: hidden;
+@keyframes pulse {
+    0% { opacity: 1; }
+    50% { opacity: 0.4; }
+    100% { opacity: 1; }
+  }
+  
+  .skeleton {
+    background-color: #e2e8f0;
+    animation: pulse 1.5s infinite ease-in-out;
   }
   
   .skeleton-avatar {
     width: 95px;
     height: 95px;
     border-radius: 50%;
-    background: #e2e8f0;
-    animation: pulse 1.5s infinite ease-in-out;
-  }
-  
-  .skeleton-text {
-    height: 14px;
-    background: #e2e8f0;
-    border-radius: 4px;
-    animation: pulse 1.5s infinite ease-in-out;
   }
   
   .skeleton-icon {
     width: 24px;
     height: 24px;
     border-radius: 4px;
-    background: #e2e8f0;
-    animation: pulse 1.5s infinite ease-in-out;
-  }
-  
-  @keyframes pulse {
-    0% { opacity: 1; }
-    50% { opacity: 0.4; }
-    100% { opacity: 1; }
   }
   
