@@ -1,0 +1,20 @@
+<div class="leave-progress-container">
+    <div class="progress-bar">
+      <div
+        class="used"
+        [style.width.%]="usedPercentage"
+        [title]="'Used: ' + used + ' days'"
+      ></div>
+      <div
+        class="remaining"
+        [style.width.%]="remainingPercentage"
+        [title]="'Remaining: ' + remaining + ' days'"
+      ></div>
+    </div>
+    <div class="progress-labels">
+      <span><strong>Total:</strong> {{ total }} days</span>
+      <span><strong>Used:</strong> {{ used }} days</span>
+      <span><strong>Remaining:</strong> {{ remaining }} days</span>
+    </div>
+  </div>
+  

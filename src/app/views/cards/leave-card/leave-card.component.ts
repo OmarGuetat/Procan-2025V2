@@ -15,7 +15,6 @@ export class LeaveCardComponent {
   @Output() onSeeDetails = new EventEmitter<number>();
   @Output() onViewRequests = new EventEmitter<number>();
   leaveForm: FormGroup;
-  role: string;
   alertMessage: string = '';
   alertType: string = '';
   isSubmitting: boolean = false;
@@ -25,7 +24,7 @@ export class LeaveCardComponent {
       leave_day_limit: ['', [Validators.required, Validators.min(0.25)]],
       description: ['', [Validators.maxLength(255)]]
     });    
-    this.role = localStorage.getItem('role')!;
+   
   }
   dismissAlert() {
     this.alertMessage = '';

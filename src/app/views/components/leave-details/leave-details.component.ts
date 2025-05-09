@@ -28,24 +28,27 @@ export class LeaveDetailsComponent implements OnInit {
   perPage: number = 10; 
   totalLeaveDayLimit: number = 0;
   user: { first_name: string; last_name: string } = { first_name: '', last_name: '' };
-
+  loading: boolean = false;
+  cancelingId: number | null = null; 
   constructor(private leaveService: LeaveService) {}
 
   ngOnInit(): void {
     this.fetchLeaveData();
   }
   fetchLeaveData(): void {
+    this.loading = true; // Start loading
     this.leaveService.getLeaveDetails(this.userId, this.currentPage).subscribe(response => {
-      console.log('Leave Data:', response);
       if (response.user && response.data) {
-        this.user = response.user; // Set user data here
-        this.leaveData = response.data; // Set leave data
+        this.user = response.user;
+        this.leaveData = response.data;
         this.totalPages = response.meta.total_pages;
         this.totalLeaves = response.meta.total_leaves;
-        this.totalLeaveDayLimit = response.total_leave_day_limit; // Set total leave day limit
+        this.totalLeaveDayLimit = response.total_leave_day_limit;
       }
+      this.loading = false; // Done loading
     }, error => {
       console.error('Error fetching leave details:', error);
+      this.loading = false;
     });
   }
   // Method to go to the next page
@@ -74,24 +77,25 @@ export class LeaveDetailsComponent implements OnInit {
     }
   }
   cancelLeave(leaveId: number): void {
-    if (this.isSubmitting) return; // Prevent double click
+    if (this.cancelingId !== null) return;
   
-    this.isSubmitting = true;
+    this.cancelingId = leaveId;
     this.leaveService.cancelLeave(leaveId).subscribe(
       response => {
-      console.log("pressed");
-      this.alertMessage = response.message || 'Deleted Successfully!';
+        this.alertMessage = response.message || 'Deleted Successfully!';
         this.alertType = 'alert-success';
         setTimeout(() => {
           this.dismissAlert();
-          this.isSubmitting = false;
         }, 500);
-      this.fetchLeaveData(); 
-    }, error => {
-      this.alertMessage = error.error?.message || 'Error Deleting';
-      this.alertType = 'alert-danger';
-      this.isSubmitting = false; 
-    });
+        this.cancelingId = null;
+        this.fetchLeaveData();
+      },
+      error => {
+        this.alertMessage = error.error?.message || 'Error Deleting';
+        this.alertType = 'alert-danger';
+        this.cancelingId = null;
+      }
+    );
   }
 
   // Method to go back to the list
