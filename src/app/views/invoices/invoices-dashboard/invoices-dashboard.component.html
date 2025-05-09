@@ -1,0 +1,276 @@
+<div class="filters p-4 d-flex gap-3 flex-wrap">
+    <label>Year:
+      <input type="number" [(ngModel)]="filters.year" (change)="onFilterChange()" class="form-control" />
+    </label>
+  
+    <label>Month:
+      <input type="number" [(ngModel)]="filters.month" (change)="onFilterChange()" min="1" max="12" class="form-control" />
+    </label>
+  
+    <label>Type:
+      <select [(ngModel)]="filters.type" (change)="onFilterChange()" class="form-select">
+        <option value="">All</option>
+        <option value="facture">Invoice</option>
+        <option value="devis">Quote</option>
+        <option value="avoir">Credit</option>
+      </select>
+    </label>
+  </div>
+  
+  <div class="table-responsive p-4">
+    <table class="table table-bordered table-hover align-middle text-center">
+      <thead class="table-light">
+        <tr>
+          <th>Status</th>
+          <th>Type</th>
+          <th>Invoice Number</th>
+          <th>Created At</th>
+          <th>Client Name</th>
+          <th>Amount Paid</th>
+          <th>Actions</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr *ngFor="let item of invoices">
+          <!-- Status with colored badge -->
+          <td>
+            <span
+              class="badge"
+              [ngClass]="{
+                'bg-success': item.invoice.payment_status === 'paid',
+                'bg-primary': item.invoice.payment_status === 'unpaid',
+                'bg-warning text-dark': item.invoice.payment_status === 'partially paid'
+              }"
+            >
+              {{ item.invoice.payment_status }}
+            </span>
+          </td>
+  
+          <!-- Type -->
+          <td>{{ item.invoice.type }}</td>
+  
+          <!-- Invoice Number -->
+          <td>{{ item.invoice.number }}</td>
+  
+          <!-- Created At -->
+          <td>{{ item.invoice.creation_date }}</td>
+  
+          <!-- Client Name -->
+          <td>{{ item.client_name }}</td>
+  
+          <!-- Amount Paid -->
+          <td>{{ item.invoice.amount_paid }} TND</td>
+  
+          <!-- Actions -->
+          <td class="d-flex gap-2 justify-content-center">
+            <button class="btn btn-outline-primary m-1 td-btn" 
+            (click)="openUpdateModal(item.invoice)">
+              <i class="bi bi-pencil-square"></i>
+            </button>
+            <!-- View History Button with Icon -->
+          <button class="btn btn-outline-primary m-1 td-btn" (click)="onViewAll(item)">
+            <i class="bi bi-arrows-angle-expand"></i>
+          </button>
+            <!-- View History Button with Icon -->
+          <button class="btn btn-outline-primary m-1 td-btn" (click)="viewHistory(item) ">
+            <i class="bi bi-clock-history"></i>
+          </button>
+          </td>
+        </tr>
+      </tbody>
+    </table>
+  </div>
+  
+  <!-- Pagination Controls -->
+  <div class="d-flex justify-content-center mt-4" *ngIf="totalPages > 1">
+    <nav aria-label="Page navigation">
+      <ul class="pagination">
+        <li class="page-item" [class.disabled]="currentPage === 1">
+          <button class="page-link" (click)="changePage(currentPage - 1)" [disabled]="currentPage === 1">Previous</button>
+        </li>
+        <li class="page-item" *ngFor="let page of pages" [class.active]="page === currentPage">
+          <button class="page-link" (click)="changePage(page)">{{ page }}</button>
+        </li>
+        <li class="page-item" [class.disabled]="currentPage === totalPages">
+          <button class="page-link" (click)="changePage(currentPage + 1)" [disabled]="currentPage === totalPages">Next</button>
+        </li>
+      </ul>
+    </nav>
+  </div>
+  
+<!-- Large Modal for View All -->
+<div class="modal fade" id="viewAllModal" tabindex="-1" aria-labelledby="viewAllModalLabel" aria-hidden="true">
+    <div class="modal-dialog modal-xl modal-dialog-scrollable">
+      <div class="modal-content p-3">
+        <div class="modal-header">
+          <h5 class="modal-title" id="viewAllModalLabel">
+            <i class="bi bi-file-earmark-text me-2"></i> Invoice Details
+          </h5>
+          <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+        </div>
+        <div class="modal-body">
+  
+          <!-- Step 1: Invoice Info -->
+          <div class="mb-4">
+            <table class="table table-bordered rounded shadow-sm">
+              <thead class="table-light">
+                <tr><th colspan="3"><i class="bi bi-1-circle me-1"></i><strong>Invoice Information</strong></th></tr>
+              </thead>
+              <tbody>
+                <tr>
+                  <td><strong><i class="bi bi-receipt me-1"></i> Type:</strong> {{ selectedInvoice.type }}</td>
+                  <td><strong><i class="bi bi-calendar-date me-1"></i> Creation Date:</strong> {{ selectedInvoice.creation_date }}</td>
+                  <td><strong><i class="bi bi-building me-1"></i> Company:</strong> {{ selectedInvoice.company_name }}</td>
+                </tr>
+                <tr>
+                  <td><strong><i class="bi bi-calendar2-plus me-1"></i> Additional Date:</strong> {{ selectedInvoice.additional_date }}</td>
+                  <td><strong><i class="bi bi-info-circle me-1"></i> Additional Date Type:</strong> {{ selectedInvoice.additional_date_type }}</td>
+                  <td></td>
+                </tr>
+              </tbody>
+            </table>
+          </div>
+  
+          <!-- Step 2: Client Info -->
+          <div class="mb-4">
+            <table class="table table-bordered rounded shadow-sm">
+              <thead class="table-light">
+                <tr><th colspan="3"><i class="bi bi-2-circle me-1"></i><strong>Client Information</strong></th></tr>
+              </thead>
+              <tbody>
+                <tr>
+                  <td colspan="3"><strong><i class="bi bi-person-circle me-1"></i> Client Name:</strong> {{ selectedInvoice.client_name }}</td>
+                </tr>
+              </tbody>
+            </table>
+          </div>
+  
+          <!-- Step 3: Payment Info -->
+          <div class="mb-4">
+            <table class="table table-bordered rounded shadow-sm">
+              <thead class="table-light">
+                <tr><th colspan="4"><i class="bi bi-credit-card-2-front me-1"></i><strong>Payment Information</strong></th></tr>
+              </thead>
+              <tbody>
+                <tr>
+                  <td><strong>Payment Mode:</strong> {{ selectedInvoice.payment_mode || 'N/A' }}</td>
+                  <td><strong>Due Date:</strong> {{ selectedInvoice.due_date || 'N/A' }}</td>
+                  <td>
+                    <strong>Status:</strong> 
+                    <span [ngClass]="{
+                      'text-success': selectedInvoice.payment_status === 'paid',
+                      'text-primary': selectedInvoice.payment_status === 'unpaid',
+                      'text-warning': selectedInvoice.payment_status === 'partially paid',
+                      'text-danger': selectedInvoice.payment_status === 'overdue'
+                    }">
+                      {{ selectedInvoice.payment_status | titlecase }}
+                    </span>
+                  </td>
+                  <td><strong>Amount Paid:</strong> {{ selectedInvoice.amount_paid | number:'1.2-2' }}</td>
+                </tr>
+              </tbody>
+            </table>
+          </div>
+  
+        </div>
+        <div class="modal-footer">
+          <button type="button" class="btn btn-outline-secondary" data-bs-dismiss="modal">Close</button>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Update Invoice Modal -->
+<div class="modal fade" id="updateInvoiceModal" tabindex="-1" aria-labelledby="updateInvoiceLabel" aria-hidden="true">
+    <div class="modal-dialog modal-xl">
+      <div class="modal-content">
+        <div class="modal-header">
+          <h5 class="modal-title"><i class="bi bi-pencil-square me-2"></i> Update Invoice</h5>
+          <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+        </div>
+  
+        <form [formGroup]="updateForm" (ngSubmit)="submitUpdate()">
+          <div class="modal-body row g-3">
+  
+            <div class="col-md-6">
+              <label class="form-label"><i class="bi bi-hash me-1"></i> Invoice Number</label>
+              <input class="form-control" [value]="selectedInvoice?.number" disabled />
+            </div>
+  
+            <div class="col-md-6">
+              <label class="form-label"><i class="bi bi-card-text me-1"></i> Type</label>
+              <input class="form-control" [value]="selectedInvoice?.type" disabled />
+            </div>
+  
+            <div class="col-md-6">
+              <label class="form-label"><i class="bi bi-cash-stack me-1"></i> Amount Paid</label>
+              <input type="number" class="form-control" formControlName="amount_paid" />
+              <small class="text-danger" *ngIf="updateForm.get('amount_paid')?.invalid && updateForm.get('amount_paid')?.touched">
+                Required and must be a valid number.
+              </small>
+            </div>
+  
+            <div class="col-md-6">
+              <label class="form-label"><i class="bi bi-flag me-1"></i> Payment Status</label>
+              <select class="form-select" formControlName="payment_status">
+                <option value="paid">Paid</option>
+                <option value="unpaid">Unpaid</option>
+                <option value="partial">Partial</option>
+              </select>
+              <small class="text-danger" *ngIf="updateForm.get('payment_status')?.invalid && updateForm.get('payment_status')?.touched">
+                Required.
+              </small>
+            </div>
+  
+            <div class="col-md-6">
+              <label class="form-label"><i class="bi bi-calendar2-check me-1"></i> Due Date</label>
+              <input type="date" class="form-control" formControlName="due_date" />
+              <small class="text-danger" *ngIf="updateForm.get('due_date')?.invalid && updateForm.get('due_date')?.touched">
+                Required.
+              </small>
+            </div>
+  
+            <div class="col-md-6">
+              <label class="form-label"><i class="bi bi-credit-card-2-front me-1"></i> Payment Mode</label>
+              <select class="form-select" formControlName="payment_mode">
+                <option value="bank transfer">Bank Transfer</option>
+                <option value="credit card">Credit Card</option>
+                <option value="cash">Cash</option>
+                <option value="paypal">PayPal</option>
+                <option value="cheque">Cheque</option>
+                <option value="other">Other</option>
+              </select>
+              <small class="text-danger" *ngIf="updateForm.get('payment_mode')?.invalid && updateForm.get('payment_mode')?.touched">
+                Required.
+              </small>
+            </div>
+  
+            <!-- Additional Date + Type -->
+            <div class="col-md-6">
+              <label class="form-label"><i class="bi bi-calendar-plus me-1"></i> Additional Date</label>
+              <input type="date" class="form-control" formControlName="additional_date" />
+              <small class="text-danger" *ngIf="updateForm.get('additional_date')?.hasError('requiredTogether')">
+                Both fields are required if one is filled.
+              </small>
+            </div>
+  
+            <div class="col-md-6">
+              <label class="form-label"><i class="bi bi-card-list me-1"></i> Additional Date Type</label>
+              <input type="text" class="form-control" formControlName="additional_date_type" />
+              <small class="text-danger" *ngIf="updateForm.get('additional_date_type')?.hasError('requiredTogether')">
+                Both fields are required if one is filled.
+              </small>
+            </div>
+  
+          </div>
+  
+          <div class="modal-footer">
+            <button type="submit" class="btn btn-primary" [disabled]="updateForm.invalid">
+              <i class="bi bi-save me-1"></i> Save Changes
+            </button>
+          </div>
+        </form>
+      </div>
+    </div>
+  </div>
+  

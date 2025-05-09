@@ -20,6 +20,13 @@ export const routes: Routes = [
         data: {
           title: 'invoice form'
         }
+      },
+      {
+        path: 'invoices-dashboard',
+        loadComponent: () => import('./invoices-dashboard/invoices-dashboard.component').then(m => m.InvoicesDashboardComponent),
+        data: {
+          title: 'Invoices Dashboard'
+        }
       }
     ]
   }

@@ -722,8 +722,33 @@
             </tr>
           </tbody>
         </ng-container>
-
       </table>
+      <!-- Payment Information Table -->
+<div class="mb-4">
+  <table class="table table-bordered rounded shadow-sm">
+    <thead class="table-light">
+      <tr>
+        <th colspan="4"><i class="bi bi-credit-card-2-front me-1"></i> <strong>Payment Information</strong></th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td><strong>Payment Mode:</strong> {{ stepThreeData.payment_mode || 'N/A' }}</td>
+        <td><strong>Due Date:</strong> {{ stepThreeData.due_date || 'N/A' }}</td>
+        <td><strong>Status:</strong> 
+          <span [ngClass]="{
+            'text-success': stepThreeData.payment_status === 'paid',
+            'text-warning': stepThreeData.payment_status === 'pending',
+            'text-danger': stepThreeData.payment_status === 'unpaid'
+          }">
+            {{ stepThreeData.payment_status | titlecase }}
+          </span>
+        </td>
+        <td><strong>Amount Paid:</strong> {{ stepThreeData.amount_paid | number:'1.2-2' }}</td>
+      </tr>
+    </tbody>
+  </table>
+</div>
     </div>
 
     <!-- Confirm Button -->

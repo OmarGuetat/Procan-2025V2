@@ -1,0 +1,12 @@
+/* Add hover effect for buttons */
+.td-btn {
+    transition: transform 0.2s ease, color 0.2s ease;
+  }
+  
+  /* Hover state for scaling and color change */
+  .td-btn:hover {
+    transform: scale(1.2);
+    color: white;
+    background-color: var(--color-primary); 
+  }
+  
