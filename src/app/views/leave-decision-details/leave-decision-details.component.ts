@@ -3,7 +3,7 @@ import { ActivatedRoute } from '@angular/router';
 import { LeaveService } from '../../services/leave.service'; 
 import { CommonModule } from '@angular/common';
 import { RequestCardComponent } from '../cards/request-card/request-card.component';
-import { RequestCardSkeletonComponent } from '../cards/request-card-skeleton/request-card-skeleton.component';
+import { RequestCardSkeletonComponent } from '../components/Skeletons/request-card-skeleton/request-card-skeleton.component';
 @Component({
   selector: 'app-leave-decision-details',
   imports: [CommonModule, RequestCardComponent,RequestCardSkeletonComponent],

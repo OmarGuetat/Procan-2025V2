@@ -3,12 +3,13 @@ import { Component, EventEmitter, Input, Output } from '@angular/core';
 import { FormsModule } from '@angular/forms';
 import { LeaveService } from '../../services/leave.service';
 import { AuthService } from '../../services/auth.service';
+import { SkeletonTableComponent } from '../components/Skeletons/skeleton-table/skeleton-table.component';
 
 
 
 @Component({
   selector: 'app-request-dashboard',
-  imports: [CommonModule, FormsModule],
+  imports: [CommonModule, FormsModule,SkeletonTableComponent],
   templateUrl: './request-dashboard.component.html',
   styleUrl: './request-dashboard.component.css'
 })
@@ -33,7 +34,7 @@ export class RequestDashboardComponent {
   selectedStatus: string | null = null;
   totalRequestedLeaveDays: number = 0;
   totalEffectiveLeaveDays: number = 0;
-
+  isLoading: boolean = false;
   leaveTypes: string[] = ['paternity_leave', 'maternity_leave', 'sick_leave', 'personal_leave'];
   constructor(private leaveService: LeaveService, private authService: AuthService) { }
 
@@ -92,10 +93,16 @@ export class RequestDashboardComponent {
   }
   fetchLeaveRequests(): void {
     if (this.userId === null) return;
-
-    this.leaveService.getLeaveRequests(this.userId, this.selectedYear ?? undefined, this.currentPage, this.selectedType ?? undefined, this.selectedStatus ?? undefined)
-      .subscribe((response) => {
-        console.log(response)
+  
+    this.isLoading = true;
+    this.leaveService.getLeaveRequests(
+      this.userId,
+      this.selectedYear ?? undefined,
+      this.currentPage,
+      this.selectedType ?? undefined,
+      this.selectedStatus ?? undefined
+    ).subscribe(
+      (response) => {
         this.leaveRequests = response.data;
         this.availableYears = response.available_years;
         this.totalLeaveDays = this.selectedYear ? response.total_leave_days : 0;
@@ -104,11 +111,15 @@ export class RequestDashboardComponent {
         this.employeeName = response.full_name;
         this.currentPage = response.meta.current_page;
         this.totalPages = response.meta.total_pages;
-      }, error => {
+        this.isLoading = false;
+      },
+      error => {
         console.error('Error fetching leave details:', error);
-      });
-    console.log(this.leaveRequests);
+        this.isLoading = false;
+      }
+    );
   }
+  
 
   prevPage(): void {
     if (this.currentPage > 1) {

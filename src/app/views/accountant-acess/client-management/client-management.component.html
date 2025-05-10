@@ -1,55 +1,96 @@
-<div class="container mt-5">
-    <h2 class="mb-4">Client Management</h2>
-  
-   <!-- Button to Open Add Client Modal -->
-  <button type="button" class="btn btn-primary mb-3" (click)="openAddClientModal()">
-    Add New Client
+
+<!-- Add Button Right-Aligned -->
+<div class="d-flex justify-content-end my-3">
+  <button type="button" class="btn button-success" (click)="openAddClientModal()">
+    <i class="bi bi-plus-lg me-1"></i> Add New Client
   </button>
-  
-    <div class="table-responsive">
-      <table class="table table-hover align-middle">
-        <thead class="table-light">
-          <tr>
-            <th>Name</th>
-            <th>Type</th>
-            <th>Country</th>
-            <th>Phone</th>
-            <th>Email</th>
-            <th>Postal Code</th>
-            <th>Actions</th>
-          </tr>
-        </thead>
-        <tbody>
-          <tr *ngFor="let client of clients">
-            <td>{{ client.name }}</td>
-            <td>{{ client.client_type }}</td>
-            <td>{{ client.country }}</td>
-            <td>{{ client.phone_number }}</td>
-            <td>{{ client.email || '-' }}</td>
-            <td>{{ client.postal_code }}</td>
-            <td>
-              <button class="btn btn-sm btn-warning me-2" (click)="openEditClientModal(client)">Edit</button>
-              <button class="btn btn-sm btn-danger" (click)="openDeleteConfirmation(client.id)">Delete</button>
-            </td>
-          </tr>
-        </tbody>
-      </table>
-    </div>
-  
-    <nav *ngIf="totalPages > 1">
-      <ul class="pagination justify-content-center mt-4">
+</div>
+
+
+
+  <!-- Client Table -->
+  <div class="table-responsive">
+    <table class="table table-hover align-middle shadow-sm">
+      <thead>
+        <tr>
+          <th><i class="bi bi-person-fill"></i> Name</th>
+          <th><i class="bi bi-tags-fill"></i> Type</th>
+          <th><i class="bi bi-globe"></i> Country</th>
+          <th><i class="bi bi-telephone"></i> Phone</th>
+          <th><i class="bi bi-envelope"></i> Email</th>
+          <th><i class="bi bi-mailbox"></i> Postal Code</th>
+          <th><i class="bi bi-gear-fill"></i> Actions</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr *ngFor="let client of clients">
+          <td>{{ client.name }}</td>
+          <td>{{ client.client_type }}</td>
+          <td>{{ client.country }}</td>
+          <td>{{ client.phone_number }}</td>
+          <td>{{ client.email || '-' }}</td>
+          <td>{{ client.postal_code }}</td>
+          <td class="d-flex gap-2 justify-content-center">
+            <button class="btn btn-outline-warning td-btn-warning" (click)="openEditClientModal(client)">
+              <i class="bi bi-pencil-fill"></i>
+            </button>
+            <button class="btn btn-outline-danger td-btn-danger " (click)="openDeleteConfirmation(client.id)">
+              <i class="bi bi-trash-fill"></i>
+            </button>
+          </td>
+        </tr>
+      </tbody>
+    </table>
+  </div>
+
+  <!-- Pagination Controls -->
+  <div class="d-flex justify-content-center mt-4 " *ngIf="totalPages > 1">
+    <nav aria-label="Page navigation">
+      <ul class="pagination">
         <li class="page-item" [class.disabled]="currentPage === 1">
-          <button class="page-link" (click)="changePage(currentPage - 1)">Previous</button>
+          <button class="page-link" (click)="changePage(currentPage - 1)" [disabled]="currentPage === 1">
+            Previous
+          </button>
         </li>
-        <li class="page-item" *ngFor="let page of [].constructor(totalPages); let i = index" [class.active]="currentPage === i + 1">
-          <button class="page-link" (click)="changePage(i + 1)">{{ i + 1 }}</button>
+        <li class="page-item" *ngFor="let page of pages" [class.active]="page === currentPage">
+          <button class="page-link" (click)="changePage(page)">{{ page }}</button>
         </li>
         <li class="page-item" [class.disabled]="currentPage === totalPages">
-          <button class="page-link" (click)="changePage(currentPage + 1)">Next</button>
+          <button class="page-link" (click)="changePage(currentPage + 1)" [disabled]="currentPage === totalPages">
+            Next
+          </button>
         </li>
       </ul>
     </nav>
   </div>
+
+
+<!-- Delete Confirmation Modal -->
+<div class="modal fade" id="deleteConfirmationModal" tabindex="-1" aria-labelledby="deleteConfirmationModalLabel" aria-hidden="true">
+  <div class="modal-dialog">
+    <div class="modal-content border-danger">
+      <div class="modal-header bg-danger text-white">
+        <h5 class="modal-title" id="deleteConfirmationModalLabel">
+          <i class="bi bi-exclamation-triangle-fill me-2"></i>Confirm Deletion
+        </h5>
+        <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal" aria-label="Close"></button>
+      </div>
+      <div class="modal-body">
+        Are you sure you want to delete this client? This action cannot be undone.
+      </div>
+      <div class="modal-footer">
+        <button type="button" class="btn btn-outline-secondary" data-bs-dismiss="modal">
+          <i class="bi bi-x-lg"></i> Cancel
+        </button>
+        <button type="button" class="btn btn-danger" (click)="confirmDelete()">
+          <i class="bi bi-trash3-fill"></i> Confirm
+        </button>
+      </div>
+    </div>
+  </div>
+</div>
+  
+  
     <!-- Delete Confirmation Modal -->
     <div class="modal fade" id="deleteConfirmationModal" tabindex="-1" aria-labelledby="deleteConfirmationModalLabel" aria-hidden="true">
         <div class="modal-dialog">

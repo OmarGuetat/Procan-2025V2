@@ -1,4 +1,13 @@
-<div class="card shadow-sm mt-2">
+<app-skeleton-table-card
+*ngIf="isLoading"
+[title]="'Manage Leave Balances'"
+[icon]="'bi-calendar-check'"
+[cols]="3"
+[rows]="5">
+</app-skeleton-table-card>
+
+<!-- Original table when data is ready -->
+<div *ngIf="!isLoading" class="card shadow-sm mt-2">
   <div class="card-header d-flex justify-content-between align-items-center ">
     <strong>Manage Leave Balances</strong>
     <i class="bi bi-calendar-check fs-5 text-primary"></i>

@@ -1,44 +1,19 @@
-<!--sidebar-->
-<c-sidebar
-  #sidebar1="cSidebar"
-  class="d-print-none sidebar sidebar-fixed border-end"
-  colorScheme="light"
-  id="sidebar1"
-  visible
->
-<c-sidebar-header class="border-bottom">
-  <c-sidebar-brand [routerLink]="[]">
-    <!-- Full logo (shown when sidebar is expanded) -->
-    <img src="assets/procan-logo.png" alt="Procan Logo" class="sidebar-brand-full w-100 " height="35"/>
+<!-- Sidebar (Visible only for Admin and HR) -->
+<app-sidebar *ngIf="userRole === 'admin' || userRole === 'hr'"></app-sidebar>
 
-    <!-- Compact logo (shown when sidebar is collapsed/narrow) -->
-    <img src="assets/version_mobile.png" alt="Procan Mobile Logo" class="sidebar-brand-narrow" height="32" />
-  </c-sidebar-brand>
-</c-sidebar-header>
-  <ng-scrollbar pointerEventsMethod="scrollbar" visibility="hover">
-    <c-sidebar-nav [navItems]="navItems" dropdownMode="path" compact />
-  </ng-scrollbar>
+<!-- Main Content Wrapper -->
+<div class="wrapper d-flex flex-column min-vh-100" *ngIf="userRole !== 'admin' && userRole !== 'hr'">
+  
+  <!-- Dynamic Header Based on Role -->
+  <ng-container [ngSwitch]="userRole">
+    <app-employee-header *ngSwitchCase="'employee'"></app-employee-header>
+    <app-accountant-header *ngSwitchCase="'accountant'"></app-accountant-header>
+  </ng-container>
 
-  @if (!sidebar1.narrow) {
-    <c-sidebar-footer cSidebarToggle="sidebar1" class="border-top d-none d-lg-flex" toggle="unfoldable" style="cursor: pointer;">
-      <button cSidebarToggler aria-label="Toggle sidebar fold"></button>
-    </c-sidebar-footer>
-  }
-</c-sidebar>
-
-<!--main-->
-<div class="wrapper d-flex flex-column min-vh-100">
-  <!--app-header-->
-  <app-default-header
-    [cShadowOnScroll]="'sm'"
-    class="mb-1 d-print-none header header-sticky p-0 shadow-sm"
-    position="sticky"
-    sidebarId="sidebar1"
-  />
-  <!--app-body-->
+  <!-- Main Content -->
   <div class="body flex-grow-1">
     <c-container breakpoint="lg" class="h-auto px-4">
-      <router-outlet />
+      <router-outlet></router-outlet>
     </c-container>
   </div>
   <!--app footer-->

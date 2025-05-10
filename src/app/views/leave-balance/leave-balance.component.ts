@@ -2,12 +2,13 @@ import { Component, OnInit } from '@angular/core';
 import { LeaveBalanceService } from '../../services/leave-balance.service';
 import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { CommonModule } from '@angular/common';
+import { SkeletonTableCardComponent } from '../components/Skeletons/skeleton-table-card/skeleton-table-card.component';
 
 
 
 @Component({
   selector: 'app-leave-balance',
-  imports:[ReactiveFormsModule,CommonModule,FormsModule],
+  imports:[ReactiveFormsModule,CommonModule,FormsModule,SkeletonTableCardComponent],
   templateUrl: './leave-balance.component.html',
   styleUrls: ['./leave-balance.component.scss'],
 })
@@ -17,7 +18,7 @@ export class LeaveBalanceComponent implements OnInit {
     { leave_type: 'maternity_leave', max_days: 0, id: null },
     { leave_type: 'sick_leave', max_days: 0, id: null }
   ];
-
+  isLoading = true;
   constructor(private leaveBalanceService: LeaveBalanceService) {}
 
   ngOnInit(): void {
@@ -33,8 +34,10 @@ export class LeaveBalanceComponent implements OnInit {
   }
   
   getLeaveBalances(): void {
+    this.isLoading = true;
     this.leaveBalanceService.getLeaveBalances().subscribe(
       (data) => {
+        console.log(data)
         // Merge received data with default leave types
         this.leaveBalances = this.leaveBalances.map((defaultLeave) => {
           const existingLeave = data.find((l: any) => l.leave_type === defaultLeave.leave_type);
@@ -49,17 +52,20 @@ export class LeaveBalanceComponent implements OnInit {
           }
           return defaultLeave;
         });
+        this.isLoading = false;
       },
-      (error) => console.error('Error fetching leave balances:', error)
+      (error) => {
+        console.error('Error fetching leave balances:', error) ;
+        this.isLoading = true;}
     );
   }
   updateLeaveBalance(leave: any): void {
-    if (!leave.id) return;
+    if (!leave.id ) return;
   
     const adjustedLeave = {
       max_days: leave.leave_type === 'maternity_leave' ? leave.max_days * 30 : leave.max_days
     };
-  
+    
     this.leaveBalanceService.updateLeaveBalance(leave.id, adjustedLeave)
       .subscribe(
         () => this.getLeaveBalances(),

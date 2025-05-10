@@ -1,39 +1,26 @@
-import { CommonModule, NgTemplateOutlet } from '@angular/common';
-import { Component, computed, inject, input, OnInit } from '@angular/core';
-import {Router } from '@angular/router';
-
-import { 
-  ContainerComponent,
-  DropdownComponent,
-  DropdownItemDirective,
-  DropdownMenuDirective,
-  DropdownToggleDirective,
-  HeaderComponent,
-  HeaderTogglerDirective,
-  SidebarToggleDirective
-} from '@coreui/angular';
-
+import { CommonModule } from '@angular/common';
+import { Component, OnInit } from '@angular/core';
+import { ContainerComponent, DropdownComponent, DropdownItemDirective, DropdownMenuDirective, DropdownToggleDirective } from '@coreui/angular';
 import { IconDirective } from '@coreui/icons-angular';
+import { Router } from '@angular/router';
 import { AuthService } from '../../../services/auth.service';
-import { EmployeeService } from '../../../services/employee-service.service';
 import { NotificationService } from '../../../services/notification.service';
+import { EmployeeService } from '../../../services/employee-service.service';
 
 @Component({
-  selector: 'app-default-header',
-  templateUrl: './default-header.component.html',
-  imports: [
-    ContainerComponent, HeaderTogglerDirective, CommonModule, SidebarToggleDirective, IconDirective,
-    DropdownComponent, DropdownToggleDirective, DropdownMenuDirective, 
-    DropdownItemDirective
-  ]
+  selector: 'app-employee-header',
+  templateUrl: './employee-header.component.html',
+  styleUrls: ['./employee-header.component.scss'],
+  imports: [ContainerComponent, CommonModule, IconDirective, ContainerComponent, CommonModule,
+    DropdownComponent, DropdownToggleDirective, DropdownMenuDirective,
+    DropdownItemDirective]
 })
-export class DefaultHeaderComponent extends HeaderComponent implements OnInit {
+export class EmployeeHeaderComponent implements OnInit {
   avatarPath: string = '';
   fullName: string = 'User';
-  
-  notifications: any[] = [];
+  isAdmin: boolean = false;
+  notifications: any[] = []; // ✅ Default to an empty array
   unreadCount: number = 0;
-
   ngOnInit(): void {
     this.loadUserData();
     this.fetchNotifications();
@@ -51,32 +38,28 @@ export class DefaultHeaderComponent extends HeaderComponent implements OnInit {
       this.updateUnreadCount();
     });
   }
-
-  constructor(
-    private authService: AuthService,
-    private employeeService: EmployeeService,
-    private notificationService: NotificationService,
-    private router: Router
-  ) {
-    super();
-  }
-
-  sidebarId = input('sidebar1');
-
+  constructor(private employeeService: EmployeeService, private authService: AuthService, private router: Router, private notificationService: NotificationService) { }
   loadUserData(): void {
-      this.employeeService.getData().subscribe(response => {
-        this.avatarPath = response.avatar_path || '';
-        this.fullName = response.full_name || 'User';
-      });
-    
-    }
-  
+    this.employeeService.getData().subscribe(response => {
+      this.avatarPath = response.avatar_path || '';
+      this.fullName = response.full_name || 'User';
+    });
 
-  logout(): void {
-    this.authService.logout();
-    localStorage.removeItem('role');
+  }
+  goToHome() {
+    this.router.navigate(['/employee/employee-home']);
   }
 
+  goToForm() {
+    this.router.navigate(['/employee/leave-form']);
+  }
+  goToMyRequests() {
+    this.router.navigate(['/employee/requests-user-dashboard']);
+  }
+  logout() {
+    this.authService.logout()
+  }
+  
   fetchNotifications(): void {
     this.notificationService.getNotifications().subscribe((response) => {
       this.notifications = response;
@@ -109,13 +92,6 @@ export class DefaultHeaderComponent extends HeaderComponent implements OnInit {
       }
     );
   }
-
-  showAllNotifications() {
-    const role = this.authService.getRole();
-    const rolePrefix = this.getRolePrefix(role);
-    this.router.navigate([`/${rolePrefix}/notifications`]);
-  }
-  
   goToProfile() {
     const role = this.authService.getRole();
     const rolePrefix = this.getRolePrefix(role);
@@ -123,6 +99,15 @@ export class DefaultHeaderComponent extends HeaderComponent implements OnInit {
   }
   
 
+  isActiveRoute(route: string): boolean {
+    return this.router.url === route;
+  }
+  showAllNotifications() {
+    this.router.navigate(['/employee/notifications']);
+  }
+  private updateUnreadCount(): void {
+    this.unreadCount = this.notifications.filter(n => !n.is_read).length;
+  }
   private getRolePrefix(role: string | null): string {
     switch (role) {
       case 'admin': return 'admin';
@@ -132,9 +117,5 @@ export class DefaultHeaderComponent extends HeaderComponent implements OnInit {
       default: return 'login';
     }
   }
-  
 
-  private updateUnreadCount(): void {
-    this.unreadCount = this.notifications.filter(n => !n.is_read).length;
-  }
 }

@@ -1,0 +1,17 @@
+.nav-link {
+    font-family: var(--font-family-accent);
+    font-size: 1.05em;
+    color: black;
+    transition: color 0.2s ease;
+  }
+  
+  .nav-link:hover {
+    color: var(--color-primary-dark);
+    cursor: pointer;
+  }
+  
+  .nav-link.active {
+    font-weight: bold;
+    color: var(--color-primary);
+  }
+  

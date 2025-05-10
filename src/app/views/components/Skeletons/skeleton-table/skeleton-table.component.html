@@ -1,0 +1,19 @@
+<div class="table-responsive">
+    <table class="table table-bordered mb-0">
+      <thead>
+        <tr>
+          <ng-container *ngFor="let col of [].constructor(cols)">
+            <th><div class="skeleton skeleton-header"></div></th>
+          </ng-container>
+        </tr>
+      </thead>
+      <tbody>
+        <tr *ngFor="let row of [].constructor(rows)">
+          <ng-container *ngFor="let col of [].constructor(cols)">
+            <td><div class="skeleton skeleton-cell"></div></td>
+          </ng-container>
+        </tr>
+      </tbody>
+    </table>
+  </div>
+  

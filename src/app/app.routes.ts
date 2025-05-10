@@ -82,7 +82,8 @@ export const routes: Routes = [
     { 
       path: 'profile', 
       loadChildren: () => import('./views/profile/routes').then(m => m.routes) 
-    }
+    },
+    { path: '', loadChildren: () => import('./views/invoices/routes').then((m) => m.routes) },
   ]
 },
 

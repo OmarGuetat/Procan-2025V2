@@ -43,7 +43,11 @@
   
   <!-- Total Leave Days: Show only when a year is selected -->
   <p *ngIf="selectedYear" class="mt-1"><strong>Total Leave Days:</strong> {{ totalLeaveDays }}</p>
-  <table class="table table-bordered">
+<!-- Spinner shown while loading -->
+<app-skeleton-table *ngIf="isLoading" [rows]="7" [cols]="8"></app-skeleton-table>
+
+<!-- Table shown when not loading -->
+<table *ngIf="!isLoading" class="table table-bordered">
     <thead class="thead-dark">
       <tr>
         <th><i class="bi bi-calendar-event me-1"></i>Start Date</th>
