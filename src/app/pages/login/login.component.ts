@@ -45,10 +45,12 @@ export class LoginComponent implements OnInit {
 
     this.authService.login(name, password).subscribe(
       (response) => {
+        console.log(response)
         this.authService.saveToken(response.access_token);
         localStorage.setItem('role', response.role);
         localStorage.setItem('userId', response.id);
         localStorage.setItem('gender', response.gender);
+        localStorage.setItem('company', response.company);
         setTimeout(() => this.redirectUser(), 100);
       },
       (error) => {

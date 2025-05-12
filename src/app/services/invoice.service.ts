@@ -35,24 +35,49 @@ export class InvoiceService {
       withCredentials: true
     });
   }
-  updateInvoice(id: number, payload: any): Observable<any> {
-    return this.http.put(`${this.GlobalUrl}/invoices/update/${id}`, payload);
+  getInvoiceHistorique(id: number): Observable<any> {
+    return this.http.get(`${this.GlobalUrl}/invoices/${id}/historique`);
+  }
+  getInvoiceTypeStats(): Observable<any> {
+    return this.http.get(`${this.GlobalUrl}/type-stats`);
   }
   
-  getInvoices(filters: { year?: number; month?: number; type?: string; page?: number }) {
-    let params = new HttpParams();
-    if (filters.year) params = params.set('year', filters.year.toString());
-    if (filters.month) params = params.set('month', filters.month.toString());
-    if (filters.type) params = params.set('type', filters.type);
-    if (filters.page) params = params.set('page', filters.page.toString());
-
-    return this.http.get<any>(`${this.GlobalUrl}/show/invoices`, { params });
+  getInvoices(
+    page: number,
+    start_date?: string,
+    end_date?: string,
+    client_name?: string,
+    sort_by_payment_status?: string
+  ): Observable<any> {
+    let params = new HttpParams().set('page', page.toString());
+    if (start_date) params = params.set('start_date', start_date);
+    if (end_date) params = params.set('end_date', end_date);
+    if (client_name) params = params.set('client_name', client_name);
+    if (sort_by_payment_status) params = params.set('sort_by_payment_status', sort_by_payment_status);
+  
+    return this.http.get(`${this.GlobalUrl}/show/invoices`, { params });
   }
+  updatePaymentStatus(id: number, payload: any): Observable<any> {
+    return this.http.put(`${this.GlobalUrl}/invoices/${id}/payment-status`, payload);
+  }
+  getServicesByInvoice(id: number): Observable<any> {
+    return this.http.get(`${this.GlobalUrl}/invoices/${id}/services`);
+  }
+  
   // invoice.service.ts
 downloadInvoicePdf(id: number): Observable<Blob> {
   return this.http.get(`${this.GlobalUrl}/invoices/${id}/download-pdf`, {
     responseType: 'blob'
   });
+}
+updateServicesBatch(payload: any): Observable<any> {
+  return this.http.put(`${this.GlobalUrl}/invoices/services/batch-update`, payload);
+}
+getPaymentStatusStats(): Observable<any> {
+  return this.http.get<any>(`${this.GlobalUrl}/payment-status`);
+}
+getPaymentModeStats(): Observable<any> {
+  return this.http.get(`${this.GlobalUrl}/payment-mode`);
 }
 
 }

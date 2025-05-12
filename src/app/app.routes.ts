@@ -18,19 +18,27 @@ export const routes: Routes = [
     component: DefaultLayoutComponent,
     canActivate: [AuthGuard],
     children: [
-      { path: 'home', loadChildren: () => import('./views/admin-home/routes').then((m) => m.routes) },
-      { path: 'users-dashboard', loadChildren: () => import('./views/users-dashboard/routes').then((m) => m.routes) },
-      { path: 'leave-dashboard', loadChildren: () => import('./views/leave-dashboard/routes').then((m) => m.routes) },
-      { path: 'leave-balance', loadChildren: () => import('./views/leave-balance/routes').then((m) => m.routes) },
-      { path: 'manage-holidays', loadChildren: () => import('./views/manage-holidays/routes').then((m) => m.routes) },
-     
-      { path: '', loadChildren: () => import('./views/invoices/routes').then((m) => m.routes) },
-     
-      { path: 'notifications', loadChildren: () => import('./views/notifications/routes').then((m) => m.routes) },
       {
         path: 'leave-decision-details/:id',loadChildren: () =>import('./views/leave-decision-details/routes').then(m => m.routes)
       },
+      { 
+        path: '', 
+        loadChildren: () => import('./views/admin-hr-access/routes').then(m => m.routes) 
+      },
+      { 
+        path: '', 
+        loadChildren: () => import('./views/admin-access/routes').then(m => m.routes) 
+      },
+   
+      { path: 'leave-dashboard', loadChildren: () => import('./views/leave-dashboard/routes').then((m) => m.routes) },
+      { path: 'leave-balance', loadChildren: () => import('./views/leave-balance/routes').then((m) => m.routes) },
+      
+      { path: '', loadChildren: () => import('./views/invoices/routes').then((m) => m.routes) },
+     
+      { path: 'notifications', loadChildren: () => import('./views/notifications/routes').then((m) => m.routes) },
+      
       { path: 'profile', loadChildren: () => import('./views/profile/routes').then((m) => m.routes) },
+
     ]
   },
 
@@ -45,6 +53,9 @@ export const routes: Routes = [
       { path: 'requests-user-dashboard', loadChildren: () => import('./views/requests-user-dashboard/routes').then((m) => m.routes) },
       { path: 'notifications', loadChildren: () => import('./views/notifications/routes').then((m) => m.routes) },
       { path: 'profile', loadChildren: () => import('./views/profile/routes').then((m) => m.routes) },
+      {
+        path: 'leave-decision-details/:id',loadChildren: () =>import('./views/leave-decision-details/routes').then(m => m.routes)
+      },
     ]
   },
 
@@ -54,8 +65,14 @@ export const routes: Routes = [
     component: DefaultLayoutComponent,
     canActivate: [AuthGuard],
     children: [
+      {
+        path: 'leave-decision-details/:id',loadChildren: () =>import('./views/leave-decision-details/routes').then(m => m.routes)
+      },
       { path: 'hr-home', loadChildren: () => import('./views/hr-home/routes').then((m) => m.routes) },
-      { path: 'users-dashboard', loadChildren: () => import('./views/users-dashboard/routes').then((m) => m.routes) },
+      { 
+        path: '', 
+        loadChildren: () => import('./views/admin-hr-access/routes').then(m => m.routes) 
+      },
       { path: 'leave-balance', loadChildren: () => import('./views/leave-balance/routes').then((m) => m.routes) },
       { path: 'leave-dashboard', loadChildren: () => import('./views/leave-dashboard/routes').then((m) => m.routes) },
       { path: 'leave-form', loadChildren: () => import('./views/leave-form/routes').then((m) => m.routes) },
@@ -84,6 +101,8 @@ export const routes: Routes = [
       loadChildren: () => import('./views/profile/routes').then(m => m.routes) 
     },
     { path: '', loadChildren: () => import('./views/invoices/routes').then((m) => m.routes) },
+    
+    
   ]
 },
 

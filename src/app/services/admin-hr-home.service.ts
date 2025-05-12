@@ -25,5 +25,8 @@ export class AdminHrHomeService {
   getApprovedLeavesByYear() {
     return this.http.get<any>(`${this.apiUrl}/dashboard/compare-leaves-by-year`);
   }
+  getAuthenticatedUserInfo(): Observable<any> {
+    return this.http.get<any>(`${this.apiUrl}/home/user/info`);
+  }
   
 }

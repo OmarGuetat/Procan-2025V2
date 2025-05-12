@@ -3,7 +3,7 @@ import { CalendarOptions } from '@fullcalendar/core';
 import { FullCalendarModule } from '@fullcalendar/angular';
 import dayGridPlugin from '@fullcalendar/daygrid';
 import { EmployeeHrHomeService } from '../../services/employee-hr-home.service';
-import { StatusChartComponent } from '../components/status-chart/status-chart.component';
+import { StatusChartComponent } from '../components/charts-stats/status-chart/status-chart.component';
 import { CommonModule } from '@angular/common';
 import { LeaveProgressBarComponent } from '../components/leave-progress-bar/leave-progress-bar.component';
 import tippy from 'tippy.js';  // Import tippy for tooltips

@@ -25,8 +25,12 @@ export const routes: Routes = [
         path: 'invoices-dashboard',
         loadComponent: () => import('./invoices-dashboard/invoices-dashboard.component').then(m => m.InvoicesDashboardComponent),
         data: {
-          title: 'Invoices Dashboard'
+          title: 'invoices Dashboard'
         }
+      },
+      {
+        path: 'invoices/:id/services',
+        loadComponent: () => import('./invoice-services/invoice-services.component').then(m => m.InvoiceServicesComponent),
       }
     ]
   }

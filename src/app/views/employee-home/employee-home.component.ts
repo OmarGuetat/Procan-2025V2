@@ -3,16 +3,17 @@ import { CalendarOptions } from '@fullcalendar/core';
 import { FullCalendarModule } from '@fullcalendar/angular';
 import dayGridPlugin from '@fullcalendar/daygrid';
 import { EmployeeHrHomeService } from '../../services/employee-hr-home.service';
-import { StatusChartComponent } from '../components/status-chart/status-chart.component';
+import { StatusChartComponent } from '../components/charts-stats/status-chart/status-chart.component';
 import { CommonModule } from '@angular/common';
 import { LeaveProgressBarComponent } from '../components/leave-progress-bar/leave-progress-bar.component';
 import tippy from 'tippy.js';  // Import tippy for tooltips
 import 'tippy.js/dist/tippy.css';
 import 'tippy.js/animations/scale.css';
+import { UserInformationsComponent } from '../components/user-informations/user-informations.component';
 
 @Component({
   selector: 'app-employee-home',
-  imports: [FullCalendarModule, StatusChartComponent, CommonModule, LeaveProgressBarComponent],
+  imports: [FullCalendarModule, StatusChartComponent, CommonModule, LeaveProgressBarComponent,UserInformationsComponent],
   templateUrl: './employee-home.component.html',
   styleUrls: ['./employee-home.component.scss']
 })
@@ -83,6 +84,7 @@ export class EmployeeHomeComponent implements OnInit {
   ngOnInit(): void {
     this.loadCalendarData();
     this.homeService.getLeaveBalance().subscribe((res) => {
+      console.log(res)
       this.balance = res.data;
     });
   }

@@ -103,7 +103,7 @@ export class AccountantHeaderComponent implements OnInit {
       return this.router.url === route;
     }
     showAllNotifications() {
-      this.router.navigate(['/employee/notifications']);
+      this.router.navigate(['/accountant/notifications']);
     }
     private updateUnreadCount(): void {
       this.unreadCount = this.notifications.filter(n => !n.is_read).length;

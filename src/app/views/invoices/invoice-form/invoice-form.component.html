@@ -477,8 +477,7 @@
                       name="services[{{i}}].quantity" required (input)="updateCalculations()" />
                   </td>
                   <td>
-                    <select class="form-control" [(ngModel)]="service.unit" name="services[{{i}}].unit"
-                      (change)="updateCalculations()">
+                    <select class="form-control" [(ngModel)]="service.unit" name="services[{{i}}].unit">
                       <option value="" selected></option>
                       <option value="H">H</option>
                       <option value="D">D</option>

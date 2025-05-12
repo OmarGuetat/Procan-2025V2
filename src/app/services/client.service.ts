@@ -12,9 +12,17 @@ export class ClientService {
 
   constructor(private http: HttpClient) {}
 
-  getClients(name: string = '', page: number = 1): Observable<any> {
-    return this.http.get(`${this.apiUrl}/show/clients`, { params: { name, page } });
+  getClients(name: string = '', email: string = '', phone_number: string = '', page: number = 1): Observable<any> {
+    return this.http.get(`${this.apiUrl}/show/clients`, {
+      params: {
+        name,
+        email,
+        phone_number,
+        page: page.toString(), // Ensure the page is sent as a string
+      }
+    });
   }
+  
 
   addClient(clientData: any): Observable<any> {
     return this.http.post(`${this.apiUrl}/clients/add`, clientData);

@@ -22,4 +22,7 @@ export class EmployeeHrHomeService {
       `${this.apiUrl}/employee/home/leaves-status`
     );
   }
+  getAuthenticatedUserInfo(): Observable<any> {
+    return this.http.get<any>(`${this.apiUrl}/home/user/info`);
+  }
 }

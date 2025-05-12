@@ -1,9 +1,27 @@
 
-<!-- Add Button Right-Aligned -->
-<div class="d-flex justify-content-end my-3">
-  <button type="button" class="btn button-success" (click)="openAddClientModal()">
-    <i class="bi bi-plus-lg me-1"></i> Add New Client
-  </button>
+<div class="row align-items-center justify-content-between my-3">
+ <!-- Search Bar -->
+ <div class="col-12 col-md-8 col-lg-6">
+  <div class="input-group">
+    <input
+      type="text"
+      class="form-control"
+      [(ngModel)]="searchQuery"
+      (input)="fetchClients()"
+      [placeholder]="currentPlaceholder"  [class.show-placeholder]="true"
+    />
+    <span class="input-group-text search">
+      <i class="bi bi-search"></i>
+    </span>
+  </div>
+</div>
+
+  <!-- Add Client Button -->
+  <div class="col-12 col-md-auto mt-2 d-flex justify-content-md-end justify-content-center">
+    <button type="button" class="btn button-success" (click)="openAddClientModal()">
+      <i class="bi bi-plus-lg me-1"></i> Add New Client
+    </button>
+  </div>
 </div>
 
 
@@ -13,13 +31,13 @@
     <table class="table table-hover align-middle shadow-sm">
       <thead>
         <tr>
-          <th><i class="bi bi-person-fill"></i> Name</th>
-          <th><i class="bi bi-tags-fill"></i> Type</th>
-          <th><i class="bi bi-globe"></i> Country</th>
-          <th><i class="bi bi-telephone"></i> Phone</th>
-          <th><i class="bi bi-envelope"></i> Email</th>
-          <th><i class="bi bi-mailbox"></i> Postal Code</th>
-          <th><i class="bi bi-gear-fill"></i> Actions</th>
+          <th class="text-nowrap"><i class="bi bi-person-fill"></i> Name</th>
+          <th class="text-nowrap"><i class="bi bi-tags-fill"></i> Type</th>
+          <th class="text-nowrap"><i class="bi bi-globe"></i> Country</th>
+          <th class="text-nowrap"><i class="bi bi-telephone"></i> Phone</th>
+          <th class="text-nowrap"><i class="bi bi-envelope"></i> Email</th>
+          <th class="text-nowrap"><i class="bi bi-mailbox"></i> Postal Code</th>
+          <th class="text-nowrap"><i class="bi bi-gear-fill"></i> Actions</th>
         </tr>
       </thead>
       <tbody>
@@ -44,7 +62,7 @@
   </div>
 
   <!-- Pagination Controls -->
-  <div class="d-flex justify-content-center mt-4 " *ngIf="totalPages > 1">
+  <div class="d-flex justify-content-center " *ngIf="totalPages > 1">
     <nav aria-label="Page navigation">
       <ul class="pagination">
         <li class="page-item" [class.disabled]="currentPage === 1">
