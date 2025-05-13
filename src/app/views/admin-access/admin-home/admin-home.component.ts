@@ -6,6 +6,7 @@ import { ApprovedLeavesChartComponent } from '../../components/charts-stats/appr
 import { ApprovedLeavesTrendComponent } from '../../components/charts-stats/approved-leaves-trend/approved-leaves-trend.component';
 import { LeaveStatusCardsComponent } from '../../cards/leave-status-cards/leave-status-cards.component';
 import { DashboardHolidayWidgetComponent } from '../../cards/dashboard-holiday-widget/dashboard-holiday-widget.component';
+import { EmployeeOnHolidayWidgetComponent } from '../../cards/employee-on-holiday-widget/employee-on-holiday-widget.component';
 
 @Component({
   selector: 'app-admin-home',
@@ -13,7 +14,7 @@ import { DashboardHolidayWidgetComponent } from '../../cards/dashboard-holiday-w
   imports: [
     CommonModule,
     AdminStatusChartComponent,
-    LeaveTypeChartComponent,ApprovedLeavesChartComponent,ApprovedLeavesTrendComponent,LeaveStatusCardsComponent,DashboardHolidayWidgetComponent
+    LeaveTypeChartComponent,ApprovedLeavesChartComponent,ApprovedLeavesTrendComponent,LeaveStatusCardsComponent,DashboardHolidayWidgetComponent,EmployeeOnHolidayWidgetComponent
   ],
   templateUrl: './admin-home.component.html',
   styleUrls: ['./admin-home.component.scss']

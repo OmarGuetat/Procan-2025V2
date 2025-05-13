@@ -32,7 +32,10 @@ export class AdminHrHomeService {
   getApprovedLeavesThisMonth() {
     return this.http.get<{ approved_this_month: number }>(`${this.apiUrl}/dashboard/count/approved`);
   }
-
+  getLeavesToday(): Observable<any> {
+    return this.http.get(`${this.apiUrl}/dashboard/leaves/today`);
+  }
+  
   getRejectedLeavesThisMonth() {
     return this.http.get<{ rejected_this_month: number }>(`${this.apiUrl}/dashboard/count/rejected`);
   }

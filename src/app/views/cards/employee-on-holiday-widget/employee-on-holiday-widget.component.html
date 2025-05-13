@@ -1,0 +1,24 @@
+<div class="card shadow-sm border-0 rounded">
+    <div class="card-body">
+      <h5 class="card-title font-primary">Employees on Leave Today</h5>
+  
+      <ng-container *ngIf="loading">
+        <div *ngFor="let i of [1, 2, 3]" class="placeholder-glow mt-2">
+          <div class="placeholder col-7"></div>
+        </div>
+      </ng-container>
+  
+      <ng-container *ngIf="!loading && leavesToday.length > 0">
+        <ul class="list-group list-group-flush">
+          <li *ngFor="let leave of leavesToday" class="list-group-item px-0">
+            <strong class="font-secondary">{{ leave.full_name }}</strong> - {{ leave.leave_type }}
+          </li>
+        </ul>
+      </ng-container>
+  
+      <ng-container *ngIf="!loading && leavesToday.length === 0">
+        <p class="text-muted">No employees are on leave today.</p>
+      </ng-container>
+    </div>
+  </div>
+  
