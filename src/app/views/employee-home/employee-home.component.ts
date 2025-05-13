@@ -10,10 +10,11 @@ import tippy from 'tippy.js';  // Import tippy for tooltips
 import 'tippy.js/dist/tippy.css';
 import 'tippy.js/animations/scale.css';
 import { UserInformationsComponent } from '../components/user-informations/user-informations.component';
+import { DashboardHolidayWidgetComponent } from '../cards/dashboard-holiday-widget/dashboard-holiday-widget.component';
 
 @Component({
   selector: 'app-employee-home',
-  imports: [FullCalendarModule, StatusChartComponent, CommonModule, LeaveProgressBarComponent,UserInformationsComponent],
+  imports: [FullCalendarModule, StatusChartComponent, CommonModule, LeaveProgressBarComponent,UserInformationsComponent,DashboardHolidayWidgetComponent],
   templateUrl: './employee-home.component.html',
   styleUrls: ['./employee-home.component.scss']
 })

@@ -29,4 +29,18 @@ export class AdminHrHomeService {
     return this.http.get<any>(`${this.apiUrl}/home/user/info`);
   }
   
+  getApprovedLeavesThisMonth() {
+    return this.http.get<{ approved_this_month: number }>(`${this.apiUrl}/dashboard/count/approved`);
+  }
+
+  getRejectedLeavesThisMonth() {
+    return this.http.get<{ rejected_this_month: number }>(`${this.apiUrl}/dashboard/count/rejected`);
+  }
+
+  getOnHoldLeavesThisMonth() {
+    return this.http.get<{ on_hold_this_month: number }>(`${this.apiUrl}/dashboard/count/on-hold`);
+  }
+  getUpcomingHolidays(): Observable<any> {
+    return this.http.get(`${this.apiUrl}/employee/home/holidays/upcoming`);
+  }
 }

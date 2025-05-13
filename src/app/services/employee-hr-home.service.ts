@@ -25,4 +25,8 @@ export class EmployeeHrHomeService {
   getAuthenticatedUserInfo(): Observable<any> {
     return this.http.get<any>(`${this.apiUrl}/home/user/info`);
   }
+  getLastLeaveAddition() {
+    return this.http.get<any>(`${this.apiUrl}/employee/home/last-leave-addition`);
+  }
+  
 }

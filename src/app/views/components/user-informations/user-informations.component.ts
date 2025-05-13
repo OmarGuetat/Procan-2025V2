@@ -12,8 +12,10 @@ import { CommonModule } from '@angular/common';
 })
 export class UserInformationsComponent implements OnInit {
   userInfo: any = {};
-  leaveBalance: any = {};
-  company: string | null = '';  
+  leaveBalances: any[] = [];
+  totalRemaining: number = 0;
+  lastLeaveAddition: { leave_day_limit: number, date: string } | null = null;
+  company: string | null = '';
   today: string = new Date().toLocaleDateString();
 
   constructor(
@@ -24,23 +26,33 @@ export class UserInformationsComponent implements OnInit {
   ngOnInit(): void {
     this.getUserInfo();
     this.getLeaveBalance();
+    this.getLastLeaveAddition();
     this.company = localStorage.getItem('company');
-    console.log(this.company);
   }
 
   getUserInfo(): void {
     this.employeeHrHomeService.getAuthenticatedUserInfo().subscribe({
       next: (data) => this.userInfo = data,
       error: (err) => console.error('User info error:', err)
-    });}
+    });
+  }
 
-    getLeaveBalance(): void {
-      this.employeeHrHomeService.getLeaveBalance().subscribe({
-        next: (res) => {
-          this.leaveBalance = res.data; // correctly access nested 'data'
-        },
-        error: (err) => console.error('Leave balance error:', err)
-      });
-    }
-  
+  getLeaveBalance(): void {
+    this.employeeHrHomeService.getLeaveBalance().subscribe({
+      next: (res) => {
+        this.leaveBalances = res.data || [];
+        this.totalRemaining = this.leaveBalances.reduce((acc, item) => acc + item.remaining, 0);
+      },
+      error: (err) => console.error('Leave balance error:', err)
+    });
+  }
+
+  getLastLeaveAddition(): void {
+    this.employeeHrHomeService.getLastLeaveAddition().subscribe({
+      next: (res) => {
+        this.lastLeaveAddition = res.data;
+      },
+      error: (err) => console.error('Last leave addition error:', err)
+    });
+  }
 }

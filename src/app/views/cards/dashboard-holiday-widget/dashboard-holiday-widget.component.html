@@ -1,0 +1,34 @@
+<div class="card border-top border-4 border-primary mb-3 shadow-sm">
+    <div class="card-body text-center" style="font-family: var(--font-family-primary);">
+      <h5 class="card-title mb-0">View Leave Dashboard</h5>
+    </div>
+  </div>
+  
+  <div class="card border-top border-4 border-info shadow-sm">
+    <div class="card-body" style="font-family: var(--font-family-secondary);">
+      <h5 class="card-title text-center" style="font-family: var(--font-family-primary);">Upcoming Public Holidays</h5>
+  
+      <ng-container *ngIf="!loading && holidays.length > 0; else loadingSkeleton">
+        <ul class="list-group list-group-flush">
+          <li *ngFor="let holiday of holidays" class="list-group-item d-flex justify-content-between align-items-center">
+            <div>
+              <strong>{{ holiday.title }}</strong><br>
+              <small>{{ holiday.start }} → {{ holiday.end }}</small>
+            </div>
+            <span class="badge bg-info text-dark">{{ holiday.days_left }} days left</span>
+          </li>
+        </ul>
+      </ng-container>
+  
+      <ng-template #loadingSkeleton>
+        <div *ngFor="let _ of [1, 2]" class="placeholder-glow">
+          <div class="card-text placeholder col-12 mb-2" style="height: 50px;"></div>
+        </div>
+      </ng-template>
+  
+      <div *ngIf="!loading && holidays.length === 0" class="text-center text-muted mt-3">
+        No upcoming holidays.
+      </div>
+    </div>
+  </div>
+  

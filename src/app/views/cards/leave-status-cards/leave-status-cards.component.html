@@ -1,0 +1,53 @@
+<div class="row" *ngIf="!loading; else loadingSkeletons">
+    <!-- On Hold -->
+    <div class="col-md-4 mb-3">
+        <div class="card border-top border-4 border-warning shadow-sm">
+          <div class="card-body text-center">
+            <h5 class="card-title fw-semibold">
+                Leaves to Approve</h5>
+            <p class="card-text display-6 text-warning mb-0">
+                {{ onHold }}</p>
+          </div>
+        </div>
+      </div>
+    <!-- Approved -->
+    <div class="col-md-4 mb-3">
+      <div class="card border-top border-4 border-success shadow-sm">
+        <div class="card-body text-center">
+          <h5 class="card-title fw-semibold">Approved Leaves</h5>
+          <p class="card-text display-6 text-success mb-0">{{ approved }}</p>
+        </div>
+      </div>
+    </div>
+  
+    <!-- Rejected -->
+    <div class="col-md-4 mb-3">
+      <div class="card border-top border-4 border-danger shadow-sm">
+        <div class="card-body text-center">
+          <h5 class="card-title fw-semibold">Rejected Leaves</h5>
+          <p class="card-text display-6 text-danger mb-0">{{ rejected }}</p>
+        </div>
+      </div>
+    </div>
+  
+  </div>
+  
+  <ng-template #loadingSkeletons>
+    <div class="row">
+      <div class="col-md-4 mb-3" *ngFor="let _ of [1, 2, 3]">
+        <div class="card border-top border-4 shadow-sm">
+          <div class="card-body text-center">
+            <h5 class="card-title placeholder-glow">
+              <span class="placeholder col-6"></span>
+            </h5>
+            <p class="placeholder-glow">
+              <span class="placeholder col-4 display-6"></span>
+            </p>
+          </div>
+        </div>
+      </div>
+    </div>
+  </ng-template>
+  
+
+  
