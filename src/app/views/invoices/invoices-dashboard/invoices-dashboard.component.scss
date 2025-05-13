@@ -7,3 +7,11 @@ th {
   margin-top: 5px;
   
 }
+.input-group input::placeholder {
+  opacity: 0;
+  transition: opacity 0.5s ease-in-out;
+}
+
+.input-group input.show-placeholder::placeholder {
+  opacity: 1;
+}

@@ -1,6 +1,7 @@
 import { Component, EventEmitter, Input, OnInit, Output } from '@angular/core';
 import { LeaveService } from '../../../services/leave.service';
 import { CommonModule } from '@angular/common';
+import { SkeletonTableCardComponent } from '../Skeletons/skeleton-table-card/skeleton-table-card.component';
 
 interface Leave {
   id: number;
@@ -11,7 +12,7 @@ interface Leave {
 
 @Component({
   selector: 'app-leave-details',
-  imports: [CommonModule],
+  imports: [CommonModule,SkeletonTableCardComponent],
   templateUrl: './leave-details.component.html',
   styleUrls: ['./leave-details.component.css']
 })
@@ -36,21 +37,31 @@ export class LeaveDetailsComponent implements OnInit {
     this.fetchLeaveData();
   }
   fetchLeaveData(): void {
-    this.loading = true; // Start loading
-    this.leaveService.getLeaveDetails(this.userId, this.currentPage).subscribe(response => {
-      if (response.user && response.data) {
-        this.user = response.user;
-        this.leaveData = response.data;
-        this.totalPages = response.meta.total_pages;
-        this.totalLeaves = response.meta.total_leaves;
-        this.totalLeaveDayLimit = response.total_leave_day_limit;
+    this.loading = true;
+    this.leaveService.getLeaveDetails(this.userId, this.currentPage).subscribe(
+      response => {
+        if (response.user && response.data) {
+          this.user = response.user;
+          this.leaveData = response.data;
+          this.totalPages = response.meta.total_pages;
+          this.totalLeaves = response.meta.total_leaves;
+          this.totalLeaveDayLimit = response.total_leave_day_limit;
+  
+          if (this.leaveData.length === 0 && this.currentPage > 1) {
+            this.currentPage--;
+            this.fetchLeaveData(); // recall fetch for previous page
+            return;
+          }
+        }
+        this.loading = false;
+      },
+      error => {
+        console.error('Error fetching leave details:', error);
+        this.loading = false;
       }
-      this.loading = false; // Done loading
-    }, error => {
-      console.error('Error fetching leave details:', error);
-      this.loading = false;
-    });
+    );
   }
+  
   // Method to go to the next page
   goToNextPage(): void {
     if (this.currentPage < this.totalPages) {

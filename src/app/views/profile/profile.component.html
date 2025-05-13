@@ -1,3 +1,5 @@
+<app-profile-skeleton *ngIf="loading; else loadedProfile"></app-profile-skeleton>
+<ng-template #loadedProfile>
 <div class="card profile-card">
   <div class="card-header text-black">
     <h4 class="mb-0">Profile Information</h4>
@@ -45,7 +47,7 @@
     </div>
   </div>
 </div>
-
+</ng-template>
 
 
 

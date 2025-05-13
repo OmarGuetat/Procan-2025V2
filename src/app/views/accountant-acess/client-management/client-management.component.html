@@ -25,9 +25,10 @@
 </div>
 
 
-
+  <!-- Show Skeleton while loading -->
+<app-skeleton-table *ngIf="loading" [rows]="10" [cols]="7"></app-skeleton-table>
   <!-- Client Table -->
-  <div class="table-responsive">
+  <div class="table-responsive" *ngIf="!loading">
     <table class="table table-hover align-middle shadow-sm">
       <thead>
         <tr>

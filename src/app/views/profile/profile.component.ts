@@ -2,9 +2,10 @@ import { Component, OnInit } from '@angular/core';
 import { FormBuilder, FormGroup, ReactiveFormsModule, Validators } from '@angular/forms';
 import { EmployeeService } from '../../services/employee-service.service';
 import { CommonModule } from '@angular/common';
+import { ProfileSkeletonComponent } from '../components/Skeletons/profile-skeleton/profile-skeleton.component';
 @Component({
   selector: 'app-profile',
-  imports: [CommonModule, ReactiveFormsModule],
+  imports: [CommonModule, ReactiveFormsModule,ProfileSkeletonComponent],
   templateUrl: './profile.component.html',
   styleUrls: ['./profile.component.css']
 })
@@ -15,7 +16,7 @@ export class ProfileComponent implements OnInit {
   alertMessage: string = '';
   alertType: string = '';
   isAdmin: boolean = false;
-
+  loading: boolean = true;
   constructor(private employeeService: EmployeeService, private fb: FormBuilder) {}
 
   ngOnInit(): void {
@@ -30,6 +31,7 @@ export class ProfileComponent implements OnInit {
   }
 
   loadProfile(): void {
+    this.loading = true;
     this.employeeService.getProfileData().subscribe(response => {
       this.profileData = response;
       this.updateProfileForm.patchValue({
@@ -37,8 +39,14 @@ export class ProfileComponent implements OnInit {
         phone: response.phone || '',
         address: response.address || ''
       });
+      this.loading = false;
+    }, error => {
+      this.alertMessage = 'Error loading profile data';
+      this.alertType = 'alert-danger';
+      this.loading = false;
     });
   }
+  
 
   initializeForm(): void {
     this.updateProfileForm = this.fb.group({

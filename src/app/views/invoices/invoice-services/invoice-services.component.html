@@ -8,14 +8,15 @@
 </div>
 
 <div class="container-fluid mt-4">
-    <!-- Go Back Button -->
-<div class="mb-3">
+  <!-- Go Back Button -->
+  <div class="mb-3">
     <button class="btn button-secondary" (click)="goBack()">
       <i class="bi bi-arrow-left-circle-fill me-2"></i>Back to Invoice Dashboard
     </button>
   </div>
- <!-- Totals -->
- <div class="row my-4 align-items-center">
+
+  <!-- Totals -->
+  <div class="row my-4 align-items-center">
     <div class="col-md-4">
       <strong><i class="bi bi-cash-stack me-1"></i> Total HT:</strong> {{ totals.TTotal_HT }} TND
     </div>
@@ -26,11 +27,15 @@
       <strong><i class="bi bi-calculator me-1"></i> Total TTC:</strong> {{ totals.TTotal_TTC }} TND
     </div>
   </div>
-  
-  <div class="table-responsive">
-    <table class="table table-striped table-bordered">
+
+  <!-- Show Skeleton while loading -->
+  <app-skeleton-table *ngIf="loading" [rows]="4" [cols]="9"></app-skeleton-table>
+
+  <div class="table-responsive" *ngIf="!loading">
+    <table class="table table-bordered">
       <thead class="table-primary">
         <tr>
+          <th><input type="checkbox" [(ngModel)]="selectAllChecked" (change)="toggleSelectAll($event)" /></th>
           <th class="text-nowrap"><i class="bi bi-box-seam"></i> Name</th>
           <th class="text-nowrap"><i class="bi bi-123"></i> Quantity</th>
           <th class="text-nowrap"><i class="bi bi-rulers"></i> Unit</th>
@@ -41,50 +46,48 @@
           <th class="text-nowrap"><i class="bi bi-chat-left-text"></i> Comment</th>
         </tr>
       </thead>
-  
+      
       <tbody>
         <tr *ngFor="let service of services; let i = index">
+          <td><input type="checkbox" [(ngModel)]="service.selected" (change)="toggleServiceSelection(service.id, service.selected)" /></td>
           <td><input class="form-control" [(ngModel)]="service.name" /></td>
           <td>
-            <input class="form-control" type="number" [(ngModel)]="service.quantity"
-                   (ngModelChange)="updateCalculations()" />
+            <input class="form-control" type="number" [(ngModel)]="service.quantity" (ngModelChange)="updateCalculations()" />
           </td>
-          <td> <select class="form-control" [(ngModel)]="service.unit" >
-            <option value="" selected></option>
-            <option value="H">H</option>
-            <option value="D">D</option>
-            <option value="M">M</option>
-            <option value="Person">Person</option>
-            <option value="P/D">P/D</option>
-            <option value="P/M">P/M</option>
-          </select></td>
-          <td>
-            <input class="form-control" type="number" [(ngModel)]="service.price_ht"
-                   (ngModelChange)="updateCalculations()" />
+          <td> 
+            <select class="form-control" [(ngModel)]="service.unit">
+              <option value="" selected></option>
+              <option value="H">H</option>
+              <option value="D">D</option>
+              <option value="M">M</option>
+              <option value="Person">Person</option>
+              <option value="P/D">P/D</option>
+              <option value="P/M">P/M</option>
+            </select>
           </td>
           <td>
-            <input class="form-control" type="number" [(ngModel)]="service.tva"
-                   (ngModelChange)="updateCalculations()" />
+            <input class="form-control" type="number" [(ngModel)]="service.price_ht" (ngModelChange)="updateCalculations()" />
+          </td>
+          <td>
+            <input class="form-control" type="number" [(ngModel)]="service.tva" (ngModelChange)="updateCalculations()" />
           </td>
           <td><input class="form-control" type="number" [value]="service.total_ht" readonly /></td>
           <td><input class="form-control" type="number" [value]="service.total_ttc" readonly /></td>
           <td><input class="form-control" [(ngModel)]="service.comment" /></td>
         </tr>
       </tbody>
+      
     </table>
   </div>
-  
-  <!-- Action Buttons -->
 
+  <!-- Action Buttons -->
   <div class="d-flex justify-content-center gap-3 mb-5">
-    <button class="btn btn-outline-success td-btn-success px-4" (click)="onUpdateAllServices()">
+    <button class="btn btn-outline-success td-btn-success px-4">
       <i class="bi bi-arrow-repeat me-1"></i> Update All
     </button>
-  
-    <button class="btn btn-outline-danger td-btn-danger px-4" (click)="onUpdateAllServices()">
-      <i class="bi bi-trash me-1"></i> Delete All
+
+    <button class="btn btn-outline-danger td-btn-danger px-4" (click)="onTransferAVP()">
+      <i class="bi bi-arrow-left-right me-1"></i> Generate AVP from Selected
     </button>
   </div>
-  
-  </div>
-  
+</div>

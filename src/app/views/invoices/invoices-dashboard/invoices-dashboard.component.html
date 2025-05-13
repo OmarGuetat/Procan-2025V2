@@ -1,12 +1,18 @@
 <div class="row g-3 align-items-end my-4">
-  <!-- Client Name -->
-  <div class="col-12 col-md-4">
-    <label class="form-label">
-      <i class="bi bi-person-fill me-1"></i> Client Name
-    </label>
-    <input type="text" class="form-control" placeholder="Enter client name" [(ngModel)]="clientName"
-      (ngModelChange)="onFilterChange()" />
+ <!-- Search (Client Name or Number) -->
+<div class="col-12 col-md-4">
+  <label class="form-label">
+    <i class="bi bi-search me-1"></i> Search
+  </label>
+  <div class="input-group">
+  <input
+    type="text"
+    class="form-control "
+    [placeholder]="currentPlaceholder"  [class.show-placeholder]="true"
+    [(ngModel)]="search"
+    (ngModelChange)="onFilterChange()" />
   </div>
+</div>
 
   <!-- Start Date -->
   <div class="col-6 col-md-4">
@@ -26,8 +32,10 @@
 </div>
 
 
+<!-- Show skeleton while loading -->
+<app-skeleton-table *ngIf="loading" [rows]="6" [cols]="8"></app-skeleton-table>
 
-<div class="table-responsive ">
+<div *ngIf="!loading" class="table-responsive ">
   <table class="table table-bordered table-hover align-middle text-center">
     <thead class="table-light">
       <tr>
@@ -82,17 +90,13 @@
 
         <!-- Actions -->
         <td class="d-flex gap-2 justify-content-center">
-          <button class="btn btn-outline-warning td-btn-warning " data-bs-toggle="modal"
+          <button class="btn btn-outline-success td-btn-success " data-bs-toggle="modal"
             data-bs-target="#updatePaymentModal" (click)="prepareUpdate(item.invoice)">
             <i class="bi bi-cash-coin"></i>
           </button>
           <!-- Go To Service Table with Icon -->
           <button class="btn btn-outline-primary td-btn" (click)="onViewAll(item.invoice.id)">
             <i class="bi bi-arrows-angle-expand"></i>
-          </button>
-          <!-- View History Button with Icon -->
-          <button class="btn btn-outline-primary td-btn" (click)="fetchHistorique(item.invoice.id)">
-            <i class="bi bi-info-circle "></i>
           </button>
           <!-- Download PDF -->
           <button class="btn btn-outline-success td-btn" (click)="downloadInvoicePdf(item.invoice.id)">
@@ -131,89 +135,37 @@
     <div class="modal-content">
 
       <div class="modal-header">
-        <h5 class="modal-title" id="updatePaymentModalLabel">Update Payment - Invoice #{{ selectedInvoice?.number }}
-        </h5>
+        <h5 class="modal-title" id="updatePaymentModalLabel">Update Payment - Invoice #{{ selectedInvoice?.number }}</h5>
         <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
       </div>
 
       <div class="modal-body">
-        <div *ngIf="selectedInvoice?.payment_status === 'unpaid'">
-          <label class="form-label">Amount Paid</label>
-          <input type="number" class="form-control" [(ngModel)]="updateForm.amount_paid" />
-        </div>
-
-        <div *ngIf="selectedInvoice?.payment_status === 'partially paid'">
-          <label class="form-label">Amount Paid</label>
-          <input type="number" class="form-control" [(ngModel)]="updateForm.amount_paid" />
-
-          <label class="form-label mt-3">Unpaid Amount</label>
-          <input type="number" class="form-control" [(ngModel)]="updateForm.unpaid_amount" />
-        </div>
-
+        <!-- Paid status -->
         <div *ngIf="selectedInvoice?.payment_status === 'paid'" class="text-muted">
           This invoice is fully paid. No updates are allowed.
+        </div>
+
+        <!-- Unpaid or Partially Paid -->
+        <div *ngIf="selectedInvoice?.payment_status !== 'paid'">
+          <label class="form-label">Amount to Add</label>
+          <input type="number" class="form-control" [(ngModel)]="updateForm.amount_paid" min="0" />
+
+          <div class="alert alert-warning mt-3" *ngIf="selectedInvoice?.payment_status === 'partially paid'">
+            Current Paid: {{ selectedInvoice.amount_paid }} / {{ selectedInvoice.total_ttc }}<br />
+            Remaining: {{ selectedInvoice.unpaid_amount }}
+          </div>
         </div>
       </div>
 
       <div class="modal-footer">
         <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancel</button>
-        <button type="button" class="btn btn-primary" [disabled]="selectedInvoice?.payment_status === 'paid'"
+        <button type="button" class="btn btn-primary" 
+          [disabled]="selectedInvoice?.payment_status === 'paid' || updateForm.amount_paid <= 0"
           (click)="submitUpdate()">
           Save
         </button>
       </div>
 
-    </div>
-  </div>
-</div>
-<!-- Historique Modal -->
-<div class="modal fade" id="historiqueModal" tabindex="-1" aria-labelledby="historiqueModalLabel" aria-hidden="true">
-  <div class="modal-dialog modal-lg">
-    <div class="modal-content">
-      <div class="modal-header">
-        <h5 class="modal-title" id="historiqueModalLabel">Invoice Historique</h5>
-        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
-      </div>
-      <div class="modal-body">
-        <div *ngIf="loadingHistorique" class="text-center">
-          <i class="bi bi-arrow-clockwise fs-1"></i> Loading...
-        </div>
-        <div *ngIf="!loadingHistorique && historiqueData.length === 0" class="text-center">
-          No historique found for this invoice.
-        </div>
-        <div *ngIf="!loadingHistorique && historiqueData.length > 0">
-          <table class="table table-bordered table-hover">
-            <thead class="table-light">
-              <tr>
-                <th>ID</th>
-                <th>Invoice ID</th>
-                <th>Old Invoice ID</th>
-                <th>Changes</th>
-                <th>Date</th>
-              </tr>
-            </thead>
-            <tbody>
-              <tr *ngFor="let record of historiqueData">
-                <td>{{ record.id }}</td>
-                <td>{{ record.invoice_id }}</td>
-                <td>{{ record.old_invoice_id || '-' }}</td>
-                <td>
-                  <ul class="mb-0">
-                    <li *ngFor="let change of record.changes | keyvalue">
-                      <strong>{{ change.key }}:</strong>
-                      {{ change.value }}
-                    </li>
-                  </ul>
-                </td>
-                <td>{{ record.created_at | date: 'short' }}</td>
-              </tr>
-            </tbody>
-          </table>
-        </div>
-      </div>
-      <div class="modal-footer">
-        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
-      </div>
     </div>
   </div>
 </div>

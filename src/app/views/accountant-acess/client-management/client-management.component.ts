@@ -2,10 +2,11 @@ import { Component, OnDestroy, OnInit } from '@angular/core';
 import { FormBuilder, FormGroup, FormsModule, ReactiveFormsModule, Validators } from '@angular/forms';
 import { ClientService } from '../../../services/client.service';
 import { CommonModule } from '@angular/common';
+import { SkeletonTableComponent } from '../../components/Skeletons/skeleton-table/skeleton-table.component';
 
 @Component({
   selector: 'app-client-management',
-  imports: [CommonModule,FormsModule,ReactiveFormsModule],
+  imports: [CommonModule,FormsModule,ReactiveFormsModule,SkeletonTableComponent],
   templateUrl: './client-management.component.html',
   styleUrl: './client-management.component.scss'
 })
@@ -23,6 +24,7 @@ export class ClientManagementComponent implements OnInit, OnDestroy {
   currentPlaceholder: string = 'Search by Phone Number';
   private placeholderIndex: number = 0;
   private placeholderInterval: any;
+  loading = false;
   countries: string[] = ['Afghanistan', 'Albania', 'Algeria', 'Andorra', 'Angola', 'Antigua and Barbuda', 'Argentina', 'Armenia', 'Australia', 'Austria', 'Azerbaijan', 'Bahamas', 'Bahrain', 'Bangladesh', 'Barbados', 'Belarus', 'Belgium', 'Belize', 'Benin', 'Bhutan', 'Bolivia', 'Bosnia and Herzegovina', 'Botswana', 'Brazil', 'Brunei', 'Bulgaria', 'Burkina Faso', 'Burundi', 'Cambodia', 'Cameroon', 'Canada', 'Cape Verde', 'Central African Republic', 'Chad', 'Chile', 'China', 'Colombia', 'Comoros', 'Congo', 'Costa Rica', 'Croatia', 'Cuba', 'Cyprus', 'Czech Republic', 'Denmark', 'Djibouti', 'Dominica', 'Dominican Republic', 'Ecuador', 'Egypt', 'El Salvador', 'Equatorial Guinea', 'Eritrea', 'Estonia', 'Eswatini', 'Ethiopia', 'Fiji', 'Finland', 'France', 'Gabon', 'Gambia', 'Georgia', 'Germany', 'Ghana', 'Greece', 'Grenada', 'Guatemala', 'Guinea', 'Guinea-Bissau', 'Guyana', 'Haiti', 'Honduras', 'Hungary', 'Iceland', 'India', 'Indonesia', 'Iran', 'Iraq', 'Ireland', 'Italy', 'Jamaica', 'Japan', 'Jordan', 'Kazakhstan', 'Kenya', 'Kiribati', 'Korea (North)', 'Korea (South)', 'Kuwait', 'Kyrgyzstan', 'Laos', 'Latvia', 'Lebanon', 'Lesotho', 'Liberia', 'Libya', 'Liechtenstein', 'Lithuania', 'Luxembourg', 'Madagascar', 'Malawi', 'Malaysia', 'Maldives', 'Mali', 'Malta', 'Marshall Islands', 'Mauritania', 'Mauritius', 'Mexico', 'Micronesia', 'Moldova', 'Monaco', 'Mongolia', 'Montenegro', 'Morocco', 'Mozambique', 'Myanmar', 'Namibia', 'Nauru', 'Nepal', 'Netherlands', 'New Zealand', 'Nicaragua', 'Niger', 'Nigeria', 'North Macedonia', 'Norway', 'Oman', 'Pakistan', 'Palau', 'Palestine', 'Panama', 'Papua New Guinea', 'Paraguay', 'Peru', 'Philippines', 'Poland', 'Portugal', 'Qatar', 'Romania', 'Russia', 'Rwanda', 'Saint Kitts and Nevis', 'Saint Lucia', 'Saint Vincent and the Grenadines', 'Samoa', 'San Marino', 'Sao Tome and Principe', 'Saudi Arabia', 'Senegal', 'Serbia', 'Seychelles', 'Sierra Leone', 'Singapore', 'Slovakia', 'Slovenia', 'Solomon Islands', 'Somalia', 'South Africa', 'South Sudan', 'Spain', 'Sri Lanka', 'Sudan', 'Suriname', 'Sweden', 'Switzerland', 'Syria', 'Tajikistan', 'Tanzania', 'Thailand', 'Timor-Leste', 'Togo', 'Tonga', 'Trinidad and Tobago', 'Tunisia', 'Turkey', 'Turkmenistan', 'Tuvalu', 'Uganda', 'Ukraine', 'United Arab Emirates', 'United Kingdom', 'United States', 'Uruguay', 'Uzbekistan', 'Vanuatu', 'Vatican City', 'Venezuela', 'Vietnam', 'Yemen', 'Zambia', 'Zimbabwe'];
   constructor(
     private clientService: ClientService,
@@ -81,28 +83,36 @@ export class ClientManagementComponent implements OnInit, OnDestroy {
 
   }
   fetchClients(): void {
-    // Check if searchQuery contains '@' (email) or contains numbers (phone number)
+    this.loading = true;
+  
     let name = '';
     let email = '';
     let phone_number = '';
   
     if (this.searchQuery.includes('@')) {
-      // If searchQuery contains '@', it's an email, so set email and reset others
       email = this.searchQuery;
     } else if (/\d/.test(this.searchQuery)) {
-      // If searchQuery contains numbers, it's likely a phone number, so set phone_number and reset others
       phone_number = this.searchQuery;
     } else {
-      // Otherwise, treat it as a name
       name = this.searchQuery;
     }
   
-    // Now make the API call with the filtered parameters
-    this.clientService.getClients(name, email, phone_number, this.currentPage).subscribe(response => {
-      this.clients = response.data;
-      this.totalPages = response.meta.last_page;
+    this.clientService.getClients(name, email, phone_number, this.currentPage).subscribe({
+      next: response => {
+        console.log(response);
+        this.clients = response.data;
+        this.totalPages = response.meta.last_page;
+        this.currentPage = response.meta.current_page;
+        this.pages = Array.from({ length: this.totalPages }, (_, i) => i + 1);
+        this.loading = false;
+      },
+      error: error => {
+        console.error('Error fetching clients:', error);
+        this.loading = false;
+      }
     });
   }
+  
   
   
 

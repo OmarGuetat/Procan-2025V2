@@ -1,0 +1,47 @@
+/* Profile Skeleton Card */
+.profile-card {
+    background: var(--color-card);
+    border-radius: 12px;
+    border: 2px solid var(--color-border);
+    max-width: 60%;
+    margin: 5vh auto;
+    padding: 20px;
+  }
+  
+  /* Header Skeleton */
+  .card-header {
+    background: var(--color-border);
+    text-align: center;
+    padding: 12px;
+  }
+  
+  /* Card Body Skeleton */
+  .card-body {
+    border: 2px solid var(--color-text-secondary);
+  }
+  
+  /* Placeholder Image Circle */
+  .profile-img-container {
+    width: 170px;
+    height: 170px;
+    border-radius: 50%;
+    background: #e0e0e0;
+    margin-bottom: 10px;
+  }
+  
+  /* Skeleton Text Line */
+  .skeleton-line {
+    height: 20px;
+    background: #e0e0e0;
+    margin: 10px 0;
+    border-radius: 4px;
+  }
+  
+  /* Skeleton List Group */
+  .skeleton-list {
+    height: 16px;
+    background: #e0e0e0;
+    border-radius: 4px;
+    margin-bottom: 12px;
+  }
+  

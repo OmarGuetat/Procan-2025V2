@@ -46,22 +46,27 @@ export class InvoiceService {
     page: number,
     start_date?: string,
     end_date?: string,
-    client_name?: string,
+    search?: string,
     sort_by_payment_status?: string
   ): Observable<any> {
     let params = new HttpParams().set('page', page.toString());
+  
     if (start_date) params = params.set('start_date', start_date);
     if (end_date) params = params.set('end_date', end_date);
-    if (client_name) params = params.set('client_name', client_name);
+    if (search) params = params.set('search', search); 
     if (sort_by_payment_status) params = params.set('sort_by_payment_status', sort_by_payment_status);
   
     return this.http.get(`${this.GlobalUrl}/show/invoices`, { params });
   }
+  
   updatePaymentStatus(id: number, payload: any): Observable<any> {
     return this.http.put(`${this.GlobalUrl}/invoices/${id}/payment-status`, payload);
   }
   getServicesByInvoice(id: number): Observable<any> {
     return this.http.get(`${this.GlobalUrl}/invoices/${id}/services`);
+  }
+  createPartialCreditInvoice(payload: any): Observable<any> {
+    return this.http.post(`${this.GlobalUrl}/invoices/transfer-avp`, payload);
   }
   
   // invoice.service.ts

@@ -5,13 +5,14 @@
   </button>
 
   <!-- Spinner while loading data -->
-  <div *ngIf="loading; else leaveTable">
-    <div class="d-flex justify-content-center align-items-center my-5">
-      <div class="spinner-border text-primary" role="status" style="width: 3rem; height: 3rem;">
-        <span class="visually-hidden">Loading...</span>
-      </div>
-    </div>
-  </div>
+  <app-skeleton-table-card
+  *ngIf="loading; else leaveTable"
+  [title]="user.first_name + ' ' + user.last_name + 'Leave Details'"
+  icon="bi-calendar-event"
+  [cols]="4"
+  [rows]="5">
+</app-skeleton-table-card>
+
 
   <!-- Main Table -->
   <ng-template #leaveTable>
