@@ -1,47 +1,96 @@
-<div class="row g-4">
-  <!-- User Info Card -->
-  <div class="col-md-4">
+<div class="row g-4" *ngIf="!isLoading">
+  <!-- User Info Card (taking col-lg-6) -->
+  <div class="col-lg-4 col-md-12">
     <div class="card p-4 shadow-sm rounded">
       <div class="d-flex align-items-center gap-3">
-        <img [src]="userInfo.avatar_path" alt="Avatar" class="w-50 rounded-circle border border-2 border-primary" />
+        <div class="profile-img-container">
+        <img [src]="userInfo.avatar_path" alt="Avatar" class="profile-img " /></div>
         <div>
           <div class="fw-bold fs-5">{{ userInfo.full_name }}</div>
-          <div class="text-muted">Today: {{ today }}</div>
+          <div class="text-muted">{{ today }}</div>
           <div class="d-flex align-items-center gap-2">
             <i class="bi bi-building" style="color: var(--color-primary);"></i>
-            <span><strong>Company:</strong> {{ company }}</span>
+            <span>{{ company }}</span>
           </div>
         </div>
       </div>
     </div>
   </div>
-  <div class="row g-4 col-md-8">
-  <!-- Remaining Leave Summary -->
-  <div class="col-md-4">
-    <div class="card p-4 shadow-sm rounded">
-      <div class="fw-bold fs-5 mb-2">Total Remaining Leave</div>
-      <div style="color: var(--color-success);">{{ totalRemaining }}</div>
-    </div>
-  </div>
 
-  <!-- Individual Leave Balances -->
-  <div class="col-md-4" *ngFor="let balance of leaveBalances">
-    <div class="card p-4 shadow-sm rounded">
-      <div class="fw-bold fs-6 mb-1 text-capitalize">
-        {{ balance.leave_type.replace('_', ' ') }}
+  <!-- Leave Balances & Last Leave Addition (2/2 layout) -->
+  <div class="col-lg-8 col-md-12">
+    <div class="row g-4">
+      <!-- Personal Leave -->
+      <div class="col-md-6" *ngFor="let balance of leaveBalances">
+        <div *ngIf="getLeaveTypeDetails(balance.leave_type)" class="card shadow-sm rounded">
+          <div class="card-header text-center text-white" [ngClass]="getLeaveTypeDetails(balance.leave_type).colorClass">
+            <i class="bi" [ngClass]="getLeaveTypeDetails(balance.leave_type).icon"></i>
+            {{ getLeaveTypeDetails(balance.leave_type).label }}
+          </div>
+          <div class="card-body">
+            <div class="text-muted text-center">Remaining: {{ balance.remaining }} days</div>
+          </div>
+        </div>
       </div>
-      <div class="text-muted">Remaining: {{ balance.remaining }}</div>
-    </div>
-  </div>
-  <!-- Last Leave Addition Card -->
-<div class="col-md-4" *ngIf="lastLeaveAddition">
-  <div class="card p-4 shadow-sm rounded">
-    <div class="fw-bold fs-6 mb-2">Last Leave Added</div>
-    <div class="text-muted">
-      <i class="bi bi-calendar-plus me-2" style="color: var(--color-primary);"></i>
-      {{ lastLeaveAddition.leave_day_limit }} days on {{ lastLeaveAddition.date }}
+
+      <!-- Last Leave Addition Card -->
+      <div class="col-md-6" *ngIf="lastLeaveAddition">
+        <div class="card shadow-sm rounded">
+          <div class="card-header text-center text-white bg-warning">
+            <i class="bi bi-calendar-plus"></i> Last Leave Added
+          </div>
+          <div class="card-body">
+            <div class="text-muted text-center">
+              {{ lastLeaveAddition.leave_day_limit }} days on {{ lastLeaveAddition.date }}
+            </div>
+          </div>
+        </div>
+      </div>
     </div>
   </div>
 </div>
+<div class="row g-4" *ngIf="isLoading">
+  <!-- Skeleton: User Info Card -->
+  <div class="col-lg-4 col-md-12">
+    <div class="card p-4 shadow-sm rounded h-100">
+      <div class="d-flex align-items-center gap-3">
+        <div class="profile-img-skeleton skeleton-shimmer position-relative placeholder">
+        </div>
+        <div class="w-100">
+          <div class="skeleton-line w-75 mb-2 skeleton-shimmer"></div>
+          <div class="skeleton-line w-50 mb-2 skeleton-shimmer"></div>
+          <div class="skeleton-line w-50 skeleton-shimmer"></div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Skeleton: Leave Balances & Last Leave Addition -->
+  <div class="col-lg-8 col-md-12">
+    <div class="row g-4">
+      <!-- Leave Balances Placeholder Cards (3 placeholders for matching layout) -->
+      <div class="col-md-6" *ngFor="let _ of [1,2,3]">
+        <div class="card shadow-sm rounded h-100">
+          <div class="card-header text-center bg-secondary bg-opacity-25">
+            <div class="skeleton-line w-75 mx-auto skeleton-shimmer"></div>
+          </div>
+          <div class="card-body">
+            <div class="skeleton-line w-50 mx-auto skeleton-shimmer"></div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Last Leave Addition Skeleton -->
+      <div class="col-md-6">
+        <div class="card shadow-sm rounded h-100">
+          <div class="card-header text-center bg-warning bg-opacity-50">
+            <div class="skeleton-line w-75 mx-auto skeleton-shimmer"></div>
+          </div>
+          <div class="card-body">
+            <div class="skeleton-line w-50 mx-auto skeleton-shimmer"></div>
+          </div>
+        </div>
+      </div>
+    </div>
   </div>
 </div>

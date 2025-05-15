@@ -1,0 +1,25 @@
+.custom-chart-card {
+    background-color: var(--color-card);
+    border: 1px solid var(--color-border);
+    border-radius: 0.5rem;
+    font-family: var(--font-family-secondary);
+    box-shadow: 0 0.125rem 0.25rem rgba(0, 0, 0, 0.05);
+  }
+  
+  .chart-card-header {
+    background-color: var(--color-hover);
+    padding: 0.75rem 1rem;
+    font-weight: 600;
+    font-family: var(--font-family-primary);
+    color: var(--color-text-primary);
+    border-bottom: 1px solid var(--color-border);
+  }
+  
+  .chart-title {
+    font-size: 1rem;
+  }
+  
+  .chart-card-body {
+    padding: 1rem;
+  }
+  

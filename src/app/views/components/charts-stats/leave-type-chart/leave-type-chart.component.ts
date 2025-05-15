@@ -3,8 +3,6 @@ import { CommonModule } from '@angular/common';
 import { AdminHrHomeService } from '../../../../services/admin-hr-home.service';
 import { DoughnutPieChartComponent } from '../../charts/doughnut-pie-chart/doughnut-pie-chart.component';
 
-
-
 @Component({
   selector: 'app-leave-type-chart',
   standalone: true,
@@ -19,7 +17,13 @@ export class LeaveTypeChartComponent implements OnInit {
   constructor(private adminService: AdminHrHomeService) {}
 
   ngOnInit(): void {
-    this.adminService.getLeaveTypeDistribution().subscribe({
+    // No need to call API here, the child component will emit monthChange on init
+  }
+
+  onMonthChanged(month: string): void {
+    const [year, mo] = month.split('-');
+    const param = `${mo}-${year}`; // format MM-YYYY
+    this.adminService.getLeaveTypeDistribution(param).subscribe({
       next: (res) => {
         console.log(res)
         const typeCounts = res.leave_distribution;

@@ -3,6 +3,10 @@
 
 /* ===== Global CSS Variables ===== */
 :root {
+  --fc-border-color: black;
+  
+  --fc-header-text-color: black;
+  --fc-header-padding: 2px 4px;
     /* ===== Primary Colors (Branding) ===== */
     --color-primary: #288FEB; /* Main branding color */
     --color-primary-dark: #1E6DB9; /* Darker shade for hover states */
@@ -28,7 +32,23 @@
     --font-family-secondary: 'Roboto', sans-serif; /* Body text */
     --font-family-accent: 'Nunito', sans-serif; /* Buttons, small labels */
 }
-
+.fc .fc-col-header-cell-cushion {
+  display: inline-block;
+  padding: var(--fc-header-padding);
+  text-decoration: none;
+  color: var(--fc-header-text-color);
+  font-family: var(--font-family-primary);
+}
+.fc .fc-daygrid-day-number{
+  display: inline-block;
+  padding: var(--fc-header-padding);
+  text-decoration: none;
+  color: var(--color-text-secondary);
+  font-family: var(--font-family-secondary);
+}
+.fc .fc-toolbar-title{
+  color: var(--color-text-primary);
+}
 /* ===== Global Body Styling ===== */
 body {
     font-family: var(--font-family-secondary);

@@ -9,14 +9,21 @@ export class AdminHrHomeService {
  private apiUrl = environment.apiUrl;
  
    constructor(private http: HttpClient) {}
-   getLeaveTypeDistribution() {
-    return this.http.get<{ leave_distribution: { leave_type: string; percentage: number }[] }>(
-      `${this.apiUrl}/dashboard/leave-type-distribution`
-    );
-  }
-  getLeaveStatusDistribution(): Observable<any> {
-    return this.http.get<any>(`${this.apiUrl}/dashboard/leave-status-distribution`);
-  }
+ // For Leave Type Distribution (using query string `month=MM-YYYY`)
+getLeaveTypeDistribution(mr: string): Observable<any> {
+  return this.http.get<any>(`${this.apiUrl}/dashboard/leave-type-distribution`, {
+    params: { mr }
+  });
+}
+
+// For Leave Status Distribution (using query string `mr=MM-YYYY`)
+getLeaveStatusDistribution(mr: string): Observable<any> {
+  return this.http.get<any>(`${this.apiUrl}/dashboard/leave-status-distribution`, {
+    params: { mr }
+  });
+}
+
+  
   getApprovedLeavesByEmployee() {
     return this.http.get<{ year: number; approved_leaves_by_employee: { name: string; total_days: number }[] }>(
       `${this.apiUrl}/dashboard/approved-leaves-by-employee`

@@ -1,7 +1,9 @@
-<c-card class="mb-4">
-    <c-card-header>{{ chartTitle }}</c-card-header>
-    <c-card-body>
-      <c-chart [type]="'line'" [data]="lineChartData"></c-chart>
-    </c-card-body>
-  </c-card>
-  
+<c-card class="mb-4 custom-chart-card">
+  <c-card-header class="chart-card-header">
+    {{ chartTitle }}
+  </c-card-header>
+
+  <c-card-body class="chart-card-body">
+    <c-chart [type]="'line'" [data]="lineChartData" [options]="lineChartOptions"></c-chart>
+  </c-card-body>
+</c-card>

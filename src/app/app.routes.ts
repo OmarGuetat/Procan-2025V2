@@ -48,7 +48,10 @@ export const routes: Routes = [
     component: DefaultLayoutComponent,
     canActivate: [AuthGuard],
     children: [
-      { path: 'home', loadChildren: () => import('./views/employee-home/routes').then((m) => m.routes) },
+      { 
+        path: '', 
+        loadChildren: () => import('./views/employee-access/routes').then(m => m.routes) 
+      },
       { path: 'leave-form', loadChildren: () => import('./views/leave-form/routes').then((m) => m.routes) },
       { path: 'requests-user-dashboard', loadChildren: () => import('./views/requests-user-dashboard/routes').then((m) => m.routes) },
       { path: 'notifications', loadChildren: () => import('./views/notifications/routes').then((m) => m.routes) },

@@ -1,8 +1,9 @@
 import { Component, OnInit } from '@angular/core';
 
 import { CommonModule } from '@angular/common';
-import { AdminHrHomeService } from '../../../../services/admin-hr-home.service';
 import { MultiLineChartComponent } from '../../charts/multi-line-chart/multi-line-chart.component';
+import { AdminHrHomeService } from '../../../../services/admin-hr-home.service';
+
 
 @Component({
   selector: 'app-approved-leaves-trend',
@@ -20,7 +21,7 @@ export class ApprovedLeavesTrendComponent implements OnInit {
     this.adminService.getApprovedLeavesByYear().subscribe({
       next: (res) => {
         console.log(res)
-        const colorPalette = ['#FF6384', '#36A2EB', '#4BC0C0', '#9966FF', '#FF9F40'];
+        const colorPalette = ['#288FEB','#FF6384', '#36A2EB', '#4BC0C0', '#9966FF', '#FF9F40'];
         this.datasets = res.approved_leave_comparison_by_year.map((item: any, index: number) => ({
           year: item.year,
           data: Object.values(item.monthly_counts),

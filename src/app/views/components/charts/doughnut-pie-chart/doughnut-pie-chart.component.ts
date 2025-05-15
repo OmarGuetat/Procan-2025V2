@@ -1,4 +1,12 @@
-import { Component, Input, OnChanges, SimpleChanges } from '@angular/core';
+import {
+  Component,
+  Input,
+  OnChanges,
+  SimpleChanges,
+  Output,
+  EventEmitter,
+  OnInit
+} from '@angular/core';
 import { ChartData } from 'chart.js';
 import { CommonModule } from '@angular/common';
 import {
@@ -21,14 +29,34 @@ import { ChartjsComponent } from '@coreui/angular-chartjs';
   templateUrl: './doughnut-pie-chart.component.html',
   styleUrls: ['./doughnut-pie-chart.component.scss']
 })
-export class DoughnutPieChartComponent implements OnChanges {
+export class DoughnutPieChartComponent implements OnChanges, OnInit {
   @Input() chartTitle: string = 'Chart';
   @Input() labels: string[] = [];
   @Input() data: number[] = [];
   @Input() type: 'doughnut' | 'pie' = 'doughnut';
-  @Input() colors: string[] = ['#FF6384', '#36A2EB', '#FFCE56', '#4BC0C0', '#FF9F40'];
+  @Input() showInput: boolean = true;
+  @Input() colors: string[] = [
+    
+    '#288FEB', // Primary Blue (branding)
+    '#4CAF50', // Success Green
+    '#FFC107', // Warning Yellow
+    '#E63946', // Error Red
+    '#8E44AD', // Royal Purple (adds variety but elegant)
+    '#FF9F40', // Orange (warm and attention-grabbing)
+    '#00B8D9'  // Bright Cyan (modern & distinct)
+  ];
+  @Input() isLoading: boolean = false;
+
+  @Output() monthChange = new EventEmitter<string>();
 
   chartData: ChartData<'doughnut' | 'pie'> = { labels: [], datasets: [] };
+  selectedMonth: string = '';
+
+  ngOnInit(): void {
+    const today = new Date();
+    this.selectedMonth = today.toISOString().slice(0, 7);
+    this.monthChange.emit(this.selectedMonth);
+  }
 
   ngOnChanges(changes: SimpleChanges): void {
     if (changes['labels'] || changes['data'] || changes['colors']) {
@@ -40,5 +68,11 @@ export class DoughnutPieChartComponent implements OnChanges {
         }],
       };
     }
+  }
+
+  onMonthChange(event: Event): void {
+    const input = event.target as HTMLInputElement;
+    this.selectedMonth = input.value;
+    this.monthChange.emit(this.selectedMonth);
   }
 }

@@ -1,11 +1,59 @@
-<c-card class="mb-4">
-    <c-card-header>
-      {{ chartTitle }}
-    </c-card-header>
-    <c-card-body>
-      <c-chart
-        [type]="type"
-        [data]="chartData"
+<c-card class="mb-4 custom-chart-card" *ngIf="!isLoading">
+  <c-card-header class="d-flex justify-content-between align-items-center chart-card-header">
+    <span class="chart-title">{{ chartTitle }}</span>
+
+    <input
+      *ngIf="showInput"
+      type="month"
+      class="form-control form-control-sm chart-month-input"
+      [value]="selectedMonth"
+      (change)="onMonthChange($event)"
+    />
+  </c-card-header>
+
+  <c-card-body class="chart-card-body">
+    <c-chart
+      [type]="type"
+      [data]="chartData"
+    ></c-chart>
+  </c-card-body>
+</c-card>
+
+<!--LOADERS-->
+<c-card class="mb-4 custom-chart-card h-100" *ngIf="isLoading">
+  <c-card-header class="d-flex justify-content-between align-items-center chart-card-header">
+    <span class="chart-title">
+      <ng-container *ngIf="!isLoading; else titleSkeleton">{{ chartTitle }}</ng-container>
+      <ng-template #titleSkeleton>
+        <div class="skeleton-line w-50"></div>
+      </ng-template>
+    </span>
+
+    <ng-container *ngIf="showInput">
+      <input
+        *ngIf="!isLoading; else inputSkeleton"
+        type="month"
+        class="form-control form-control-sm chart-month-input"
+        [value]="selectedMonth"
+        (change)="onMonthChange($event)"
       />
-    </c-card-body>
-  </c-card>
+      <ng-template #inputSkeleton>
+        <div class="skeleton-line w-100" style="height: 32px; border-radius: 4px;"></div>
+      </ng-template>
+    </ng-container>
+  </c-card-header>
+
+  <c-card-body class="chart-card-body">
+    <ng-container *ngIf="!isLoading; else chartSkeleton">
+      <c-chart [type]="type" [data]="chartData"></c-chart>
+    </ng-container>
+
+    <ng-template #chartSkeleton>
+      <div class="chart-skeleton-placeholder">
+        <div class="spinner-border text-primary" role="status">
+          <span class="visually-hidden">Loading...</span>
+        </div>
+      </div>
+    </ng-template>
+  </c-card-body>
+</c-card>

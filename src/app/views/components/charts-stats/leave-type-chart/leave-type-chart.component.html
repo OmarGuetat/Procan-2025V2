@@ -1,6 +1,7 @@
 <app-doughnut-pie-chart
-  [chartTitle]="'Leave Type Distribution (Current Month)'"
+  [chartTitle]="'Leave Type Distribution'"
   [labels]="labels"
   [data]="data"
   [type]="'pie'"
+  (monthChange)="onMonthChanged($event)"
 ></app-doughnut-pie-chart>

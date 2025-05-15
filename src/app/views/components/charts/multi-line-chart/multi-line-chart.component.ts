@@ -14,11 +14,66 @@ import { CardComponent, CardBodyComponent, CardHeaderComponent } from '@coreui/a
 export class MultiLineChartComponent implements OnChanges {
   @Input() chartTitle: string = 'Approved Leaves Comparison';
   @Input() datasets: { year: string; data: number[]; color: string }[] = [];
-  @Input() labels: string[] = []; // Months like Jan, Feb, ...
+  @Input() labels: string[] = [];
 
   public lineChartData: ChartConfiguration<'line'>['data'] = {
     labels: [],
     datasets: []
+  };
+
+  public lineChartOptions: ChartConfiguration<'line'>['options'] = {
+    responsive: true,
+    maintainAspectRatio: false,
+    plugins: {
+      legend: {
+        labels: {
+          color: '#121212', // --color-text-primary
+          font: {
+            family: 'Inter',
+            size: 13
+          }
+        }
+      },
+      tooltip: {
+        backgroundColor: '#202C3C', // --color-sidebar-footer
+        titleColor: '#FFFFFF',
+        bodyColor: '#F3F3F3',
+        titleFont: {
+          family: 'Inter',
+          size: 13
+        },
+        bodyFont: {
+          family: 'Roboto',
+          size: 12
+        }
+      }
+    },
+    scales: {
+      x: {
+        ticks: {
+          color: '#4A4A4A', // --color-text-secondary
+          font: {
+            family: 'Roboto',
+            size: 12
+          }
+        },
+        grid: {
+          color: '#D1D5DB' // --color-border
+        }
+      },
+      y: {
+        ticks: {
+          color: '#4A4A4A',
+          font: {
+            family: 'Roboto',
+            size: 12
+          }
+        },
+        grid: {
+          color: '#D1D5DB'
+        }
+      }
+    }
   };
 
   ngOnChanges(changes: SimpleChanges): void {
@@ -28,8 +83,13 @@ export class MultiLineChartComponent implements OnChanges {
         label: d.year,
         data: d.data,
         borderColor: d.color,
+        backgroundColor: d.color,
         tension: 0.4,
-        fill: false
+        fill: false,
+        pointRadius: 4,
+        pointHoverRadius: 6,
+        pointBackgroundColor: d.color,
+        borderWidth: 2
       }))
     };
   }

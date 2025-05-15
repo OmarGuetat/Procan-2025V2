@@ -1,32 +1,45 @@
-<app-leave-status-cards></app-leave-status-cards>
-<app-employee-on-holiday-widget></app-employee-on-holiday-widget>
-
 <div class="container">
-  
-  <!-- First Row: Leave Status and Leave Type Charts -->
-  <div class="row mb-4">
-    <div class="col-md-6">
-      <!-- Leave Status Chart -->
-      <app-admin-status-chart></app-admin-status-chart>
-    </div>
-    <div class="col-md-6">
-      <!-- Leave Type Chart -->
-      <app-leave-type-chart></app-leave-type-chart>
+  <!-- Leave Status Cards -->
+  <div class="row mb-3">
+    <div class="col-md-12">
+      <app-leave-status-cards></app-leave-status-cards>
     </div>
   </div>
+
+  <div class="row mb-4">
+    <!-- Employee On Holiday Widget (left side) -->
+    <div class="col-xl-4  mb-4">
+      <app-employee-on-holiday-widget></app-employee-on-holiday-widget>
+    </div>
   
+    <!-- Leave Status and Leave Type Charts (right side) -->
+    
+      <div class="row col-xl-8 ">
+        <!-- Leave Status Chart -->
+        <div class="col-xl-6  ">
+          <app-admin-status-chart></app-admin-status-chart>
+        </div>
+        <!-- Leave Type Chart -->
+        <div class="col-xl-6  ">
+          <app-leave-type-chart></app-leave-type-chart>
+        </div>
+      </div>
+    </div>
+  
+  
+
+
+
   <!-- Approved Leaves Trend -->
   <div class="row mb-4">
     <div class="col-md-12">
-      <!-- Approved Leaves Trend -->
       <app-approved-leaves-trend></app-approved-leaves-trend>
     </div>
   </div>
-  
+
   <!-- Approved Leaves Summary Chart -->
   <div class="row mb-4">
     <div class="col-md-12">
-      <!-- Approved Leaves Chart -->
       <app-approved-leaves-chart></app-approved-leaves-chart>
     </div>
   </div>

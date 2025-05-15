@@ -17,7 +17,33 @@ export class UserInformationsComponent implements OnInit {
   lastLeaveAddition: { leave_day_limit: number, date: string } | null = null;
   company: string | null = '';
   today: string = new Date().toLocaleDateString();
-
+  isLoading: boolean = true;
+  leaveTypes = [
+    { 
+      type: 'personal_leave', 
+      label: 'Personal Leave', 
+      icon: 'bi-calendar-day', 
+      colorClass: 'bg-primary'
+    },
+    { 
+      type: 'sick_leave', 
+      label: 'Sick Leave', 
+      icon: 'bi-hospital', 
+      colorClass: 'bg-success'
+    },
+    { 
+      type: 'paternity_leave', 
+      label: 'Paternity Leave', 
+      icon: 'bi-person-badge', 
+      colorClass: 'bg-orange' // Orange
+    },
+    { 
+      type: 'maternity_leave', 
+      label: 'Maternity Leave', 
+      icon: 'bi-person-fill', 
+      colorClass: 'bg-pink' // Pink
+    }
+  ];
   constructor(
     private http: HttpClient,
     private employeeHrHomeService: EmployeeHrHomeService
@@ -32,7 +58,10 @@ export class UserInformationsComponent implements OnInit {
 
   getUserInfo(): void {
     this.employeeHrHomeService.getAuthenticatedUserInfo().subscribe({
-      next: (data) => this.userInfo = data,
+      next: (data) => {
+        this.userInfo = data;
+        this.checkIfAllLoaded();
+      },
       error: (err) => console.error('User info error:', err)
     });
   }
@@ -40,8 +69,9 @@ export class UserInformationsComponent implements OnInit {
   getLeaveBalance(): void {
     this.employeeHrHomeService.getLeaveBalance().subscribe({
       next: (res) => {
+        console.log(res)
         this.leaveBalances = res.data || [];
-        this.totalRemaining = this.leaveBalances.reduce((acc, item) => acc + item.remaining, 0);
+        this.checkIfAllLoaded();
       },
       error: (err) => console.error('Leave balance error:', err)
     });
@@ -51,8 +81,27 @@ export class UserInformationsComponent implements OnInit {
     this.employeeHrHomeService.getLastLeaveAddition().subscribe({
       next: (res) => {
         this.lastLeaveAddition = res.data;
+        this.checkIfAllLoaded();
       },
       error: (err) => console.error('Last leave addition error:', err)
     });
   }
-}
+  
+  getLeaveTypeDetails(leaveType: string) {
+    const details = this.leaveTypes.find(type => type.type === leaveType);
+    if (!details) {
+      return {
+        colorClass: 'bg-secondary', // Default fallback color
+        icon: 'bi-question-circle', // Default fallback icon
+        label: 'Unknown Leave' // Default fallback label
+      };
+    }
+    return details;
+  }
+  private loadedCount = 0;
+checkIfAllLoaded() {
+  this.loadedCount++;
+  if (this.loadedCount === 3) {
+    this.isLoading = false;
+  }}    
+} 

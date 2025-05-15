@@ -1,0 +1,22 @@
+<div class="container">
+  <!-- Employee Home Dashboard -->
+  <app-user-informations class="my-2"></app-user-informations>
+   <!-- Leave Status Pie Chart Section -->
+   <div class="row my-4"> 
+    <div class="col-md-6">
+      <!-- Leave Status Pie Chart -->
+      <app-dashboard-holiday-widget></app-dashboard-holiday-widget>
+      
+    </div>
+    <div class="col-md-6">
+      <app-status-chart ></app-status-chart>
+    </div>
+  </div>
+  <!-- Full Calendar Section -->
+  <div class="row mb-5 "> 
+    <div class="col-md-12">
+      <!-- Full Calendar -->
+      <full-calendar [options]="calendarOptions"></full-calendar>
+    </div>
+  </div>
+</div>

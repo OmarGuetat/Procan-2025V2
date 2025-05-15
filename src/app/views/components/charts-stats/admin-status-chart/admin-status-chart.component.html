@@ -1,6 +1,8 @@
 <app-doughnut-pie-chart
-  [chartTitle]="'Leave Status Distribution (Current Month)'"
+  [chartTitle]="'Leave Status Distribution'"
   [labels]="labels"
   [data]="data"
+  [colors]="colors"
   [type]="'doughnut'"
+  (monthChange)="onMonthChanged($event)"
 ></app-doughnut-pie-chart>
