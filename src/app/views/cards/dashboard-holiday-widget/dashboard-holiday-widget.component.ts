@@ -4,13 +4,14 @@ import { CommonModule } from '@angular/common';
 
 @Component({
   selector: 'app-dashboard-holiday-widget',
+  standalone: true,
   imports: [CommonModule],
   templateUrl: './dashboard-holiday-widget.component.html',
-  styleUrl: './dashboard-holiday-widget.component.scss'
+  styleUrls: ['./dashboard-holiday-widget.component.scss']
 })
 export class DashboardHolidayWidgetComponent implements OnInit {
   holidays: any[] = [];
-  loading = true;
+  loading = false;
   error = '';
 
   constructor(private dashboardService: AdminHrHomeService) {}
@@ -20,9 +21,10 @@ export class DashboardHolidayWidgetComponent implements OnInit {
   }
 
   fetchUpcomingHolidays() {
+    this.loading = true;
+    this.error = '';
     this.dashboardService.getUpcomingHolidays().subscribe({
       next: (res) => {
-        console.log(res)
         this.holidays = res.data;
         this.loading = false;
       },

@@ -9,16 +9,24 @@ import tippy from 'tippy.js';  // Import tippy for tooltips
 import 'tippy.js/dist/tippy.css';
 import 'tippy.js/animations/scale.css';
 import { UserInformationsComponent } from '../../components/user-informations/user-informations.component';
+import { AdminStatusChartComponent } from '../../components/charts-stats/admin-status-chart/admin-status-chart.component';
+import { LeaveTypeChartComponent } from '../../components/charts-stats/leave-type-chart/leave-type-chart.component';
+import { ApprovedLeavesChartComponent } from '../../components/charts-stats/approved-leaves-chart/approved-leaves-chart.component';
+import { ApprovedLeavesTrendComponent } from '../../components/charts-stats/approved-leaves-trend/approved-leaves-trend.component';
+import { LeaveStatusCardsComponent } from '../../cards/leave-status-cards/leave-status-cards.component';
 import { DashboardHolidayWidgetComponent } from '../../cards/dashboard-holiday-widget/dashboard-holiday-widget.component';
+import { EmployeeOnHolidayWidgetComponent } from '../../cards/employee-on-holiday-widget/employee-on-holiday-widget.component';
+
 
 @Component({
-  selector: 'app-employee-home',
-  imports: [FullCalendarModule, StatusChartComponent, CommonModule, UserInformationsComponent, DashboardHolidayWidgetComponent],
-  templateUrl: './employee-home.component.html',
-  styleUrls: ['./employee-home.component.scss']
+  selector: 'app-hr-home',
+  imports: [FullCalendarModule, StatusChartComponent, CommonModule, UserInformationsComponent, DashboardHolidayWidgetComponent,AdminStatusChartComponent,
+    LeaveTypeChartComponent,ApprovedLeavesChartComponent,ApprovedLeavesTrendComponent,LeaveStatusCardsComponent,DashboardHolidayWidgetComponent,EmployeeOnHolidayWidgetComponent],
+  templateUrl: './hr-home.component.html',
+  styleUrl: './hr-home.component.scss'
 })
-export class EmployeeHomeComponent implements OnInit {
-  balance = { total: 0, used: 0, remaining: 0 };
+export class HrHomeComponent implements OnInit{
+   balance = { total: 0, used: 0, remaining: 0 };
   calendarOptions: CalendarOptions = {
     plugins: [dayGridPlugin],
     initialView: 'dayGridMonth',
@@ -94,6 +102,7 @@ export class EmployeeHomeComponent implements OnInit {
       this.balance = res.data;
     });
   }
+
 
 
 }

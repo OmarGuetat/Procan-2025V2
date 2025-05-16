@@ -1,33 +1,46 @@
 <div class="card border-top border-4 border-info shadow-sm" style="height: 660px; overflow-y: auto;">
-    <div class="card-body d-flex flex-column" style="font-family: var(--font-family-secondary);">
-      <h5 class="card-title text-center mb-3" style="font-family: var(--font-family-primary);">
-        <i class="bi bi-calendar-event me-2"></i>Upcoming Public Holidays
-      </h5>
-  
-      <ng-container *ngIf="!loading && holidays.length > 0; else loadingSkeleton">
-        <div  class="px-1">
-          <ul class="list-group list-group-flush">
-            <li *ngFor="let holiday of holidays" class="list-group-item d-flex justify-content-between align-items-center">
-              <div>
-                <i class="bi bi-star-fill text-info me-2"></i>
-                <strong>{{ holiday.title }}</strong><br>
-                <small class="text-muted">{{ holiday.start }} → {{ holiday.end }}</small>
-              </div>
-              <span class="badge bg-info text-dark">{{ holiday.days_left }} days left</span>
-            </li>
-          </ul>
-        </div>
-      </ng-container>
-  
-      <ng-template #loadingSkeleton>
-        <div *ngFor="let _ of [1, 2]" class="placeholder-glow">
-          <div class="placeholder col-12 mb-3" style="height: 50px;"></div>
-        </div>
-      </ng-template>
-  
-      <div *ngIf="!loading && holidays.length === 0" class="text-center text-muted mt-3">
-        <i class="bi bi-emoji-frown me-2"></i>No upcoming holidays.
+  <div class="card-body d-flex flex-column" style="font-family: var(--font-family-secondary);">
+    <h5 class="card-title text-center mb-3" style="font-family: var(--font-family-primary);">
+      <i class="bi bi-calendar-event me-2"></i>Upcoming Public Holidays
+    </h5>
+
+    <!-- ✅ Loading -->
+    <ng-container *ngIf="loading">
+      <div *ngFor="let _ of [1, 2]" class="placeholder-glow">
+        <div class="placeholder col-12 mb-3" style="height: 50px;"></div>
       </div>
-    </div>
+    </ng-container>
+
+    <!-- ✅ Loaded with data -->
+    <ng-container *ngIf="!loading && !error && holidays.length > 0">
+      <div class="px-1">
+        <ul class="list-group list-group-flush">
+          <li *ngFor="let holiday of holidays" class="list-group-item d-flex justify-content-between align-items-center">
+            <div>
+              <i class="bi bi-star-fill text-info me-2"></i>
+              <strong>{{ holiday.title }}</strong><br>
+              <small class="text-muted">{{ holiday.start }} → {{ holiday.end }}</small>
+            </div>
+            <span class="badge bg-info text-dark">{{ holiday.days_left }} days left</span>
+          </li>
+        </ul>
+      </div>
+    </ng-container>
+
+    <!-- ✅ No upcoming holidays -->
+    <ng-container *ngIf="!loading && !error && holidays.length === 0">
+      <div class="text-center text-muted mt-4">
+        <img src="assets/no-data-images/holiday.svg" alt="No Holidays" class="w-75 mb-3" >
+        <p class="mb-0">No upcoming holidays for the next 2 months.</p>
+      </div>
+    </ng-container>
+
+    <!-- ✅ Error state -->
+    <ng-container *ngIf="!loading && error">
+      <div class="text-center text-muted mt-4">
+        <img src="assets/no-data-images/searching.svg" alt="Error" class="w-75 mb-3" >
+        <p class="mb-0">Something went wrong while loading holidays.</p>
+      </div>
+    </ng-container>
   </div>
-  
+</div>

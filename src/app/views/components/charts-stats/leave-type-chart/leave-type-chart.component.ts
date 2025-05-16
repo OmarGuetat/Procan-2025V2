@@ -13,7 +13,7 @@ import { DoughnutPieChartComponent } from '../../charts/doughnut-pie-chart/dough
 export class LeaveTypeChartComponent implements OnInit {
   labels: string[] = [];
   data: number[] = [];
-
+  isLoading: boolean = false;
   constructor(private adminService: AdminHrHomeService) {}
 
   ngOnInit(): void {
@@ -21,17 +21,19 @@ export class LeaveTypeChartComponent implements OnInit {
   }
 
   onMonthChanged(month: string): void {
+    this.isLoading= true;
     const [year, mo] = month.split('-');
     const param = `${mo}-${year}`; // format MM-YYYY
     this.adminService.getLeaveTypeDistribution(param).subscribe({
       next: (res) => {
-        console.log(res)
+        this.isLoading= false;
         const typeCounts = res.leave_distribution;
         this.labels = typeCounts.map((item: { leave_type: string }) => item.leave_type);
         this.data = typeCounts.map((item: { percentage: number }) => item.percentage);
       },
       error: (err) => {
         console.error('Failed to fetch leave type distribution', err);
+        this.isLoading= false;
       },
     });
   }

@@ -1,6 +1,6 @@
 import { Component } from '@angular/core';
 import { FormBuilder, FormGroup, FormsModule, ReactiveFormsModule, Validators } from '@angular/forms';
-import { LeaveService } from '../../services/leave.service';
+import { LeaveService } from '../../../services/leave.service';
 import { CommonModule } from '@angular/common';
 import { Router } from '@angular/router';
 

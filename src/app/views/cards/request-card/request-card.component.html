@@ -117,14 +117,13 @@
           <div class="mb-3">
             <label for="leave_type" class="form-label">Reason</label>
             <select formControlName="leave_type" class="form-select" (change)="onReasonChange()">
-              <option value="paternity_leave">Paternity Leave</option>
-              <option value="maternity_leave">Maternity Leave</option>
+               <option value="personal_leave">Personal Leave</option>
               <option value="sick_leave">Sick Leave</option>
-              <option value="personal_leave">Personal Leave</option>
+              <option value="other">Other</option>
             </select>
           </div>
           <!-- Other Reason Input (Only if "Personal Leave" is selected) -->
-          <div class="mb-3" *ngIf="updateForm.value.leave_type === 'personal_leave'">
+          <div class="mb-3" *ngIf="updateForm.value.leave_type === 'other'">
             <label for="other_type" class="form-label">Specify Reason</label>
             <input type="text" formControlName="other_type" class="form-control">
             <small *ngIf="updateForm.controls['other_type'].errors?.['required']" class="text-danger">Please provide a
@@ -132,7 +131,7 @@
           </div>
           <!-- Attachment (Only if "Sick Leave", "Maternity Leave", or "Paternity Leave" is selected) -->
           <div class="mb-3"
-            *ngIf="['sick_leave', 'maternity_leave', 'paternity_leave'].includes(updateForm.value.leave_type)">
+            *ngIf="['sick_leave'].includes(updateForm.value.leave_type)">
             <label for="attachment" class="form-label">Medical Certificate (PDF, JPG, PNG)</label>
             <input type="file" (change)="onFileChange($event)" class="form-control">
             <small *ngIf="attachmentError" class="text-danger">{{ attachmentError }}</small>

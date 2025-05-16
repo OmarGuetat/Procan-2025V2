@@ -1,0 +1,67 @@
+<!-- Work Space Section -->
+<div class="container">
+  <!-- Leave Status Cards -->
+  <div class="row mb-3">
+    <div class="col-md-12">
+      <app-leave-status-cards></app-leave-status-cards>
+    </div>
+  </div>
+
+  <div class="row mb-4">
+    <!-- Employee On Holiday Widget (left side) -->
+    <div class="col-xl-4 mb-4">
+      <app-employee-on-holiday-widget></app-employee-on-holiday-widget>
+    </div>
+
+    <!-- Leave Status and Leave Type Charts (right side) -->
+    <div class="row col-xl-8">
+      <div class="col-xl-6">
+        <app-admin-status-chart></app-admin-status-chart>
+      </div>
+      <div class="col-xl-6">
+        <app-leave-type-chart></app-leave-type-chart>
+      </div>
+    </div>
+  </div>
+
+  <!-- Approved Leaves Trend -->
+  <div class="row mb-4">
+    <div class="col-md-12">
+      <app-approved-leaves-trend></app-approved-leaves-trend>
+    </div>
+  </div>
+
+  <!-- Approved Leaves Summary Chart -->
+  <div class="row mb-4">
+    <div class="col-md-12">
+      <app-approved-leaves-chart></app-approved-leaves-chart>
+    </div>
+  </div>
+</div>
+
+<!-- Personal Space Section -->
+<div class="container">
+  <h4 class="mt-4 mb-3 text-success">
+    <i class="bi bi-person-circle"></i> My Personal Space
+  </h4>
+
+  <!-- Employee Home Dashboard -->
+  <app-user-informations class="my-2"></app-user-informations>
+
+  <!-- Leave Status Pie Chart Section -->
+  <div class="row my-4">
+    <div class="col-md-6">
+      <app-dashboard-holiday-widget></app-dashboard-holiday-widget>
+    </div>
+    <div class="col-md-6">
+      <app-status-chart></app-status-chart>
+    </div>
+  </div>
+
+  <!-- Full Calendar Section -->
+  <div class="row mb-5">
+    <div class="col-md-12">
+      <full-calendar [options]="calendarOptions"></full-calendar>
+    </div>
+  </div>
+</div>

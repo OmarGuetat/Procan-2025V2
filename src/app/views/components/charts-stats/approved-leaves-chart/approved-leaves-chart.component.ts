@@ -20,7 +20,6 @@ export class ApprovedLeavesChartComponent implements OnInit {
   ngOnInit(): void {
     this.adminService.getApprovedLeavesByEmployee().subscribe({
       next: (res) => {
-        console.log(res)
         const employees = res.approved_leaves_by_employee;
         this.labels = employees.map(e => e.name);
         this.data = employees.map(e => e.total_days);

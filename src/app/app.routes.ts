@@ -29,9 +29,7 @@ export const routes: Routes = [
         path: '', 
         loadChildren: () => import('./views/admin-access/routes').then(m => m.routes) 
       },
-   
-      { path: 'leave-dashboard', loadChildren: () => import('./views/leave-dashboard/routes').then((m) => m.routes) },
-      { path: 'leave-balance', loadChildren: () => import('./views/leave-balance/routes').then((m) => m.routes) },
+      { path: 'leave-balance', loadChildren: () => import('./views/admin-hr-access/routes').then((m) => m.routes) },
       
       { path: '', loadChildren: () => import('./views/invoices/routes').then((m) => m.routes) },
      
@@ -52,8 +50,10 @@ export const routes: Routes = [
         path: '', 
         loadChildren: () => import('./views/employee-access/routes').then(m => m.routes) 
       },
-      { path: 'leave-form', loadChildren: () => import('./views/leave-form/routes').then((m) => m.routes) },
-      { path: 'requests-user-dashboard', loadChildren: () => import('./views/requests-user-dashboard/routes').then((m) => m.routes) },
+      { 
+        path: '', 
+        loadChildren: () => import('./views/hr-employee-access/routes').then(m => m.routes) 
+      },
       { path: 'notifications', loadChildren: () => import('./views/notifications/routes').then((m) => m.routes) },
       { path: 'profile', loadChildren: () => import('./views/profile/routes').then((m) => m.routes) },
       {
@@ -71,15 +71,19 @@ export const routes: Routes = [
       {
         path: 'leave-decision-details/:id',loadChildren: () =>import('./views/leave-decision-details/routes').then(m => m.routes)
       },
-      { path: 'hr-home', loadChildren: () => import('./views/hr-home/routes').then((m) => m.routes) },
       { 
         path: '', 
         loadChildren: () => import('./views/admin-hr-access/routes').then(m => m.routes) 
       },
-      { path: 'leave-balance', loadChildren: () => import('./views/leave-balance/routes').then((m) => m.routes) },
-      { path: 'leave-dashboard', loadChildren: () => import('./views/leave-dashboard/routes').then((m) => m.routes) },
-      { path: 'leave-form', loadChildren: () => import('./views/leave-form/routes').then((m) => m.routes) },
-      { path: 'requests-user-dashboard', loadChildren: () => import('./views/requests-user-dashboard/routes').then((m) => m.routes) },
+      { 
+        path: '', 
+        loadChildren: () => import('./views/hr-employee-access/routes').then(m => m.routes) 
+      },
+      { 
+        path: '', 
+        loadChildren: () => import('./views/hr-access/routes').then(m => m.routes) 
+      },
+    
       { path: 'notifications', loadChildren: () => import('./views/notifications/routes').then((m) => m.routes) },
       { path: 'profile', loadChildren: () => import('./views/profile/routes').then((m) => m.routes) },
     ]

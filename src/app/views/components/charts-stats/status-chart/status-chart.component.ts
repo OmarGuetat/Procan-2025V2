@@ -12,7 +12,7 @@ import { EmployeeHrHomeService } from '../../../../services/employee-hr-home.ser
   templateUrl: './status-chart.component.html',
 })
 export class StatusChartComponent implements OnInit {
-  @Input() title: string = 'Leave Status Distribution';
+  @Input() title: string = 'Leave Status Distribution (This Year)';
   @Input() chartType: 'doughnut' | 'pie' = 'pie';
   isLoading: boolean = false;
   labels: string[] = [];

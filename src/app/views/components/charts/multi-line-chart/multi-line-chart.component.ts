@@ -27,7 +27,7 @@ export class MultiLineChartComponent implements OnChanges {
     plugins: {
       legend: {
         labels: {
-          color: '#121212', // --color-text-primary
+          color: '#121212', 
           font: {
             family: 'Inter',
             size: 13
@@ -35,7 +35,7 @@ export class MultiLineChartComponent implements OnChanges {
         }
       },
       tooltip: {
-        backgroundColor: '#202C3C', // --color-sidebar-footer
+        backgroundColor: '#202C3C', 
         titleColor: '#FFFFFF',
         bodyColor: '#F3F3F3',
         titleFont: {
@@ -51,14 +51,14 @@ export class MultiLineChartComponent implements OnChanges {
     scales: {
       x: {
         ticks: {
-          color: '#4A4A4A', // --color-text-secondary
+          color: '#4A4A4A', 
           font: {
             family: 'Roboto',
             size: 12
           }
         },
         grid: {
-          color: '#D1D5DB' // --color-border
+          color: '#D1D5DB' 
         }
       },
       y: {

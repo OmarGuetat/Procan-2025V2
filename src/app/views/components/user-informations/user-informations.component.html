@@ -1,10 +1,22 @@
+<!-- Dynamic Alert -->
+<div *ngIf="alertMessage" class="alert alert-dismissible fade show position-fixed top-0 end-0 m-3 shadow"
+  [ngClass]="alertType" role="alert">
+  <i *ngIf="alertType === 'alert-danger'" class="bi-exclamation-octagon-fill"></i>
+  <strong class="mx-2">{{ alertMessage }}</strong>
+  <button type="button" class="btn-close" (click)="dismissAlert()" aria-label="Close"></button>
+</div>
 <div class="row g-4" *ngIf="!isLoading">
   <!-- User Info Card (taking col-lg-6) -->
   <div class="col-lg-4 col-md-12">
     <div class="card p-4 shadow-sm rounded">
       <div class="d-flex align-items-center gap-3">
-        <div class="profile-img-container">
-        <img [src]="userInfo.avatar_path" alt="Avatar" class="profile-img " /></div>
+         <div class="profile-img-container" (click)="triggerFileInput()">
+          <img  [src]="userInfo.avatar_path"  alt="User Avatar" class="profile-img">
+          <div class="edit-overlay">
+            <i class="bi bi-pencil-fill"></i>
+          </div>
+          <input type="file" #fileInput hidden (change)="onFileSelect($event)">
+        </div>
         <div>
           <div class="fw-bold fs-5">{{ userInfo.full_name }}</div>
           <div class="text-muted">{{ today }}</div>
@@ -17,10 +29,12 @@
     </div>
   </div>
 
-  <!-- Leave Balances & Last Leave Addition (2/2 layout) -->
-  <div class="col-lg-8 col-md-12">
-    <div class="row g-4">
-      <!-- Personal Leave -->
+  <!-- Leave Balances & Last Leave Addition  -->
+<div class="col-lg-8 col-md-12">
+  <div class="row g-4">
+
+    <!-- Leave Balances -->
+    <ng-container *ngIf="leaveBalances.length > 0; else noBalances">
       <div class="col-md-6" *ngFor="let balance of leaveBalances">
         <div *ngIf="getLeaveTypeDetails(balance.leave_type)" class="card shadow-sm rounded">
           <div class="card-header text-center text-white" [ngClass]="getLeaveTypeDetails(balance.leave_type).colorClass">
@@ -32,9 +46,27 @@
           </div>
         </div>
       </div>
+    </ng-container>
 
-      <!-- Last Leave Addition Card -->
-      <div class="col-md-6" *ngIf="lastLeaveAddition">
+    <!-- Fallback Card for No Leave Balances -->
+    <ng-template #noBalances>
+      <div class="col-md-6">
+        <div class="card shadow-sm rounded">
+          <div class="card-header text-center bg-secondary text-white">
+            <i class="bi bi-slash-circle"></i> Leave Balances
+          </div>
+          <div class="card-body">
+            <p class="text-muted text-center mb-0">
+              <i class="bi bi-info-circle me-2"></i>No leave balance data available.
+            </p>
+          </div>
+        </div>
+      </div>
+    </ng-template>
+
+    <!-- Last Leave Addition -->
+    <ng-container *ngIf="lastLeaveAddition; else noLastAddition">
+      <div class="col-md-6">
         <div class="card shadow-sm rounded">
           <div class="card-header text-center text-white bg-warning">
             <i class="bi bi-calendar-plus"></i> Last Leave Added
@@ -46,8 +78,27 @@
           </div>
         </div>
       </div>
-    </div>
+    </ng-container>
+
+    <!-- Fallback Card for No Last Leave Addition -->
+    <ng-template #noLastAddition>
+      <div class="col-md-6">
+        <div class="card shadow-sm rounded">
+          <div class="card-header text-center bg-secondary text-white">
+            <i class="bi bi-calendar-plus"></i> Last Leave Added
+          </div>
+          <div class="card-body">
+            <p class="text-muted text-center mb-0">
+              <i class="bi bi-info-circle me-2"></i>No recent leave additions found.
+            </p>
+          </div>
+        </div>
+      </div>
+    </ng-template>
+
   </div>
+</div>
+
 </div>
 <div class="row g-4" *ngIf="isLoading">
   <!-- Skeleton: User Info Card -->
@@ -83,7 +134,7 @@
       <!-- Last Leave Addition Skeleton -->
       <div class="col-md-6">
         <div class="card shadow-sm rounded h-100">
-          <div class="card-header text-center bg-warning bg-opacity-50">
+          <div class="card-header text-center bg-secondary bg-opacity-25">
             <div class="skeleton-line w-75 mx-auto skeleton-shimmer"></div>
           </div>
           <div class="card-body">

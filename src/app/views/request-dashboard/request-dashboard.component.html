@@ -45,9 +45,9 @@
   <p *ngIf="selectedYear" class="mt-1"><strong>Total Leave Days:</strong> {{ totalLeaveDays }}</p>
 <!-- Spinner shown while loading -->
 <app-skeleton-table *ngIf="isLoading" [rows]="7" [cols]="8"></app-skeleton-table>
-
+<div *ngIf="!isLoading">
 <!-- Table shown when not loading -->
-<table *ngIf="!isLoading" class="table table-bordered">
+<table *ngIf="leaveRequests.length > 0; else fallbackContent"  class="table table-bordered">
     <thead class="thead-dark">
       <tr>
         <th><i class="bi bi-calendar-event me-1"></i>Start Date</th>
@@ -131,9 +131,19 @@
       </tr>
     </tfoot>
   </table>
-
+  <!-- Fallback when no data or error -->
+  <ng-template #fallbackContent>
+    <div class="d-flex flex-column align-items-center justify-content-center text-center">
+      <img src="assets/no-data-images/admin-no-data.svg" alt="No Data" class="w-25"  />
+      <h5>
+        <i class="bi" [ngClass]="hasError ? 'bi-exclamation-triangle-fill text-danger' : 'bi-info-circle text-muted'"></i>
+        {{ hasError ? 'An error occurred while fetching leave data. Please try again later.' : 'No leave data found.' }}
+      </h5>
+    </div>
+  </ng-template>
+</div>
   <!-- Pagination Controls -->
-  <div class="d-flex justify-content-between mt-3">
+  <div class="d-flex justify-content-between mt-3" *ngIf="totalPages > 1">
     <button class="button-primary" (click)="prevPage()" [disabled]="currentPage === 1">Previous</button>
     <span class="fw-semibold">Page {{ currentPage }} of {{ totalPages }}</span>
     <button class="button-primary" (click)="nextPage()" [disabled]="currentPage === totalPages">Next</button>

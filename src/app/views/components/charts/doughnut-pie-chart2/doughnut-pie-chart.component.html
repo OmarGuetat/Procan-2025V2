@@ -1,0 +1,52 @@
+<c-card class="custom-chart-card" *ngIf="!isLoading">
+  <!-- Chart Title -->
+  <c-card-header class="chart-card-header text-center">
+    <span class="chart-title">{{ chartTitle }}</span>
+  </c-card-header>
+  
+  <c-card-body class="chart-card-body">
+    <!-- Chart -->
+    <ng-container *ngIf="data.length > 0; else noDataBlock">
+        <c-chart
+          [type]="type"
+          [data]="chartData"
+          [options]="chartOptions"
+        ></c-chart>
+    </ng-container>
+
+   <!-- No Data -->
+   <ng-template #noDataBlock>
+    <div class="text-muted text-center">
+      <img [src]="imagePath" alt="No Data Found" class="w-50" >
+      <p><i class="bi bi-info-circle mx-1" ></i><span>No data found for the selected period.</span></p>
+    </div>
+  </ng-template>
+
+  </c-card-body>
+</c-card>
+
+
+<!-- Loader -->
+<!-- Loader -->
+<c-card class="custom-chart-card" *ngIf="isLoading">
+  <c-card-header class="chart-card-header text-center">
+    <span class="chart-title">
+      <ng-container *ngIf="!isLoading; else titleSkeleton">{{ chartTitle }}</ng-container>
+      <ng-template #titleSkeleton>
+        <div class="skeleton-line w-50 mx-auto"></div>
+      </ng-template>
+    </span>
+  </c-card-header>
+
+  <c-card-body class="chart-card-body">
+    <ng-template #chartSkeleton>
+      <div class="d-flex align-items-center justify-content-center bg-light border border-2 border-dashed rounded p-3 mt-3 h-100">
+        <div class="spinner-border text-primary" role="status">
+          <span class="visually-hidden">Loading...</span>
+        </div>
+      </div>
+      
+    </ng-template>
+    <ng-container *ngIf="!isLoading; else chartSkeleton"></ng-container>
+  </c-card-body>
+</c-card>

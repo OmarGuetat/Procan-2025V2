@@ -74,7 +74,7 @@ redirectUser() {
   if (role === 'admin') {
     this.router.navigate(['/admin/home']);
   } else if (role === 'hr') {
-    this.router.navigate(['/hr/hr-home']);
+    this.router.navigate(['/hr/home']);
   } else if (role === 'employee') {
     this.router.navigate(['/employee/home']);
   } else if (role === 'accountant') {

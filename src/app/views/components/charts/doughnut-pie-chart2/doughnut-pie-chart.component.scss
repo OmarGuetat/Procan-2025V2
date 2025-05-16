@@ -1,0 +1,36 @@
+.custom-chart-card {
+    background-color: var(--color-card);
+    border: 1px solid var(--color-border);
+    border-radius: 0.5rem;
+    font-family: var(--font-family-secondary);
+    box-shadow: 0 0.125rem 0.25rem rgba(0, 0, 0, 0.05);
+  }
+  .chart-card-header {
+    background-color: var(--color-hover);
+    font-weight: 600;
+    font-family: var(--font-family-primary);
+    color: var(--color-text-primary);
+    border-bottom: 1px solid var(--color-border);
+  }
+  .chart-title {
+    font-size: 1rem;
+  }
+
+  .skeleton-line {
+    height: 18px;
+    background: #dee2e6;
+    border-radius: 4px;
+    animation: pulse 1.5s infinite ease-in-out;
+  }
+  
+  @keyframes pulse {
+    0% {
+      background-color: #dee2e6;
+    }
+    50% {
+      background-color: #ced4da;
+    }
+    100% {
+      background-color: #dee2e6;
+    }
+  }

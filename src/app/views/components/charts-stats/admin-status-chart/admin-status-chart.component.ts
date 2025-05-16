@@ -18,7 +18,7 @@ export class AdminStatusChartComponent implements OnInit {
     '#E63946', // Rejected - Red (matches --color-error)
     '#FFC107'  // Pending - Yellow (matches --color-warning)
   ];
-  
+  isLoading: boolean = false;
 
   constructor(private adminService: AdminHrHomeService) {}
 
@@ -27,18 +27,21 @@ export class AdminStatusChartComponent implements OnInit {
   }
 
   onMonthChanged(mr: string): void {
+    this.isLoading= true;
     // mr comes in as 'YYYY-MM'; we need 'MM-YYYY'
     const [year, month] = mr.split('-');
     const param = `${month}-${year}`;
     console.log(param)
     this.adminService.getLeaveStatusDistribution(param).subscribe({
       next: res => {
-        console.log(res)
+        this.isLoading= false;
         const statusCounts = res.leave_status_distribution;
         this.labels = statusCounts.map((item: any) => item.status);
         this.data   = statusCounts.map((item: any) => item.count);
       },
-      error: err => console.error('Failed to fetch status distribution', err),
+      error: err => {console.error('Failed to fetch status distribution', err)
+        this.isLoading= false;
+      }
     });
   }
 }

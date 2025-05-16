@@ -1,9 +1,9 @@
 import { Component, Input, OnInit } from '@angular/core';
-import { LeaveService } from '../../services/leave.service';
+import { LeaveService } from '../../../services/leave.service';
 import { FormsModule } from '@angular/forms';
 import { CommonModule } from '@angular/common';
-import { RequestCardComponent } from '../cards/request-card/request-card.component';
-import { RequestCardSkeletonComponent } from '../components/Skeletons/request-card-skeleton/request-card-skeleton.component';
+import { RequestCardComponent } from '../../cards/request-card/request-card.component';
+import { RequestCardSkeletonComponent } from '../../components/Skeletons/request-card-skeleton/request-card-skeleton.component';
 import {  SharedModule } from '@coreui/angular';
 @Component({
   selector: 'app-requests-user-dashboard',

@@ -19,7 +19,7 @@ export class RequestCardComponent {
   updateForm!: FormGroup;
   attachmentFile!: File | null;
   attachmentError: string = '';
-
+  
   constructor(private fb: FormBuilder, private leaveService: LeaveService) { }
 
   ngOnInit() {

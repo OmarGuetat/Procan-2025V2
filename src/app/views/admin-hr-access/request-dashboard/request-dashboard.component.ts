@@ -36,7 +36,6 @@ export class RequestDashboardComponent {
   totalEffectiveLeaveDays: number = 0;
   isLoading: boolean = false;
   leaveTypes: string[] = ['paternity_leave', 'maternity_leave', 'sick_leave', 'personal_leave'];
-  hasError: boolean = false;
   constructor(private leaveService: LeaveService, private authService: AuthService) { }
 
   ngOnInit() {
@@ -93,36 +92,35 @@ export class RequestDashboardComponent {
     this.alertMessage = '';
   }
   fetchLeaveRequests(): void {
-  if (this.userId === null) return;
+    if (this.userId === null) return;
+  
+    this.isLoading = true;
+    this.leaveService.getLeaveRequests(
+      this.userId,
+      this.selectedYear ?? undefined,
+      this.currentPage,
+      this.selectedType ?? undefined,
+      this.selectedStatus ?? undefined
+    ).subscribe(
+      (response) => {
+        this.leaveRequests = response.data;
+        this.availableYears = response.available_years;
+        this.totalLeaveDays = this.selectedYear ? response.total_leave_days : 0;
+        this.totalRequestedLeaveDays = response.total_requested_leave_days;
+        this.totalEffectiveLeaveDays = response.total_effective_leave_days;
+        this.employeeName = response.full_name;
+        this.currentPage = response.meta.current_page;
+        this.totalPages = response.meta.total_pages;
+        this.isLoading = false;
+      },
+      error => {
+        console.error('Error fetching leave details:', error);
+        this.isLoading = false;
+      }
+    );
+  }
+  
 
-  this.isLoading = true;
-  this.hasError = false;
-
-  this.leaveService.getLeaveRequests(
-    this.userId,
-    this.selectedYear ?? undefined,
-    this.currentPage,
-    this.selectedType ?? undefined,
-    this.selectedStatus ?? undefined
-  ).subscribe(
-    (response) => {
-      this.leaveRequests = response.data;
-      this.availableYears = response.available_years;
-      this.totalLeaveDays = this.selectedYear ? response.total_leave_days : 0;
-      this.totalRequestedLeaveDays = response.total_requested_leave_days;
-      this.totalEffectiveLeaveDays = response.total_effective_leave_days;
-      this.employeeName = response.full_name;
-      this.currentPage = response.meta.current_page;
-      this.totalPages = response.meta.total_pages;
-      this.isLoading = false;
-    },
-    error => {
-      console.error('Error fetching leave details:', error);
-      this.isLoading = false;
-      this.hasError = true;
-    }
-  );
-}
   prevPage(): void {
     if (this.currentPage > 1) {
       this.currentPage--;

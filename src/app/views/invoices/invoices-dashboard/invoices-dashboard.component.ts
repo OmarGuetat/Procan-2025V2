@@ -5,12 +5,14 @@ import { FormBuilder, FormGroup, FormsModule, ReactiveFormsModule, Validators } 
 import { Router } from '@angular/router';
 import { AuthService } from '../../../services/auth.service';
 import { SkeletonTableComponent } from '../../components/Skeletons/skeleton-table/skeleton-table.component';
-
+import { PaymentStatusChartComponent } from '../../components/charts-stats/payment-status-chart/payment-status-chart.component';
+import { InvoiceTypeChartComponent } from '../../components/charts-stats/invoice-type-chart/invoice-type-chart.component';
+import { PaymentModeChartComponent } from '../../components/charts-stats/payment-mode-chart/payment-mode-chart.component';
 
 
 @Component({
   selector: 'app-invoices-dashboard',
-  imports: [CommonModule,FormsModule,ReactiveFormsModule,SkeletonTableComponent],
+  imports: [CommonModule,FormsModule,ReactiveFormsModule,SkeletonTableComponent,PaymentStatusChartComponent,InvoiceTypeChartComponent,PaymentModeChartComponent],
   templateUrl: './invoices-dashboard.component.html',
   styleUrl: './invoices-dashboard.component.scss'
 })
@@ -35,6 +37,7 @@ export class InvoicesDashboardComponent implements OnInit {
   historiqueData: any[] = [];
   loadingHistorique = false;
   loading: boolean = true;
+  errorOccurred: boolean = false; 
   constructor(private fb: FormBuilder,private invoiceService: InvoiceService,private router: Router,private authService: AuthService) {}
   
   ngOnInit() {
@@ -44,23 +47,27 @@ export class InvoicesDashboardComponent implements OnInit {
       this.changePlaceholder();
     }, 2500);
   }
-  getInvoices(page: number = 1): void {
-    this.loading = true;
-    this.invoiceService
-      .getInvoices(page, this.startDate, this.endDate, this.search, this.sortByPaymentStatus)
-      .subscribe({
-        next: (res) => {
-          this.invoices = res.data;
-          this.totalPages = res.meta.last_page;
-          this.currentPage = res.meta.current_page;
-          this.pages = Array.from({ length: this.totalPages }, (_, i) => i + 1);
-          this.loading = false;
-        },
-        error: () => {
-          this.loading = false;
-        }
-      });
-  }
+ getInvoices(page: number = 1): void {
+  this.loading = true;
+  this.errorOccurred = false; // reset error state
+
+  this.invoiceService
+    .getInvoices(page, this.startDate, this.endDate, this.search, this.sortByPaymentStatus)
+    .subscribe({
+      next: (res) => {
+        this.invoices = res.data;
+        this.totalPages = res.meta.last_page;
+        this.currentPage = res.meta.current_page;
+        this.pages = Array.from({ length: this.totalPages }, (_, i) => i + 1);
+        this.loading = false;
+      },
+      error: () => {
+        this.errorOccurred = true;
+        this.invoices = []; // clear previous data if any
+        this.loading = false;
+      }
+    });
+}
   ngOnDestroy(): void {
     // Clear the interval when the component is destroyed to avoid memory leaks
     if (this.placeholderInterval) {

@@ -12,11 +12,19 @@
   </c-card-header>
 
   <c-card-body class="chart-card-body">
-    <c-chart
-      [type]="type"
-      [data]="chartData"
-    ></c-chart>
+    <ng-container *ngIf="data.length > 0; else noDataBlock">
+      <c-chart [type]="type" [data]="chartData"></c-chart>
+    </ng-container>
+  
+      <!-- No Data -->
+<ng-template #noDataBlock>
+  <div class="text-muted text-center">
+    <img [src]="imagePath" alt="No Data Found" class="w-100" >
+    <p><i class="bi bi-info-circle mx-1" ></i><span>No data found for the selected period.</span></p>
+  </div>
+</ng-template>
   </c-card-body>
+  
 </c-card>
 
 <!--LOADERS-->

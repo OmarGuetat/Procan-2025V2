@@ -21,7 +21,7 @@ export class ApprovedLeavesTrendComponent implements OnInit {
     this.adminService.getApprovedLeavesByYear().subscribe({
       next: (res) => {
         console.log(res)
-        const colorPalette = ['#288FEB','#FF6384', '#36A2EB', '#4BC0C0', '#9966FF', '#FF9F40'];
+        const colorPalette = ['#9966FF','#288FEB','#FF6384','#FF9F40'];
         this.datasets = res.approved_leave_comparison_by_year.map((item: any, index: number) => ({
           year: item.year,
           data: Object.values(item.monthly_counts),

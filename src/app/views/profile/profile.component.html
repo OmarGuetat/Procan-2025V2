@@ -1,76 +1,93 @@
+<!-- Profile Skeleton -->
 <app-profile-skeleton *ngIf="loading; else loadedProfile"></app-profile-skeleton>
-<ng-template #loadedProfile>
-<div class="card profile-card">
-  <div class="card-header text-black">
-    <h4 class="mb-0">Profile Information</h4>
-  </div>
 
-  <div class="card-body " >
-    <!-- Profile Image & Name (Centered on Top) -->
-    <div class="text-center d-flex flex-column align-items-center position-relative">
-      <div class="profile-img-container" (click)="triggerFileInput()">
-        <img *ngIf="profileData.avatar_path" [src]="profileData.avatar_path" alt="User Avatar" class="profile-img">
-        <div class="edit-overlay">
-          <i class="bi bi-pencil-fill"></i>
+<ng-template #loadedProfile>
+  <div class="card profile-card">
+    <div class="card-header text-black">
+      <h4 class="mb-0"><i class="bi bi-person-circle me-2"></i>Profile Information</h4>
+    </div>
+
+    <div class="card-body">
+      <!-- Profile Image & Name -->
+      <div class="text-center d-flex flex-column align-items-center position-relative">
+        <div class="profile-img-container" (click)="triggerFileInput()">
+          <img *ngIf="profileData.avatar_path" [src]="profileData.avatar_path" alt="User Avatar" class="profile-img">
+          <div class="edit-overlay">
+            <i class="bi bi-pencil-fill"></i>
+          </div>
+        </div>
+        <h5 class="profile-name">{{ profileData.first_name }} {{ profileData.last_name }}</h5>
+        <input type="file" #fileInput hidden (change)="onFileSelect($event)">
+      </div>
+
+      <!-- User Info -->
+      <div class="row mt-3">
+        <!-- Left Section -->
+        <div class="col-md-6">
+          <ul class="list-group list-group-flush">
+            <li class="list-group-item">
+              <i class="bi bi-envelope-fill me-2"></i><strong>Email:</strong> {{ profileData.email }}
+            </li>
+            <li class="list-group-item">
+              <i class="bi bi-telephone-fill me-2"></i><strong>Phone:</strong> {{ profileData.phone || 'N/A' }}
+            </li>
+            <li *ngIf="!isAdmin" class="list-group-item">
+              <i class="bi bi-briefcase-fill me-2"></i><strong>Job Description:</strong> {{ profileData.job_description }}
+            </li>
+          </ul>
+        </div>
+
+        <!-- Right Section -->
+        <div class="col-md-6">
+          <ul class="list-group list-group-flush">
+            <li class="list-group-item">
+              <i class="bi bi-geo-alt-fill me-2"></i><strong>Address:</strong> {{ profileData.address || 'N/A' }}
+            </li>
+            <li class="list-group-item">
+              <i class="bi bi-building me-2"></i><strong>Company:</strong> {{ profileData.company }}
+            </li>
+            <li *ngIf="!isAdmin" class="list-group-item">
+              <i class="bi bi-calendar-event-fill me-2"></i><strong>Start Date:</strong> {{ profileData.start_date }}
+            </li>
+          </ul>
         </div>
       </div>
-      <h5 class="profile-name">{{ profileData.first_name }} {{ profileData.last_name }}</h5>
-      <input type="file" #fileInput hidden (change)="onFileSelect($event)">
-    </div>
 
-    <!-- User Information (Divided into Two Sections) -->
-    <div class="row mt-3">
-      <!-- Left Section -->
-      <div class="col-md-6">
-        <ul class="list-group list-group-flush">
-          <li class="list-group-item"><strong>Email:</strong> {{ profileData.email }}</li>
-          <li class="list-group-item"><strong>Phone:</strong> {{ profileData.phone || 'N/A' }}</li>
-          <li *ngIf="!isAdmin" class="list-group-item"><strong>Job Description:</strong> {{ profileData.job_description }}</li>
-        </ul>
+      <!-- Update Button -->
+      <div class="text-center mt-3">
+        <button class="btn button-primary" data-bs-toggle="modal" data-bs-target="#updateProfileModal">
+          <i class="bi bi-pencil-square me-1"></i> Update Profile
+        </button>
       </div>
-
-      <!-- Right Section -->
-      <div class="col-md-6">
-        <ul class="list-group list-group-flush">
-          <li class="list-group-item"><strong>Address:</strong> {{ profileData.address || 'N/A' }}</li>
-          <li class="list-group-item"><strong>Company:</strong> {{ profileData.company }}</li>
-          <li *ngIf="!isAdmin" class="list-group-item"><strong>Start Date:</strong> {{ profileData.start_date }}</li>
-        </ul>
-      </div>
-    </div>
-
-    <!-- Centered Button -->
-    <div class="text-center mt-3">
-      <button class="btn button-primary" data-bs-toggle="modal" data-bs-target="#updateProfileModal">
-        Update Profile
-      </button>
     </div>
   </div>
-</div>
 </ng-template>
 
-
-
-<!-- Dynamic Bootstrap Alert -->
+<!-- Alert -->
 <div *ngIf="alertMessage" class="alert alert-dismissible fade show position-fixed top-0 end-0 m-3 shadow"
   [ngClass]="alertType" role="alert">
-  <i *ngIf="alertType === 'alert-danger'" class="bi-exclamation-octagon-fill"></i>
+  <i *ngIf="alertType === 'alert-danger'" class="bi bi-exclamation-octagon-fill me-2"></i>
+  <i *ngIf="alertType === 'alert-success'" class="bi bi-check-circle-fill me-2"></i>
   <strong class="mx-2">{{ alertMessage }}</strong>
   <button type="button" class="btn-close" (click)="dismissAlert()" aria-label="Close"></button>
 </div>
-<!-- Bootstrap Modal for Profile Update -->
-<div class="modal fade" id="updateProfileModal" tabindex="-1" aria-labelledby="updateProfileModalLabel"
-  aria-hidden="true">
+
+<!-- Modal -->
+<div class="modal fade" id="updateProfileModal" tabindex="-1" aria-labelledby="updateProfileModalLabel" aria-hidden="true">
   <div class="modal-dialog">
     <div class="modal-content">
       <div class="modal-header">
-        <h5 class="modal-title" id="updateProfileModalLabel">Update Profile</h5>
+        <h5 class="modal-title" id="updateProfileModalLabel">
+          <i class="bi bi-person-lines-fill me-2"></i>Update Profile
+        </h5>
         <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
       </div>
       <div class="modal-body">
         <form [formGroup]="updateProfileForm" (ngSubmit)="onSubmit()" enctype="multipart/form-data">
           <div class="mb-3">
-            <label for="email" class="form-label">Email</label>
+            <label for="email" class="form-label">
+              <i class="bi bi-envelope-at-fill me-1"></i>Email
+            </label>
             <input type="email" id="email" class="form-control" formControlName="email">
             <div *ngIf="updateProfileForm.controls['email'].invalid && updateProfileForm.controls['email'].touched"
               class="text-danger">
@@ -79,17 +96,26 @@
           </div>
 
           <div class="mb-3">
-            <label for="phone" class="form-label">Phone</label>
+            <label for="phone" class="form-label">
+              <i class="bi bi-telephone-forward-fill me-1"></i>Phone
+            </label>
             <input type="text" id="phone" class="form-control" formControlName="phone">
           </div>
 
           <div class="mb-3">
-            <label for="address" class="form-label">Address</label>
+            <label for="address" class="form-label">
+              <i class="bi bi-geo-alt me-1"></i>Address
+            </label>
             <input type="text" id="address" class="form-control" formControlName="address">
           </div>
+
           <div class="modal-footer">
-            <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
-            <button type="submit" class="btn button-primary" [disabled]="updateProfileForm.invalid">Save Changes</button>
+            <button type="button" class="btn button-secondary" data-bs-dismiss="modal">
+              Close
+            </button>
+            <button type="submit" class="btn button-primary" [disabled]="updateProfileForm.invalid">
+             Save Changes
+            </button>
           </div>
         </form>
       </div>

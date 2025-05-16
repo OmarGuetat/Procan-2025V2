@@ -3,6 +3,7 @@ import { Component, OnInit } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
 import { EmployeeHrHomeService } from '../../../services/employee-hr-home.service';
 import { CommonModule } from '@angular/common';
+import { EmployeeService } from '../../../services/employee-service.service';
 
 @Component({
   selector: 'app-user-informations',
@@ -18,6 +19,9 @@ export class UserInformationsComponent implements OnInit {
   company: string | null = '';
   today: string = new Date().toLocaleDateString();
   isLoading: boolean = true;
+  alertMessage: string = '';
+  alertType: string = '';
+  selectedFile!: File | null;
   leaveTypes = [
     { 
       type: 'personal_leave', 
@@ -46,7 +50,7 @@ export class UserInformationsComponent implements OnInit {
   ];
   constructor(
     private http: HttpClient,
-    private employeeHrHomeService: EmployeeHrHomeService
+    private employeeHrHomeService: EmployeeHrHomeService,private employeeService: EmployeeService
   ) {}
 
   ngOnInit(): void {
@@ -55,7 +59,43 @@ export class UserInformationsComponent implements OnInit {
     this.getLastLeaveAddition();
     this.company = localStorage.getItem('company');
   }
-
+  // Dismiss alert message
+  dismissAlert() {
+    this.alertMessage = '';
+  }
+  triggerFileInput(): void {
+    const fileInput = document.querySelector('input[type="file"]') as HTMLInputElement;
+    fileInput.click();
+  }
+  
+   onFileSelect(event: any): void {
+    const file = event.target.files[0];
+    if (file) {
+      const formData = new FormData();
+      formData.append('avatar_path', file);
+      
+      this.employeeService.updateUserImage(formData).subscribe(
+        response => {
+          this.alertMessage = response.message || 'Avatar updated successfully!';
+          this.alertType = 'alert-success';
+          setTimeout(() => {
+            this.dismissAlert();
+            location.reload();
+          }, 500);
+        },
+        error => {
+          if (error.error) {
+            const errors = error.error;
+            const firstErrorKey = Object.keys(errors)[0];
+            this.alertMessage = errors[firstErrorKey][0];
+          } else {
+            this.alertMessage = 'Error updating avatar';
+          }
+          this.alertType = 'alert-danger';
+        } 
+      );
+    }
+  }
   getUserInfo(): void {
     this.employeeHrHomeService.getAuthenticatedUserInfo().subscribe({
       next: (data) => {
