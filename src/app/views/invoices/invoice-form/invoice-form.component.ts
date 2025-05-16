@@ -3,6 +3,7 @@ import { InvoiceService } from '../../../services/invoice.service';
 import { CommonModule } from '@angular/common';
 import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { StepIndicatorComponent } from '../../components/step-indicator/step-indicator.component';
+import { Router } from '@angular/router';
 
 declare var bootstrap: any;
 @Component({
@@ -57,7 +58,7 @@ export class InvoiceFormComponent {
   lastSavedInvoiceId: number | null = null;
 
 
-  constructor(private invoiceService: InvoiceService) {}
+  constructor(private invoiceService: InvoiceService,private router: Router) {}
   onTypeChange() {
     this.updateInvoiceNumber();
   }
@@ -271,8 +272,9 @@ export class InvoiceFormComponent {
   
 
   goToDashboard() {
-    console.log("aa");
+    this.router.navigate(['/admin/invoices-dashboard']);
   }
+  
   
   printInvoice(): void {
     if (this.lastSavedInvoiceId !== null) {
