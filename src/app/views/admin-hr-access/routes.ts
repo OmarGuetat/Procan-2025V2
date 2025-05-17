@@ -25,6 +25,16 @@ export const routes: Routes = [
           title: 'Leave Balances'
         }
       }
+      , 
+      {
+        path: 'leave-requests/:id',
+        loadComponent: () => import('./request-dashboard/request-dashboard.component').then(m => m.RequestDashboardComponent),
+      }
+      , 
+      {
+        path: 'leave-balance-details/:id',
+        loadComponent: () => import('./leave-details/leave-details.component').then(m => m.LeaveDetailsComponent),
+      }
     ]
   }
 ];

@@ -26,6 +26,9 @@ export class InvoiceServicesComponent implements OnInit {
   selectedServiceIds: number[] = [];
   selectAllChecked = false;
 
+  isSubmittingServices: boolean = false; 
+  isSubmittingAVP: boolean = false;
+
   constructor(
     private route: ActivatedRoute,
     private invoiceService: InvoiceService,
@@ -86,41 +89,50 @@ export class InvoiceServicesComponent implements OnInit {
   }
 
   onUpdateAllServices(): void {
-    const hasNegative = this.services.some(
-      (s) => s.quantity < 0 || s.price_ht < 0 || s.tva < 0
-    );
-    const isServiceValid = this.services.some(
-      (s) => s.name && s.quantity !== null && s.price_ht !== null
-    );
+  if (this.isSubmittingServices) return; // block rapid calls
 
-    if (!isServiceValid) {
-      this.showAlert('Please fill in at least one valid service.', 'alert-danger');
-      return;
-    }
+  const hasNegative = this.services.some(
+    (s) => s.quantity < 0 || s.price_ht < 0 || s.tva < 0
+  );
+  const isServiceValid = this.services.some(
+    (s) => s.name && s.quantity !== null && s.price_ht !== null
+  );
 
-    if (hasNegative) {
-      this.showAlert('Values cannot be negative.', 'alert-danger');
-      return;
-    }
-
-    const payload = {
-      services: this.services,
-      TTotal_HT: this.totals.TTotal_HT,
-      TTotal_TVA: this.totals.TTotal_TVA,
-      TTotal_TTC: this.totals.TTotal_TTC,
-    };
-
-    this.invoiceService.updateServicesBatch(payload).subscribe({
-      next: (res: any) => {
-        this.showAlert(res.message || 'Services updated successfully.', 'alert-success');
-        this.fetchServices();
-      },
-      error: (err) => {
-        const msg = err?.error?.error || 'Failed to update services';
-        this.showAlert(msg, 'alert-danger');
-      },
-    });
+  if (!isServiceValid) {
+    this.showAlert('Please fill in at least one valid service.', 'alert-danger');
+    return;
   }
+
+  if (hasNegative) {
+    this.showAlert('Values cannot be negative.', 'alert-danger');
+    return;
+  }
+
+  const payload = {
+    services: this.services,
+    TTotal_HT: this.totals.TTotal_HT,
+    TTotal_TVA: this.totals.TTotal_TVA,
+    TTotal_TTC: this.totals.TTotal_TTC,
+  };
+
+  this.isSubmittingServices = true; // lock
+
+  this.invoiceService.updateServicesBatch(payload).subscribe({
+    next: (res: any) => {
+      this.showAlert(res.message || 'Services updated successfully.', 'alert-success');
+      this.fetchServices();
+      setTimeout(() => {
+        this.goBack()
+        this.isSubmittingServices = false; 
+      }, 2000);
+    },
+    error: (err) => {
+      const msg = err?.error?.error || 'Failed to update services';
+      this.showAlert(msg, 'alert-danger');
+      this.isSubmittingServices = false; // unlock
+    },
+  });
+}
 
  // Triggered when user checks/unchecks the "Select All"
   toggleSelectAll(event: any): void {
@@ -146,42 +158,41 @@ export class InvoiceServicesComponent implements OnInit {
   }
   // Called when user clicks "Generate AVP"
   onTransferAVP(): void {
-    if (this.selectedServiceIds.length === 0) {
-      this.showAlert('Please select at least one service.', 'alert-danger');
-      return;
-    }
+  if (this.isSubmittingAVP) return; // block rapid calls
 
-    const payload = {
-      service_ids: this.selectedServiceIds,
-      total_ht: this.totals.TTotal_HT,
-      total_tva: this.totals.TTotal_TVA,
-      total_ttc: this.totals.TTotal_TTC,
-    };
-
-    this.invoiceService.createPartialCreditInvoice(payload).subscribe({
-      next: (res) => {
-        this.showAlert('AVP invoice created successfully.', 'alert-success');
-      },
-      error: (err) => {
-        this.showAlert(err.error?.error || 'Failed to create AVP invoice.', 'alert-danger');
-      },
-    });
+  if (this.selectedServiceIds.length === 0) {
+    this.showAlert('Please select at least one service.', 'alert-danger');
+    return;
   }
+
+  const payload = {
+    service_ids: this.selectedServiceIds,
+    total_ht: this.totals.TTotal_HT,
+    total_tva: this.totals.TTotal_TVA,
+    total_ttc: this.totals.TTotal_TTC,
+  };
+
+  this.isSubmittingAVP = true; // lock
+
+  this.invoiceService.createPartialCreditInvoice(payload).subscribe({
+    next: (res) => {
+      this.showAlert('AVP invoice created successfully.', 'alert-success');
+       setTimeout(() => {
+         this.isSubmittingAVP = false; 
+        this.goBack()
+      }, 2000);
+    },
+    error: (err) => {
+      this.showAlert(err.error?.error || 'Failed to create AVP invoice.', 'alert-danger');
+      this.isSubmittingAVP = false; 
+    },
+  });
+}
+
 
   goBack(): void {
     const role = this.authService.getRole();
-    const rolePrefix = this.getRolePrefix(role);
-    this.router.navigate([`/${rolePrefix}/invoices-dashboard`]);
+    this.router.navigate([`/${role}/invoices-dashboard`]);
   }
 
-  private getRolePrefix(role: string | null): string {
-    switch (role) {
-      case 'admin':
-        return 'admin';
-      case 'accountant':
-        return 'accountant';
-      default:
-        return 'login';
-    }
-  }
 }

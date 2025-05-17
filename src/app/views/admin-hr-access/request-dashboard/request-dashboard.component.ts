@@ -1,9 +1,10 @@
 import { CommonModule } from '@angular/common';
 import { Component, EventEmitter, Input, Output } from '@angular/core';
 import { FormsModule } from '@angular/forms';
-import { LeaveService } from '../../services/leave.service';
-import { AuthService } from '../../services/auth.service';
-import { SkeletonTableComponent } from '../components/Skeletons/skeleton-table/skeleton-table.component';
+import { LeaveService } from '../../../services/leave.service';
+import { AuthService } from '../../../services/auth.service';
+import { SkeletonTableComponent } from '../../components/Skeletons/skeleton-table/skeleton-table.component';
+import { ActivatedRoute, Router } from '@angular/router';
 
 
 
@@ -14,9 +15,9 @@ import { SkeletonTableComponent } from '../components/Skeletons/skeleton-table/s
   styleUrl: './request-dashboard.component.css'
 })
 export class RequestDashboardComponent {
-  @Input() userId: number | null = null;
+  
   @Output() backToList = new EventEmitter<void>();
-
+  
   leaveRequests: any[] = [];
   availableYears: number[] = [];
   selectedYear: number | null = null;
@@ -36,10 +37,13 @@ export class RequestDashboardComponent {
   totalEffectiveLeaveDays: number = 0;
   isLoading: boolean = false;
   leaveTypes: string[] = ['paternity_leave', 'maternity_leave', 'sick_leave', 'personal_leave'];
-  constructor(private leaveService: LeaveService, private authService: AuthService) { }
+  hasError: boolean = false;
+  userId: number | null = null;
+  constructor(private leaveService: LeaveService, private authService: AuthService,private route: ActivatedRoute,private router: Router) { }
 
   ngOnInit() {
-
+     const idParam = this.route.snapshot.paramMap.get('id');
+    this.userId = idParam ? +idParam : null;
     if (this.userId) {
       this.fetchLeaveRequests();
     }
@@ -92,35 +96,36 @@ export class RequestDashboardComponent {
     this.alertMessage = '';
   }
   fetchLeaveRequests(): void {
-    if (this.userId === null) return;
-  
-    this.isLoading = true;
-    this.leaveService.getLeaveRequests(
-      this.userId,
-      this.selectedYear ?? undefined,
-      this.currentPage,
-      this.selectedType ?? undefined,
-      this.selectedStatus ?? undefined
-    ).subscribe(
-      (response) => {
-        this.leaveRequests = response.data;
-        this.availableYears = response.available_years;
-        this.totalLeaveDays = this.selectedYear ? response.total_leave_days : 0;
-        this.totalRequestedLeaveDays = response.total_requested_leave_days;
-        this.totalEffectiveLeaveDays = response.total_effective_leave_days;
-        this.employeeName = response.full_name;
-        this.currentPage = response.meta.current_page;
-        this.totalPages = response.meta.total_pages;
-        this.isLoading = false;
-      },
-      error => {
-        console.error('Error fetching leave details:', error);
-        this.isLoading = false;
-      }
-    );
-  }
-  
+  if (this.userId === null) return;
 
+  this.isLoading = true;
+  this.hasError = false;
+
+  this.leaveService.getLeaveRequests(
+    this.userId,
+    this.selectedYear ?? undefined,
+    this.currentPage,
+    this.selectedType ?? undefined,
+    this.selectedStatus ?? undefined
+  ).subscribe(
+    (response) => {
+      this.leaveRequests = response.data;
+      this.availableYears = response.available_years;
+      this.totalLeaveDays = this.selectedYear ? response.total_leave_days : 0;
+      this.totalRequestedLeaveDays = response.total_requested_leave_days;
+      this.totalEffectiveLeaveDays = response.total_effective_leave_days;
+      this.employeeName = response.full_name;
+      this.currentPage = response.meta.current_page;
+      this.totalPages = response.meta.total_pages;
+      this.isLoading = false;
+    },
+    error => {
+      console.error('Error fetching leave details:', error);
+      this.isLoading = false;
+      this.hasError = true;
+    }
+  );
+}
   prevPage(): void {
     if (this.currentPage > 1) {
       this.currentPage--;
@@ -204,7 +209,8 @@ export class RequestDashboardComponent {
       }
     );
   }
-  goBack() {
-    this.backToList.emit();
+  goBack() { 
+    const role = this.authService.getRole();
+     this.router.navigate([`/${role}/leave-dashboard`]);
   }
 }

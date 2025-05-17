@@ -1,7 +1,9 @@
 import { Component, EventEmitter, Input, OnInit, Output } from '@angular/core';
 import { LeaveService } from '../../../services/leave.service';
 import { CommonModule } from '@angular/common';
-import { SkeletonTableCardComponent } from '../Skeletons/skeleton-table-card/skeleton-table-card.component';
+import { SkeletonTableCardComponent } from '../../components/Skeletons/skeleton-table-card/skeleton-table-card.component';
+import { AuthService } from '../../../services/auth.service';
+import { ActivatedRoute, Router } from '@angular/router';
 
 interface Leave {
   id: number;
@@ -17,7 +19,6 @@ interface Leave {
   styleUrls: ['./leave-details.component.css']
 })
 export class LeaveDetailsComponent implements OnInit {
-  @Input() userId!: number; 
   @Output() backToList = new EventEmitter<void>(); 
   leaveData: Leave[] = []; 
   currentPage: number = 1; 
@@ -31,9 +32,12 @@ export class LeaveDetailsComponent implements OnInit {
   user: { first_name: string; last_name: string } = { first_name: '', last_name: '' };
   loading: boolean = false;
   cancelingId: number | null = null; 
-  constructor(private leaveService: LeaveService) {}
+  userId: number | null = null;
+  constructor(private leaveService: LeaveService, private authService: AuthService,private route: ActivatedRoute,private router: Router) {}
 
   ngOnInit(): void {
+    const idParam = this.route.snapshot.paramMap.get('id');
+    this.userId = idParam ? +idParam : null;
     this.fetchLeaveData();
   }
   fetchLeaveData(): void {
@@ -109,8 +113,8 @@ export class LeaveDetailsComponent implements OnInit {
     );
   }
 
-  // Method to go back to the list
-  onBackClick(): void {
-    this.backToList.emit();
+  goBack() { 
+    const role = this.authService.getRole();
+     this.router.navigate([`/${role}/leave-dashboard`]);
   }
 }

@@ -38,6 +38,9 @@ export class InvoicesDashboardComponent implements OnInit {
   loadingHistorique = false;
   loading: boolean = true;
   errorOccurred: boolean = false; 
+  isSubmittingUpdate: boolean = false;
+   alertMessage: string = '';
+  alertType: string = '';
   constructor(private fb: FormBuilder,private invoiceService: InvoiceService,private router: Router,private authService: AuthService) {}
   
   ngOnInit() {
@@ -91,7 +94,9 @@ export class InvoicesDashboardComponent implements OnInit {
       this.placeholderIndex = (this.placeholderIndex + 1) % placeholders.length;
     }, 300); // Timing matches CSS transition
   }
-  
+  dismissAlert() {
+    this.alertMessage = '';
+  }
   downloadInvoicePdf(invoiceId: number): void {
     this.invoiceService.downloadInvoicePdf(invoiceId).subscribe({
       next: (blob) => {
@@ -107,6 +112,8 @@ export class InvoicesDashboardComponent implements OnInit {
       },
       error: (error) => {
         console.error('Download failed:', error);
+        this.alertMessage = error?.error?.error || 'An error occurred';
+        this.alertType = 'alert-danger';
         // You can show a toast or alert here if needed
       }
     });
@@ -129,42 +136,46 @@ export class InvoicesDashboardComponent implements OnInit {
   }
   
   submitUpdate() {
-    const payload = {
-      amount_paid: this.updateForm.amount_paid
-    };
-  
-    this.invoiceService.updatePaymentStatus(this.selectedInvoice.id, payload).subscribe({
-      next: () => {
-        this.getInvoices(this.currentPage); // refresh list
-        const modalEl = document.getElementById('updatePaymentModal');
-        const modalInstance = bootstrap.Modal.getInstance(modalEl);
-        modalInstance?.hide();
-      },
-      error: (err) => {
-        const errorMsg = err.error?.error || 'An error occurred.';
-        alert(errorMsg); // You could use a toast instead
-      }
-    });
-  }
+  if (this.isSubmittingUpdate) return; // block rapid calls
+
+  this.isSubmittingUpdate = true; // lock
+
+  const payload = {
+    amount_paid: this.updateForm.amount_paid
+  };
+
+  this.invoiceService.updatePaymentStatus(this.selectedInvoice.id, payload).subscribe({
+    next: () => {
+      this.getInvoices(this.currentPage); // refresh list
+      const modalEl = document.getElementById('updatePaymentModal');
+      const modalInstance = bootstrap.Modal.getInstance(modalEl);
+      modalInstance?.hide();
+
+      // reset submission lock after 2 seconds
+      setTimeout(() => {
+        this.isSubmittingUpdate = false;
+      }, 2000);
+    },
+    error: (err) => {
+      this.alertMessage = err?.error?.error || 'An error occurred';
+      this.alertType = 'alert-danger';
+
+      // also reset lock here so user can retry after error
+      setTimeout(() => {
+        this.isSubmittingUpdate = false;
+      }, 2000);
+    }
+  });
+}
   
   
   onViewAll(id: any) {
-    console.log('View history for invoice:', id);
     const role = this.authService.getRole();
-    const rolePrefix = this.getRolePrefix(role);
-    this.router.navigate([`/${rolePrefix}/invoices`, id, 'services']);
+    this.router.navigate([`/${role}/invoices`, id, 'services']);
   }
   onSortByPaymentStatus(value: 'True' | 'False') {
     this.sortByPaymentStatus = value;
-    this.onFilterChange(); // Triggers the API call with current filters
+    this.onFilterChange(); 
   }
-  
- 
-  private getRolePrefix(role: string | null): string {
-    switch (role) {
-      case 'admin': return 'admin';
-      case 'accountant': return 'accountant';
-      default: return 'login';
-    }
-  }
+
 }

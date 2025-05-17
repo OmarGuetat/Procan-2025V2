@@ -21,7 +21,7 @@ export class LeaveService {
   }
 
   // Fetch the leave details for a specific user
-  getLeaveDetails(userId: number, currentPage: number): Observable<any> {
+  getLeaveDetails(userId: number| null, currentPage: number): Observable<any> {
     return this.http.get<any>(`${this.apiUrl}/leave-balances/${userId}?page=${currentPage}`);
   }
 

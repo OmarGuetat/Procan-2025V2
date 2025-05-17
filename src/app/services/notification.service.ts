@@ -1,6 +1,6 @@
 import { Injectable, NgZone } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
-import { BehaviorSubject, Observable } from 'rxjs';
+import { BehaviorSubject, Observable, Subject } from 'rxjs';
 import { environment } from '../../environments/environment';
 import Pusher from 'pusher-js';
 
@@ -31,7 +31,6 @@ export class NotificationService {
   markAsRead(notificationId: number): Observable<any> {
     return this.http.put(`${this.apiUrl}/${notificationId}/read`, {});
   }
-
   // Delete notification
   deleteNotification(id: number): Observable<any> {
     return this.http.delete<any>(`${this.apiUrl}/${id}`);

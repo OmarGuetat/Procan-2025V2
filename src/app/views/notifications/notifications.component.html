@@ -1,19 +1,43 @@
 <div class="container mt-4">
   <h4 class="mb-3">Notifications</h4>
 
-  <div *ngIf="notifications.length === 0" class="alert alert-info" style=" z-index: 0;">No notifications available.
+  <!-- 🔄 Loading Skeletons -->
+  <ng-container *ngIf="isLoading">
+    <div *ngFor="let i of [1, 2, 3]" class="list-group-item p-3 rounded bg-light mb-2">
+      <div class="d-flex align-items-center">
+        <div class="skeleton-avatar me-3"></div>
+        <div class="w-100">
+          <div class="skeleton-line w-50 mb-2"></div>
+          <div class="skeleton-line w-75"></div>
+        </div>
+      </div>
+    </div>
+  </ng-container>
+
+  <!-- Error Message -->
+  <div *ngIf="!isLoading && hasError" class="alert alert-danger">
+    Failed to load notifications. Please try again later.
   </div>
 
-  <div class="list-group">
+  <!--No Data Placeholder -->
+  <div *ngIf="!isLoading && !hasError && notifications.length === 0" class="text-center">
+    <img src="assets/no-data-images/w2-no-data.svg" alt="No Data" class="mb-3 w-50">
+    <p class="text-muted">No notifications available.</p>
+  </div>
+
+  <!-- Notifications List -->
+  <div class="list-group" *ngIf="!isLoading && !hasError && notifications.length > 0">
     <div *ngFor="let notification of notifications"
       class="list-group-item d-flex align-items-center justify-content-between p-3 rounded"
       [ngClass]="{'bg-light': !notification.is_read, 'bg-white': notification.is_read}">
 
-      <!-- Avatar & Notification Text -->
+      <!-- Avatar & Text -->
       <div class="d-flex align-items-center">
-        <img *ngIf="notification.sender_avatar_path" [src]="notification.sender_avatar_path" class="rounded-circle me-3"
-          width="50" height="50" alt="Avatar">
-        <i *ngIf="!notification.sender_avatar_path" class="bi bi-person-circle text-muted fs-3 me-3"></i>
+        <img *ngIf="notification.sender_avatar_path"
+             [src]="notification.sender_avatar_path"
+             class="rounded-circle me-3" width="50" height="50" alt="Avatar">
+        <i *ngIf="!notification.sender_avatar_path"
+           class="bi bi-person-circle text-muted fs-3 me-3"></i>
 
         <div>
           <strong>{{ notification.title }}</strong>
@@ -23,18 +47,17 @@
 
       <!-- Actions -->
       <div class="d-flex">
-        <!-- View History (Marks as Read + Redirects) -->
-        <button (click)="viewHistory(notification)" class="btn btn-outline-primary btn-sm me-2">
+        <button (click)="viewMyRequests(notification)" class="btn btn-outline-primary btn-sm me-2">
           <i class="bi bi-clock-history"></i>
         </button>
-
-        <!-- Mark as Read -->
-        <button *ngIf="!notification.is_read" (click)="markAsRead(notification.id, $event)"
-          class="btn btn-outline-success btn-sm me-2">
+        <button (click)="viewRequests(notification)" class="btn btn-outline-primary btn-sm me-2">
+          <i class="bi bi-clock-history"></i>
+        </button>
+        <button *ngIf="!notification.is_read"
+                (click)="markAsRead(notification.id, $event)"
+                class="btn btn-outline-success btn-sm me-2">
           <i class="bi bi-check2-circle"></i>
         </button>
-
-        <!-- Delete Notification -->
         <button (click)="deleteNotification(notification.id, $event)" class="btn btn-outline-danger btn-sm">
           <i class="bi bi-x-circle"></i>
         </button>

@@ -2,6 +2,8 @@ import { Component, EventEmitter, Input, Output } from '@angular/core';
 import { FormBuilder, FormGroup, ReactiveFormsModule, Validators } from '@angular/forms';
 import { LeaveService } from '../../../services/leave.service';
 import { CommonModule } from '@angular/common';
+import { Router } from '@angular/router';
+import { AuthService } from '../../../services/auth.service';
 
 
 @Component({
@@ -19,7 +21,7 @@ export class LeaveCardComponent {
   alertType: string = '';
   isSubmitting: boolean = false;
 
-  constructor(private fb: FormBuilder, private leaveService: LeaveService) {
+  constructor(private fb: FormBuilder, private leaveService: LeaveService,private router: Router,private authService: AuthService) {
     this.leaveForm = this.fb.group({
       leave_day_limit: ['', [Validators.required, Validators.min(0.25)]],
       description: ['', [Validators.maxLength(255)]]
@@ -30,10 +32,12 @@ export class LeaveCardComponent {
     this.alertMessage = '';
   }
   seeDetails() {
-    this.onSeeDetails.emit(this.leaveEmployee.id); 
+    const role = this.authService.getRole();
+    this.router.navigate([`/${role}/leave-balance-details`, this.leaveEmployee.id]);
   }
   viewRequests() {
-    this.onViewRequests.emit(this.leaveEmployee.id);
+    const role = this.authService.getRole();
+     this.router.navigate([`/${role}/leave-requests`, this.leaveEmployee.id]);
   }
   addLeaveDays() {
     console.log(this.leaveEmployee)
@@ -47,12 +51,9 @@ export class LeaveCardComponent {
     this.isSubmitting = true;
     if (this.leaveForm.invalid) return;
 
-   
-
     this.leaveService.addLeaveDays(this.leaveEmployee.id, this.leaveForm.value)
       .subscribe({
         next: (response) => {
-          console.log("pressed");
           this.alertMessage = response.message || 'Added successfully!';
           this.alertType = 'alert-success';
   

@@ -5,16 +5,14 @@ import { LeaveService } from '../../../services/leave.service';
 
 import { CommonModule } from '@angular/common';
 
-import { RequestDashboardComponent } from '../../request-dashboard/request-dashboard.component';
 import { EmployeeCardComponent } from '../../cards/employee-card/employee-card.component';
 import { LeaveCardComponent } from '../../cards/leave-card/leave-card.component';
-import { LeaveDetailsComponent } from '../leave-details/leave-details.component';
 import { LeaveCardSkeletonComponent } from '../../components/Skeletons/leave-card-skeleton/leave-card-skeleton.component';
 import { EmployeeCardSkeletonComponent } from '../../components/Skeletons/employee-card-skeleton/employee-card-skeleton.component';
 
 @Component({
   selector: 'app-list-component',
-  imports: [LeaveDetailsComponent, EmployeeCardComponent, LeaveCardComponent, CommonModule,RequestDashboardComponent,EmployeeCardSkeletonComponent,LeaveCardSkeletonComponent],
+  imports: [ EmployeeCardComponent, LeaveCardComponent, CommonModule,EmployeeCardSkeletonComponent,LeaveCardSkeletonComponent],
   templateUrl: './list-component.component.html',
   styleUrls: ['./list-component.component.css']
 })

@@ -19,7 +19,7 @@ export class RequestCardComponent {
   updateForm!: FormGroup;
   attachmentFile!: File | null;
   attachmentError: string = '';
-  
+  isSubmitting: boolean = false;
   constructor(private fb: FormBuilder, private leaveService: LeaveService) { }
 
   ngOnInit() {
@@ -109,54 +109,58 @@ export class RequestCardComponent {
     }
   }
 
-  updateLeave() {
-    if (this.updateForm.invalid) return;
+updateLeave() {
+  if (this.isSubmitting) return; 
+  if (this.updateForm.invalid) return;
 
-    const formData = new FormData();
-    const leaveType = this.updateForm.value.leave_type;
-    formData.append('leave_type', leaveType);
+  this.isSubmitting = true;
 
-    if (leaveType === 'personal_leave' && this.updateForm.value.other_type) {
-      formData.append('other_type', this.updateForm.value.other_type);
-    }
+  const formData = new FormData();
+  const leaveType = this.updateForm.value.leave_type;
+  formData.append('leave_type', leaveType);
 
-    if (
-      ['sick_leave', 'maternity_leave', 'paternity_leave'].includes(leaveType) &&
-      this.attachmentFile
-    ) {
-      formData.append('attachment', this.attachmentFile);
-    }
-
-    console.log('Submitting FormData:', this.updateForm.value);
-    console.log('Leave Type:', this.updateForm.value.leave_type);
-   
-    // TypeScript already knows this is FormData, but might not know about entries()
-
-    for (let [key, value] of (formData as any).entries()) {
-      console.log(key, value);
-    }
-
-    this.leaveService.updateLeave(Number(this.selectedLeaveId), formData).subscribe(
-      response => {
-        this.alertMessage = response.message || 'Leave Request Updated Successfully!';
-        this.alertType = 'alert-success';
-        setTimeout(() => {
-          this.dismissAlert();
-          location.reload();
-        }, 500);
-      },
-      error => {
-        if (error.error) {
-          const errors = error.error;
-          const firstErrorKey = Object.keys(errors)[0];
-          this.alertMessage = errors[firstErrorKey][0];
-        } else {
-          this.alertMessage = 'Error Updating Leave Request';
-        }
-        this.alertType = 'alert-danger';
-      }
-    );
+  if (leaveType === 'other' && this.updateForm.value.other_type) {
+    formData.append('other_type', this.updateForm.value.other_type);
   }
+
+  if (
+    ['sick_leave'].includes(leaveType) &&
+    this.attachmentFile
+  ) {
+    formData.append('attachment', this.attachmentFile);
+  }
+
+  console.log('Submitting FormData:', this.updateForm.value);
+  console.log('Leave Type:', this.updateForm.value.leave_type);
+
+  for (let [key, value] of (formData as any).entries()) {
+    console.log(key, value);
+  }
+
+  this.leaveService.updateLeave(Number(this.selectedLeaveId), formData).subscribe({
+    next: response => {
+      this.alertMessage = response.message || 'Leave Request Updated Successfully!';
+      this.alertType = 'alert-success';
+      setTimeout(() => {
+        this.dismissAlert();
+        location.reload();
+      }, 500);
+      this.isSubmitting = false;  // Re-enable submission after success
+    },
+    error: error => {
+      if (error.error) {
+        const errors = error.error;
+        const firstErrorKey = Object.keys(errors)[0];
+        this.alertMessage = errors[firstErrorKey][0];
+      } else {
+        this.alertMessage = 'Error Updating Leave Request';
+      }
+      this.alertType = 'alert-danger';
+      this.isSubmitting = false; // Re-enable submission after error
+    }
+  });
+}
+
 
   openDeleteModal(requestId: number): void {
     this.selectedLeaveId = requestId;

@@ -34,17 +34,6 @@
     </div>
   </ng-template>
 
-<!-- Show Requests Dashboard when viewingRequests is true -->
-<div *ngIf="selectedRequestsUserId">
-  <app-request-dashboard [userId]="selectedRequestsUserId" (backToList)="onBackToList()"></app-request-dashboard>
-</div>
-
-<!-- Show Leave Details when a user is selected -->
-<div *ngIf="selectedUserId">
-  <app-leave-details [userId]="selectedUserId" (backToList)="onBackToList()"></app-leave-details>
-</div>
-
-
   <!-- Pagination Controls (Hidden if there is only one page) -->
   <div class="d-flex justify-content-center"  
      [ngClass]="{'mt-4': cardType === 'employee'}"

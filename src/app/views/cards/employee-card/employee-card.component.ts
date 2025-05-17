@@ -2,6 +2,7 @@ import { CommonModule } from '@angular/common';
 import { Component,Input } from '@angular/core';
 import { FormBuilder, FormGroup, ReactiveFormsModule, Validators } from '@angular/forms';
 import { EmployeeService } from '../../../services/employee-service.service';
+import { AuthService } from '../../../services/auth.service';
 
 
 
@@ -22,11 +23,10 @@ export class EmployeeCardComponent {
   showToastMessage = false; 
   isSubmitting: boolean = false;
   isDeleting: boolean = false;
+  userRole: string | null = null;
+  availableRoles: { value: string, label: string }[] = [];
   toggleFlip() {
     this.isFlipped = !this.isFlipped;
-  }
-  deleteEmployee() {
-    console.log('Delete function here!');
   }
   animateClick() {
     this.isClicked = true;
@@ -34,12 +34,12 @@ export class EmployeeCardComponent {
       this.isClicked = false; 
     }, 300);
 }
-constructor(private fb: FormBuilder, private employeeService: EmployeeService) {
+constructor(private fb: FormBuilder, private employeeService: EmployeeService,private authService: AuthService) {
   this.updateForm = this.fb.group({
     company: ['', Validators.required],
     role: ['', Validators.required],
     job_description: ['', Validators.required],
-    phone: ['', [Validators.required, Validators.pattern('^[0-9]{8}$')]],
+    phone: ['', [Validators.pattern('^[0-9]{8}$')]],
     email: ['', [Validators.required, Validators.email]],
   });
   
@@ -48,6 +48,18 @@ constructor(private fb: FormBuilder, private employeeService: EmployeeService) {
 
 // Fill the form when modal opens
 ngOnInit(): void {
+  this.userRole = this.authService.getRole();
+  if (this.userRole === 'admin') {
+    this.availableRoles = [
+      { value: 'employee', label: 'Employee' },
+      { value: 'hr', label: 'Human resources' },
+      { value: 'accountant', label: 'Accountant' }
+    ];
+  } else if (this.userRole === 'hr') {
+    this.availableRoles = [
+      { value: 'employee', label: 'Employee' }
+    ];
+  }
   this.updateForm.patchValue({
     company: this.employee.company,
     role: this.employee.role,

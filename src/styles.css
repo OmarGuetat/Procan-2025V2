@@ -136,7 +136,7 @@ h4, h5, h6 {
 }
 
 .button-warning:hover {
-    background: darken(var(--color-warning), 10%);
+    background: #d6a615;
 }
 
 .button-error {

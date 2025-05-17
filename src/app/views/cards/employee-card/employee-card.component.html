@@ -93,8 +93,7 @@
           <!-- Phone -->
           <div class="mb-3">
             <label for="phone" class="form-label">Phone</label>
-            <input type="text" id="phone" class="form-control" formControlName="phone" maxlength="8" pattern="[0-9]*"
-              required />
+            <input type="text" id="phone" class="form-control" formControlName="phone" maxlength="8" pattern="[0-9]*" />
             <div *ngIf="updateForm.get('phone')?.invalid && updateForm.get('phone')?.touched" class="text-danger">
               Phone must be 8 digits.
             </div>
@@ -121,11 +120,10 @@
           <div class="mb-3">
             <label for="role" class="form-label">Role</label>
             <select id="role" class="form-select" formControlName="role">
-              <option value="employee">Employee</option>
-              <option value="hr">Human resources</option>
-              <option value="accountant">Accountant</option>
+              <option *ngFor="let role of availableRoles" [value]="role.value">{{ role.label }}</option>
             </select>
           </div>
+
           <div class="mb-3">
             <label for="job_description" class="form-label">Job Description</label>
             <input type="text" class="form-control" id="job_description" formControlName="job_description" required>

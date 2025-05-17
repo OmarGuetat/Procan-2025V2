@@ -7,209 +7,205 @@
   <button type="button" class="btn-close" (click)="dismissAlert()" aria-label="Close"></button>
 </div>
 <c-container>
-    <!-- Search Input -->
-    <c-row class="justify-content-center">
-      <c-col lg="6">
-        <c-card>
-          <c-card-header>
-            <span>Search for Company</span>
-          </c-card-header>
-          <c-card-body>
-            <form [formGroup]="searchForm" (ngSubmit)="onSearch()">
-              <div class="mb-2">
-                <select
-                  class="form-select"
-                  formControlName="name"
-                  (change)="onSearch()"
-                >
-                  <option value="" disabled selected>Select a company</option>
-                  <option *ngFor="let option of companyOptions" [value]="option.value">
-                    {{ option.label }}
-                  </option>
-                </select>
-              </div>
-            </form>
-          </c-card-body>
-        </c-card>
-      </c-col>
-    </c-row>
-  
- 
-    <!-- Display Company Info -->
-<c-row *ngIf="company" class="justify-content-center mt-3">
-  <c-col lg="6">
-    <c-card>
-      <c-card-header>
-        <strong>Company Details</strong>
-      </c-card-header>
-      <c-card-body>
-        <p><strong>Name:</strong> {{ company.name }}</p>
-        <p><strong>TVA Number:</strong> {{ company.tva_number || 'N/A' }}</p>
-        <p><strong>Email:</strong> {{ company.email || 'N/A' }}</p>
-        <p><strong>Phone:</strong> {{ company.phone_number || 'N/A' }}</p>
-        <p><strong>Address:</strong> {{ company.address || 'N/A' }}</p>
-        <p><strong>Postal Code:</strong> {{ company.postal_code || 'N/A' }}</p>
-        <p><strong>Country:</strong> {{ company.country || 'N/A' }}</p>
-        <button class="btn button-warning mt-3" (click)="openUpdateModal()">Edit</button>
-      </c-card-body>
-    </c-card>
-  </c-col>
-</c-row>
-  
+  <!-- Search Input -->
+  <c-row class="justify-content-center">
+    <c-col lg="6">
+      <c-card>
+        <c-card-header>
+          <span>Search for Company</span>
+        </c-card-header>
+        <c-card-body>
+          <form [formGroup]="searchForm" (ngSubmit)="onSearch()">
+            <div class="mb-2">
+              <select
+                class="form-select"
+                formControlName="name"
+                (change)="onSearch()"
+              >
+                <option value="" disabled selected>Select a company</option>
+                <option *ngFor="let option of companyOptions" [value]="option.value">
+                  {{ option.label }}
+                </option>
+              </select>
+            </div>
+          </form>
+        </c-card-body>
+      </c-card>
+    </c-col>
+  </c-row>
+
+  <!-- Display Company Info -->
+  <c-row *ngIf="company" class="justify-content-center mt-3">
+    <c-col lg="6">
+      <c-card>
+        <c-card-header>
+          <strong>Company Details</strong>
+        </c-card-header>
+        <c-card-body>
+          <p><strong><i class="bi bi-building me-2 text-dark"></i>Name:</strong> {{ company.name }}</p>
+          <p><strong><i class="bi bi-receipt me-2 text-dark"></i>TVA Number:</strong> {{ company.tva_number || 'N/A' }}</p>
+          <p><strong><i class="bi bi-envelope me-2 text-dark"></i>Email:</strong> {{ company.email || 'N/A' }}</p>
+          <p><strong><i class="bi bi-telephone me-2 text-dark"></i>Phone:</strong> {{ company.phone_number || 'N/A' }}</p>
+          <p><strong><i class="bi bi-geo-alt me-2 text-dark"></i>Address:</strong> {{ company.address || 'N/A' }}</p>
+          <p><strong><i class="bi bi-mailbox me-2 text-dark"></i>Postal Code:</strong> {{ company.postal_code || 'N/A' }}</p>
+          <p><strong><i class="bi bi-globe me-2 text-dark"></i>Country:</strong> {{ company.country || 'N/A' }}</p>
+          <button class="btn button-warning mt-3" (click)="openUpdateModal()">Edit</button>
+        </c-card-body>
+      </c-card>
+    </c-col>
+  </c-row>
+
   <!-- Update -->
-<c-modal [visible]="isModalOpen" (close)="isModalOpen = false" size="xl">
-  <c-modal-header>
-    <h5 class="modal-title">{{ isEditMode ? 'Update' : 'Create' }} Company</h5>
-    <button type="button" class="btn-close btn-close-white" (click)="isModalOpen = false"></button>
-  </c-modal-header>
-  <c-modal-body>
-    <form [formGroup]="companyForm" (ngSubmit)="onSubmit()">
-      <div class="row">
-        <!-- Name -->
-        <div class="col-md-6 mb-3">
-          <label class="form-label"><i class="bi bi-building me-2"></i> Name</label>
-          <input
-            type="text"
-            class="form-control bg-light"
-            formControlName="name"
-            placeholder="Enter company name"
-            readonly
-          />
-        </div>
-
-        <!-- Phone Number -->
-        <div class="col-md-6 mb-3">
-          <label class="form-label"><i class="bi bi-telephone me-2"></i> Phone Number</label>
-          <input
-            type="text"
-            class="form-control"
-            formControlName="phone_number"
-            placeholder="Enter phone number"
-            [ngClass]="{ 'is-invalid': companyForm.get('phone_number')?.touched && companyForm.get('phone_number')?.invalid }"
-          />
-          <div class="invalid-feedback" *ngIf="companyForm.get('phone_number')?.touched && companyForm.get('phone_number')?.invalid">
-            <ng-container *ngIf="companyForm.get('phone_number')?.errors?.['required']; else phoneError">
-              Phone number is required.
-            </ng-container>
-            <ng-template #phoneError>
-              <span *ngIf="companyForm.get('phone_number')?.errors?.['maxlength']">
-                Phone number cannot exceed 15 characters.
-              </span>
-            </ng-template>
+  <c-modal [visible]="isModalOpen" (close)="isModalOpen = false" size="xl">
+    <c-modal-header>
+      <h5 class="modal-title">{{ isEditMode ? 'Update' : 'Create' }} Company</h5>
+      <button type="button" class="btn-close btn-close-white" (click)="isModalOpen = false"></button>
+    </c-modal-header>
+    <c-modal-body>
+      <form [formGroup]="companyForm" (ngSubmit)="onSubmit()">
+        <div class="row">
+          <!-- Name -->
+          <div class="col-md-6 mb-3">
+            <label class="form-label"><i class="bi bi-building me-2 text-dark"></i> Name</label>
+            <input
+              type="text"
+              class="form-control bg-light"
+              formControlName="name"
+              placeholder="Enter company name"
+              readonly
+            />
           </div>
-          
-        </div>
 
-        <!-- Address -->
-        <div class="col-md-6 mb-3">
-          <label class="form-label"><i class="bi bi-geo-alt me-2"></i> Address</label>
-          <input
-            type="text"
-            class="form-control"
-            formControlName="address"
-            placeholder="Enter address"
-            [ngClass]="{ 'is-invalid': companyForm.get('address')?.touched && companyForm.get('address')?.invalid }"
-          />
-          <div class="invalid-feedback" *ngIf="companyForm.get('address')?.touched && companyForm.get('address')?.invalid">
-            Address field is required.
+          <!-- Phone Number -->
+          <div class="col-md-6 mb-3">
+            <label class="form-label"><i class="bi bi-telephone me-2 text-dark"></i> Phone Number</label>
+            <input
+              type="text"
+              class="form-control"
+              formControlName="phone_number"
+              placeholder="Enter phone number"
+              [ngClass]="{ 'is-invalid': companyForm.get('phone_number')?.touched && companyForm.get('phone_number')?.invalid }"
+            />
+            <div class="invalid-feedback" *ngIf="companyForm.get('phone_number')?.touched && companyForm.get('phone_number')?.invalid">
+              <ng-container *ngIf="companyForm.get('phone_number')?.errors?.['required']; else phoneError">
+                Phone number is required.
+              </ng-container>
+              <ng-template #phoneError>
+                <span *ngIf="companyForm.get('phone_number')?.errors?.['maxlength']">
+                  Phone number cannot exceed 15 characters.
+                </span>
+              </ng-template>
+            </div>
+          </div>
+
+          <!-- Address -->
+          <div class="col-md-6 mb-3">
+            <label class="form-label"><i class="bi bi-geo-alt me-2 text-dark"></i> Address</label>
+            <input
+              type="text"
+              class="form-control"
+              formControlName="address"
+              placeholder="Enter address"
+              [ngClass]="{ 'is-invalid': companyForm.get('address')?.touched && companyForm.get('address')?.invalid }"
+            />
+            <div class="invalid-feedback" *ngIf="companyForm.get('address')?.touched && companyForm.get('address')?.invalid">
+              Address field is required.
+            </div>
+          </div>
+
+          <!-- Postal Code -->
+          <div class="col-md-6 mb-3">
+            <label class="form-label"><i class="bi bi-mailbox me-2 text-dark"></i> Postal Code</label>
+            <input
+              type="text"
+              class="form-control"
+              formControlName="postal_code"
+              placeholder="Enter postal code"
+              [ngClass]="{ 'is-invalid': companyForm.get('postal_code')?.touched && companyForm.get('postal_code')?.invalid }"
+            />
+            <div class="invalid-feedback" *ngIf="companyForm.get('postal_code')?.touched && companyForm.get('postal_code')?.invalid">
+              Postal code field is required.
+            </div>
+          </div>
+
+          <!-- Country -->
+          <div class="col-md-6 mb-3">
+            <label class="form-label"><i class="bi bi-globe me-2 text-dark"></i> Country</label>
+            <input
+              type="text"
+              class="form-control bg-light"
+              formControlName="country"
+              readonly
+            />
+          </div>
+
+          <!-- TVA Number -->
+          <div class="col-md-6 mb-3">
+            <label class="form-label"><i class="bi bi-receipt me-2 text-dark"></i> TVA Number</label>
+            <input
+              type="number"
+              class="form-control"
+              formControlName="tva_number"
+              placeholder="Enter TVA number"
+              [ngClass]="{ 'is-invalid': companyForm.get('tva_number')?.touched && companyForm.get('tva_number')?.invalid }"
+            />
+            <div class="invalid-feedback" *ngIf="companyForm.get('tva_number')?.touched && companyForm.get('tva_number')?.invalid">
+              TVA must be a number between 1 and 99.
+            </div>
+          </div>
+
+          <!-- RIB Bank -->
+          <div class="col-md-6 mb-3">
+            <label class="form-label"><i class="bi bi-bank me-2 text-dark"></i> RIB Bank</label>
+            <input
+              type="text"
+              class="form-control"
+              formControlName="rib_bank"
+              placeholder="Enter RIB bank"
+              [ngClass]="{ 'is-invalid': companyForm.get('rib_bank')?.touched && companyForm.get('rib_bank')?.invalid }"
+            />
+            <div class="invalid-feedback" *ngIf="companyForm.get('rib_bank')?.touched && companyForm.get('rib_bank')?.invalid">
+              RIB Bank must contain only digits.
+            </div>
+          </div>
+
+          <!-- Email -->
+          <div class="col-md-6 mb-3">
+            <label class="form-label"><i class="bi bi-envelope me-2 text-dark"></i> Email</label>
+            <input
+              type="email"
+              class="form-control"
+              formControlName="email"
+              placeholder="Enter email"
+              [ngClass]="{ 'is-invalid': companyForm.get('email')?.touched && companyForm.get('email')?.invalid }"
+            />
+            <div class="invalid-feedback" *ngIf="companyForm.get('email')?.touched && companyForm.get('email')?.invalid">
+              Enter a valid email address.
+            </div>
+          </div>
+
+          <!-- Website -->
+          <div class="col-md-6 mb-3">
+            <label class="form-label"><i class="bi bi-link-45deg me-2 text-dark"></i> Website</label>
+            <input
+              type="text"
+              class="form-control"
+              formControlName="website"
+              placeholder="Enter website URL"
+              [ngClass]="{ 'is-invalid': companyForm.get('website')?.touched && companyForm.get('website')?.invalid }"
+            />
+            <div class="invalid-feedback" *ngIf="companyForm.get('website')?.touched && companyForm.get('website')?.invalid">
+              Enter a valid website URL (e.g., https://example.com).
+            </div>
           </div>
         </div>
 
-        <!-- Postal Code -->
-        <div class="col-md-6 mb-3">
-          <label class="form-label"><i class="bi bi-mailbox me-2"></i> Postal Code</label>
-          <input
-            type="text"
-            class="form-control"
-            formControlName="postal_code"
-            placeholder="Enter postal code"
-            [ngClass]="{ 'is-invalid': companyForm.get('postal_code')?.touched && companyForm.get('postal_code')?.invalid }"
-          />
-          <div class="invalid-feedback" *ngIf="companyForm.get('postal_code')?.touched && companyForm.get('postal_code')?.invalid">
-            Postal code field is required.
-          </div>
+        <div class="text-end">
+          <button type="submit" class="btn button-primary" [disabled]="companyForm.invalid">
+            {{ isEditMode ? 'Update' : 'Create' }}
+          </button>
         </div>
-
-        <!-- Country -->
-        <div class="col-md-6 mb-3">
-          <label class="form-label"><i class="bi bi-globe me-2"></i> Country</label>
-          <input
-            type="text"
-            class="form-control bg-light"
-            formControlName="country"
-            readonly
-          />
-        </div>
-
-        <!-- TVA Number -->
-        <div class="col-md-6 mb-3">
-          <label class="form-label"><i class="bi bi-receipt me-2"></i> TVA Number</label>
-          <input
-            type="number"
-            class="form-control"
-            formControlName="tva_number"
-            placeholder="Enter TVA number"
-            [ngClass]="{ 'is-invalid': companyForm.get('tva_number')?.touched && companyForm.get('tva_number')?.invalid }"
-          />
-          <div class="invalid-feedback" *ngIf="companyForm.get('tva_number')?.touched && companyForm.get('tva_number')?.invalid">
-            TVA must be a number between 1 and 99.
-          </div>
-        </div>
-
-        <!-- RIB Bank -->
-        <div class="col-md-6 mb-3">
-          <label class="form-label"><i class="bi bi-bank me-2"></i> RIB Bank</label>
-          <input
-            type="text"
-            class="form-control"
-            formControlName="rib_bank"
-            placeholder="Enter RIB bank"
-            [ngClass]="{ 'is-invalid': companyForm.get('rib_bank')?.touched && companyForm.get('rib_bank')?.invalid }"
-          />
-          <div class="invalid-feedback" *ngIf="companyForm.get('rib_bank')?.touched && companyForm.get('rib_bank')?.invalid">
-            RIB Bank must contain only digits.
-          </div>
-        </div>
-
-        <!-- Email -->
-        <div class="col-md-6 mb-3">
-          <label class="form-label"><i class="bi bi-envelope me-2"></i> Email</label>
-          <input
-            type="email"
-            class="form-control"
-            formControlName="email"
-            placeholder="Enter email"
-            [ngClass]="{ 'is-invalid': companyForm.get('email')?.touched && companyForm.get('email')?.invalid }"
-          />
-          <div class="invalid-feedback" *ngIf="companyForm.get('email')?.touched && companyForm.get('email')?.invalid">
-            Enter a valid email address.
-          </div>
-        </div>
-
-        <!-- Website -->
-        <div class="col-md-6 mb-3">
-          <label class="form-label"><i class="bi bi-link-45deg me-2"></i> Website</label>
-          <input
-            type="text"
-            class="form-control"
-            formControlName="website"
-            placeholder="Enter website URL"
-            [ngClass]="{ 'is-invalid': companyForm.get('website')?.touched && companyForm.get('website')?.invalid }"
-          />
-          <div class="invalid-feedback" *ngIf="companyForm.get('website')?.touched && companyForm.get('website')?.invalid">
-            Enter a valid website URL (e.g., https://example.com).
-          </div>
-        </div>
-      </div>
-
-      <div class="text-end">
-        <button type="submit" class="btn button-primary" [disabled]="companyForm.invalid">
-          {{ isEditMode ? 'Update' : 'Create' }}
-        </button>
-      </div>
-    </form>
-  </c-modal-body>
-</c-modal>
-
-  </c-container>
-  
+      </form>
+    </c-modal-body>
+  </c-modal>
+</c-container>

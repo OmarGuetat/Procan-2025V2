@@ -1,0 +1,20 @@
+.skeleton-line {
+  height: 14px;
+  background: #dee2e6;
+  border-radius: 4px;
+  animation: pulse 1.5s infinite ease-in-out;
+}
+
+.skeleton-avatar {
+  width: 50px;
+  height: 50px;
+  border-radius: 50%;
+  background: #dee2e6;
+  animation: pulse 1.5s infinite ease-in-out;
+}
+
+@keyframes pulse {
+  0% { background-color: #dee2e6; }
+  50% { background-color: #ced4da; }
+  100% { background-color: #dee2e6; }
+}
