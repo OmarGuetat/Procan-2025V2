@@ -14,7 +14,7 @@
       <h5 class="fw-bold"><i class="bi bi-filter"></i> Filter by Leave Type</h5>
       <select id="leaveTypeFilter" class="form-control" [(ngModel)]="selectedType" (change)="onLeaveTypeChange()">
         <option [ngValue]="null">All</option>
-        <option *ngFor="let type of leaveTypes" [value]="type">{{ formatLeaveType(type) }}</option>
+        <option *ngFor="let type of leaveTypes" [value]="type">{{ type | replaceUnderscoreCapitalize }}</option>
       </select>
     </div>
 

@@ -62,7 +62,7 @@
           <i class="bi bi-chat-left-text me-2"></i>
           <strong>Reason:</strong>&nbsp;
           <span>
-            {{ formatLeaveType(request.leave_type) }}
+            {{request.leave_type| replaceUnderscoreCapitalize }}
           </span>
         </p>
         <p class="d-flex align-items-center">

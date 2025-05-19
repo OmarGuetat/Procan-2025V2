@@ -2,11 +2,12 @@ import { CommonModule } from '@angular/common';
 import { Component, Input } from '@angular/core';
 import { LeaveService } from '../../../services/leave.service';
 import { FormsModule, FormGroup, ReactiveFormsModule, FormBuilder, Validators } from '@angular/forms';
+import { SharedModule } from '../../../shared.module';
 
 @Component({
   selector: 'app-request-card',
   standalone: true,
-  imports: [CommonModule, FormsModule, ReactiveFormsModule],
+  imports: [FormsModule, ReactiveFormsModule,SharedModule],
   templateUrl: './request-card.component.html',
   styleUrls: ['./request-card.component.scss']
 })
@@ -83,15 +84,6 @@ export class RequestCardComponent {
     return `${date} ${timeLabel}`;
   }
 
-  formatLeaveType(leaveType: string): string {
-    // Handle the case where 'other' should be displayed as 'Personal Leave'
-    if (leaveType === 'other') {
-      leaveType = 'personal_leave';
-    }
-    return leaveType
-      .replace(/_/g, ' ')
-      .replace(/\b\w/g, (char) => char.toUpperCase());
-  }
 
   onFileChange(event: any) {
     const file = event.target.files[0];

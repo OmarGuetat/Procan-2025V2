@@ -1,13 +1,13 @@
 import { Component } from '@angular/core';
-import { FormBuilder, FormGroup, FormsModule, ReactiveFormsModule, Validators } from '@angular/forms';
+import { FormBuilder, FormGroup, Validators } from '@angular/forms';
 import { LeaveService } from '../../../services/leave.service';
-import { CommonModule } from '@angular/common';
 import { Router } from '@angular/router';
+import { SharedModule } from '../../../shared.module';
 
 @Component({
   selector: 'app-leave-form',
   standalone: true,
-  imports: [CommonModule, ReactiveFormsModule, FormsModule],
+  imports: [SharedModule],
   templateUrl: './leave-form.component.html',
   styleUrls: ['./leave-form.component.css']
 })
@@ -29,6 +29,7 @@ export class LeaveFormComponent {
   isConfirming: boolean = false;
   isSubmitting: boolean = false;
   alreadyTaken: boolean = false;
+  requestedNull: boolean = false;
   showEndFields = true;
   isSending: boolean = false;
   rejectionMessage: string = '';
@@ -88,6 +89,7 @@ export class LeaveFormComponent {
       end_time: this.selectedEndTime
     });
     this.alreadyTaken = false;
+    this.requestedNull = false;
   }
 
   // Send rejection message to HR
@@ -214,16 +216,8 @@ export class LeaveFormComponent {
     return `${date} ${timeLabel}`;
   }
 
-  // Capitalize and format leave type
-  formatLeaveType(leaveType: string): string {
-    return leaveType
-      .replace(/_/g, ' ') // Replace underscores with spaces
-      .replace(/\b\w/g, (char) => char.toUpperCase()); // Capitalize each word
-  }
-
   // Submit the leave request
   submitLeaveRequest() {
-    this.userRole = localStorage.getItem('role') || 'hr';
     if (this.isSubmitting) return;
 
     this.isSubmitting = true;
@@ -255,6 +249,7 @@ export class LeaveFormComponent {
         this.isSubmitting = false;
         if (response) {
           this.leaveDays = response.leave_days;
+          this.requestedNull = (this.leaveDays = response.leave_days) === 0; 
           this.leaveDetails = response;
 
           this.leaveForm.patchValue({

@@ -3,12 +3,13 @@ import { LeaveBalanceService } from '../../../services/leave-balance.service';
 import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { CommonModule } from '@angular/common';
 import { SkeletonTableCardComponent } from '../../components/Skeletons/skeleton-table-card/skeleton-table-card.component';
+import { SharedModule } from '../../../shared.module';
 
 
 
 @Component({
   selector: 'app-leave-balance',
-  imports:[ReactiveFormsModule,CommonModule,FormsModule,SkeletonTableCardComponent],
+  imports:[ReactiveFormsModule,CommonModule,FormsModule,SkeletonTableCardComponent,SharedModule],
   templateUrl: './leave-balance.component.html',
   styleUrls: ['./leave-balance.component.scss'],
 })
@@ -85,10 +86,5 @@ export class LeaveBalanceComponent implements OnInit {
         (error) => console.error('Error adding leave:', error)
       );
   }  
-  formatLeaveType(leaveType: string): string {
-    // Replace underscores with spaces and capitalize each word
-    return leaveType
-      .replace(/_/g, ' ') // Replace underscores with spaces
-      .replace(/\b\w/g, (char) => char.toUpperCase()); // Capitalize each word
-  }
+ 
 }

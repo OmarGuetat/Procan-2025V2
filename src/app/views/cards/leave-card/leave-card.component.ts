@@ -20,13 +20,16 @@ export class LeaveCardComponent {
   alertMessage: string = '';
   alertType: string = '';
   isSubmitting: boolean = false;
-
+  userId: number = 0;
   constructor(private fb: FormBuilder, private leaveService: LeaveService,private router: Router,private authService: AuthService) {
     this.leaveForm = this.fb.group({
       leave_day_limit: ['', [Validators.required, Validators.min(0.25)]],
       description: ['', [Validators.maxLength(255)]]
     });    
    
+  }
+  ngOnInit(){
+    this.userId = +localStorage.getItem('userId')!;
   }
   dismissAlert() {
     this.alertMessage = '';

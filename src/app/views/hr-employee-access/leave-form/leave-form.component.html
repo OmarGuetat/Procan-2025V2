@@ -131,14 +131,14 @@
         </form>
 
         <!-- Step 2: Confirm Leave Details -->
-        <div *ngIf="step === 2 && !alreadyTaken && leaveDetails.leave_days > 0">
+        <div *ngIf="step === 2 && !alreadyTaken && !requestedNull">
           <h4 class="mb-3">Confirm Your Leave Details</h4>
           <div class="card p-3 bg-light">
             <p><i class="bi bi-calendar-event"></i>&nbsp; <strong>Start Date:</strong> {{
               formatDateTime(leaveDetails.start_date) }}</p>
             <p><i class="bi bi-calendar-event"></i>&nbsp; <strong>End Date:</strong> {{
               formatDateTime(leaveDetails.end_date) }}</p>
-            <p><i class="bi bi-chat-left-text"></i>&nbsp; <strong>Leave Type:</strong> {{ formatLeaveType(leaveDetails.leave_type) }}</p>
+            <p><i class="bi bi-chat-left-text"></i>&nbsp; <strong>Leave Type:</strong> {{leaveDetails.leave_type| replaceUnderscoreCapitalize }}</p>
             <p><i class="bi bi-calendar-week"></i>&nbsp; <strong>Leave Days:</strong> {{ leaveDetails.leave_days }} days</p>
             
           </div>
@@ -220,7 +220,7 @@
   </div>
 </ng-container>
 <!-- Step 2: Invalid Leave Duration -->
-<ng-container *ngIf="step === 2 && leaveDetails.leave_days === 0 && !alreadyTaken">
+<ng-container *ngIf="step === 2 && requestedNull && !alreadyTaken">
   <div class="card bg-danger bg-opacity-10 border border-danger p-4">
     <p class="fs-5 text-dark mb-3">
       The selected dates fall entirely on <strong>weekends or public holidays</strong>. <br>
@@ -249,28 +249,28 @@
     
   
     <!-- Image Section (Right) -->
-    <div class="col-xl-6 d-flex justify-content-center align-items-center" *ngIf="step !== 3 && !alreadyTaken && leaveDetails.leave_days > 0">
+    <div class="col-xl-6 d-flex justify-content-center align-items-center" *ngIf="step !== 3 && !alreadyTaken && !requestedNull">
       <img src="assets/material/leave-callender2.svg" alt="Leave Calendar" class="img-fluid img-container" style="max-width: 80%;">
     </div>
     <!-- Image Section for Maternity Leave -->
     <div class="col-xl-6 d-flex justify-content-center align-items-center"
-      *ngIf="step === 2 && alreadyTaken && leaveForm.value.leave_type === 'maternity_leave' && leaveDetails.leave_days > 0 ">
+      *ngIf="step === 2 && alreadyTaken && leaveForm.value.leave_type === 'maternity_leave' && !requestedNull ">
       <img src="assets/material/sad-employee.svg" alt="Leave Calendar" class="img-fluid img-container" style="max-width: 80%;">
     </div>
 
     <!-- Image Section for Paternity Leave -->
     <div class="col-xl-6 d-flex justify-content-center align-items-center"
-      *ngIf="step === 2 && alreadyTaken && leaveForm.value.leave_type === 'paternity_leave' && leaveDetails.leave_days > 0">
+      *ngIf="step === 2 && alreadyTaken && leaveForm.value.leave_type === 'paternity_leave' && !requestedNull">
       <img src="assets/material/sad-man-employee.svg" alt="Leave Calendar" class="img-fluid img-container" style="max-width: 80%;">
     </div>
     <!-- Image Section for Requested zero -->
     <div class="col-xl-6 d-flex justify-content-center align-items-center"
-      *ngIf="step === 2 && leaveDetails.leave_days === 0 && !alreadyTaken && this.userGender==='male'">
+      *ngIf="step === 2 && requestedNull && !alreadyTaken && this.userGender==='male'">
       <img src="assets/success-images/man-vacation.svg" alt="Leave Calendar" class="img-fluid img-container" style="max-width: 80%;">
     </div>
     <!-- Image Section for Requested zero -->
     <div class="col-xl-6 d-flex justify-content-center align-items-center"
-      *ngIf="step === 2 && leaveDetails.leave_days === 0 && !alreadyTaken && this.userGender==='female'">
+      *ngIf="step === 2 && requestedNull && !alreadyTaken && this.userGender==='female'">
       <img src="assets/success-images/woman2-vacation.svg" alt="Leave Calendar" class="img-fluid img-container" style="max-width: 80%;">
     </div>
     

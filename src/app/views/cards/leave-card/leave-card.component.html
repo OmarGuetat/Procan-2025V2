@@ -26,12 +26,24 @@
 
   <!-- Action Buttons -->
   <div class="btn-group mt-3">
-    <button class="btn button-secondary btn-sm" (click)="seeDetails()">Details</button>
-    <button class="btn button-success btn-sm text-nowrap" (click)="addLeaveDays()">
-      <i class="bi bi-plus-circle me-1"></i> Days
-    </button>
-    <button class="btn button-primary btn-sm text-nowrap" (click)="viewRequests()">Requests</button>
-  </div>
+  <button class="btn button-secondary btn-sm" (click)="seeDetails()"
+    [class.custom-disabled]="leaveEmployee.id === userId"
+    [disabled]="leaveEmployee.id === userId">
+    Details
+  </button>
+  <button class="btn button-success btn-sm text-nowrap" (click)="addLeaveDays()"
+    
+    [disabled]="leaveEmployee.id === userId">
+    <i class="bi bi-plus-circle me-1"></i> Days
+  </button>
+  <button class="btn button-primary btn-sm text-nowrap" (click)="viewRequests()"
+    
+    [disabled]="leaveEmployee.id === userId">
+    Requests
+  </button>
+</div>
+
+
 </div>
 
 <!-- Add Leave Days Modal -->

@@ -52,7 +52,7 @@ export class NotificationsComponent implements OnInit {
     if (!notification.is_read) {
       this.markAsRead(notification.id);
     }
-    this.router.navigate([`/${this.userRole}/requests-user-dashboard`]);
+    this.router.navigate([`/${this.userRole}/leave-requests`, notification.sender_id]);
   }
 
   markAsRead(notificationId: number, event?: Event): void {

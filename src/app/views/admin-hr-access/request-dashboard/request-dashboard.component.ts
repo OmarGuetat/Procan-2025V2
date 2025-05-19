@@ -5,12 +5,13 @@ import { LeaveService } from '../../../services/leave.service';
 import { AuthService } from '../../../services/auth.service';
 import { SkeletonTableComponent } from '../../components/Skeletons/skeleton-table/skeleton-table.component';
 import { ActivatedRoute, Router } from '@angular/router';
+import { SharedModule } from '../../../shared.module';
 
 
 
 @Component({
   selector: 'app-request-dashboard',
-  imports: [CommonModule, FormsModule,SkeletonTableComponent],
+  imports: [ FormsModule,SkeletonTableComponent,SharedModule],
   templateUrl: './request-dashboard.component.html',
   styleUrl: './request-dashboard.component.css'
 })
@@ -181,11 +182,6 @@ export class RequestDashboardComponent {
     this.selectedLeave = { ...leave }; // Pre-fill the selectedLeave with the leave details
     const updateModal = new bootstrap.Modal(document.getElementById('updateLeaveModal'));
     updateModal.show(); // Show the modal
-  }
-  formatLeaveType(leaveType: string): string {
-    return leaveType
-      .replace(/_/g, ' ') // Replace underscores with spaces
-      .replace(/\b\w/g, (char) => char.toUpperCase()); // Capitalize each word
   }
   // Submit the updated leave request
   submitUpdatedLeave(): void {

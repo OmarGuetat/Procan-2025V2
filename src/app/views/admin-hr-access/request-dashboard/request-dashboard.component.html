@@ -34,7 +34,7 @@
       </h5>
       <select id="leaveTypeFilter" class="form-control" [(ngModel)]="selectedType" (change)="onLeaveTypeChange()">
         <option [ngValue]="null" selected>All</option>
-        <option *ngFor="let type of leaveTypes" [value]="type">{{ formatLeaveType(type) }}</option>
+        <option *ngFor="let type of leaveTypes" [value]="type">{{ type | replaceUnderscoreCapitalize  }}</option>
       </select>
     </div>
   
@@ -76,8 +76,8 @@
         <td>{{ formatDateTime(leave.end_date) }}</td>
 
         <td>
-          <ng-container *ngIf="leave.leave_type !== 'personal_leave'; else showOther">
-            {{ formatLeaveType(leave.leave_type) }}
+          <ng-container *ngIf="leave.leave_type !== 'other'; else showOther">
+             {{ leave.leave_type | replaceUnderscoreCapitalize }}
           </ng-container>
           <ng-template #showOther>
             {{ leave.other_type || 'N/A' }}

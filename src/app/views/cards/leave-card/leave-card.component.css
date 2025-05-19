@@ -30,3 +30,6 @@
       gap: 5px; /* Add spacing between buttons */
   }
 }
+.custom-disabled {
+  background-color: azure;
+}

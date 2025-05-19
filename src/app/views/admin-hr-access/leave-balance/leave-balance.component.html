@@ -28,7 +28,7 @@
         <tr *ngFor="let leave of leaveBalances; let i = index">
           <td>
             <i [ngClass]="getLeaveIconClass(leave.leave_type)" class="me-1 text-primary"></i>
-            {{ formatLeaveType(leave.leave_type) }}
+            {{ leave.leave_type| replaceUnderscoreCapitalize  }}
           </td>
           <td>
             <div class="input-group">

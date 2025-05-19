@@ -4,10 +4,11 @@ import { FormsModule } from '@angular/forms';
 import { CommonModule } from '@angular/common';
 import { RequestCardComponent } from '../../cards/request-card/request-card.component';
 import { RequestCardSkeletonComponent } from '../../components/Skeletons/request-card-skeleton/request-card-skeleton.component';
-import {  SharedModule } from '@coreui/angular';
+import { SharedModule } from '../../../shared.module';
+
 @Component({
   selector: 'app-requests-user-dashboard',
-  imports: [FormsModule, RequestCardComponent, CommonModule,SharedModule,RequestCardSkeletonComponent],
+  imports: [ RequestCardComponent,SharedModule,RequestCardSkeletonComponent],
   templateUrl: './requests-user-dashboard.component.html',
   styleUrls: ['./requests-user-dashboard.component.css']
 })
@@ -77,10 +78,6 @@ export class RequestsUserDashboardComponent implements OnInit {
   onStatusChange(): void {
     this.currentPage = 1;
     this.fetchLeaveRequests();
-  }
-  
-  formatLeaveType(type: string): string {
-    return type.replace('_', ' ').replace(/\b\w/g, char => char.toUpperCase());
   }
   
   onYearChange(): void {
