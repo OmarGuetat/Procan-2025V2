@@ -36,16 +36,18 @@ export class RequestDashboardComponent {
   totalRequestedLeaveDays: number = 0;
   totalEffectiveLeaveDays: number = 0;
   isLoading: boolean = false;
+  isFirstLoading: boolean = false;
   leaveTypes: string[] = ['paternity_leave', 'maternity_leave', 'sick_leave', 'personal_leave'];
   hasError: boolean = false;
   userId: number | null = null;
   constructor(private leaveService: LeaveService, private authService: AuthService,private route: ActivatedRoute,private router: Router) { }
 
   ngOnInit() {
-     const idParam = this.route.snapshot.paramMap.get('id');
+
+    const idParam = this.route.snapshot.paramMap.get('id');
     this.userId = idParam ? +idParam : null;
     if (this.userId) {
-      this.fetchLeaveRequests();
+      this.fetchLeaveRequests(true);
     }
     this.userRole = this.authService.getRole();
   }
@@ -95,9 +97,10 @@ export class RequestDashboardComponent {
   dismissAlert() {
     this.alertMessage = '';
   }
-  fetchLeaveRequests(): void {
+ fetchLeaveRequests(isFirstLoad: boolean = false): void {
   if (this.userId === null) return;
 
+  if (isFirstLoad) this.isFirstLoading = true;
   this.isLoading = true;
   this.hasError = false;
 
@@ -118,14 +121,17 @@ export class RequestDashboardComponent {
       this.currentPage = response.meta.current_page;
       this.totalPages = response.meta.total_pages;
       this.isLoading = false;
+      if (isFirstLoad) this.isFirstLoading = false;
     },
     error => {
       console.error('Error fetching leave details:', error);
       this.isLoading = false;
       this.hasError = true;
+      if (isFirstLoad) this.isFirstLoading = false;
     }
   );
 }
+
   prevPage(): void {
     if (this.currentPage > 1) {
       this.currentPage--;

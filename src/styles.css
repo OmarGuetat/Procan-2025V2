@@ -151,7 +151,7 @@ h4, h5, h6 {
 }
 
 .button-error:hover {
-    background: darken(var(--color-error), 10%);
+    background: #d13340;
 }
 /* Base button style */
 .td-btn {
@@ -180,7 +180,7 @@ h4, h5, h6 {
   }
   
   /* Success variant */
-  .td-btn-success {
+  .td-button-success {
     color: var(--color-success);
     border-color: var(--color-success);
     border-radius: 6px;
@@ -191,7 +191,7 @@ h4, h5, h6 {
     transition: transform 0.25s ease, color 0.25s ease, border-color 0.25s ease;
   }
   
-  .td-btn-success:hover {
+  .td-button-success:hover {
     color: white;
     background: var(--color-success);
     transform: scale(1.2);
@@ -199,7 +199,7 @@ h4, h5, h6 {
   }
   
   /* Danger variant */
-  .td-btn-danger {
+  .td-button-error {
     color: var(--color-error);
     border-color: var(--color-error);
     border-radius: 6px;
@@ -210,7 +210,7 @@ h4, h5, h6 {
     transition: transform 0.25s ease, color 0.25s ease, border-color 0.25s ease;
   }
   
-  .td-btn-danger:hover {
+  .td-button-error:hover {
     color: white;
     background: var(--color-error);
     transform: scale(1.2);
@@ -218,7 +218,7 @@ h4, h5, h6 {
   }
   
   /* Warning variant */
-  .td-btn-warning {
+  .td-button-warning {
     color: var(--color-warning);
     border-color: var(--color-warning);
     border-radius: 6px;
@@ -229,7 +229,7 @@ h4, h5, h6 {
     transition: transform 0.25s ease, color 0.25s ease, border-color 0.25s ease;
   }
   
-  .td-btn-warning:hover {
+  .td-button-warning:hover {
     color: white;
     background: var(--color-warning);
     transform: scale(1.2);

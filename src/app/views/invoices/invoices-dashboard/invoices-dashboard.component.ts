@@ -168,7 +168,13 @@ export class InvoicesDashboardComponent implements OnInit {
   });
 }
   
-  
+  formatInvoiceType(str: string): string {
+  if (!str) return '';
+  return str
+    .replace(/_/g, ' ')
+    .replace(/\w\S*/g, (txt) => txt.charAt(0).toUpperCase() + txt.substr(1).toLowerCase());
+}
+
   onViewAll(id: any) {
     const role = this.authService.getRole();
     this.router.navigate([`/${role}/invoices`, id, 'services']);

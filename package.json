@@ -40,7 +40,7 @@
     "@fullcalendar/multimonth": "^6.1.17",
     "@fullcalendar/scrollgrid": "^6.1.17",
     "@fullcalendar/timegrid": "^6.1.17",
-    "bootstrap": "^5.3.3",
+    "bootstrap": "^5.3.6",
     "bootstrap-icons": "^1.11.3",
     "chart.js": "^4.4.9",
     "laravel-echo": "^2.0.2",

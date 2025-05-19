@@ -26,7 +26,7 @@ export class ManageHolidaysComponent implements OnInit {
   isLoading = true;
   currentPage = 1;
   totalPages = 1;
-
+  isSubmittingHoliday: boolean = false;
   constructor(
     private holidayService: PublicHolidayService,
     private fb: FormBuilder
@@ -77,27 +77,31 @@ export class ManageHolidaysComponent implements OnInit {
     }
   }
 
-  addHoliday(): void {
-    if (this.holidayForm.invalid) return;
+ addHoliday(): void {
+  if (this.isSubmittingHoliday || this.holidayForm.invalid) return;
 
-    const holiday: PublicHoliday = {
-      name: this.holidayForm.value.name,
-      start_date: this.formatDate(this.holidayForm.value.start_date),
-      end_date: this.formatDate(this.holidayForm.value.end_date),
-    };
+  this.isSubmittingHoliday = true;
 
-    if (this.isEditing) {
-      this.holidayService.updateHoliday(this.selectedHolidayId!, holiday).subscribe(() => {
-        this.resetForm();
-        this.loadHolidays(this.currentPage);
-      });
-    } else {
-      this.holidayService.addHoliday(holiday).subscribe(() => {
-        this.resetForm();
-        this.loadHolidays(this.currentPage);
-      });
-    }
+  const holiday: PublicHoliday = {
+    name: this.holidayForm.value.name,
+    start_date: this.formatDate(this.holidayForm.value.start_date),
+    end_date: this.formatDate(this.holidayForm.value.end_date),
+  };
+
+  const finalize = () => {
+    this.resetForm();
+    this.loadHolidays(this.currentPage);
+    setTimeout(() => {
+      this.isSubmittingHoliday = false;
+    }, 2000); // Unlock after 2 seconds
+  };
+
+  if (this.isEditing) {
+    this.holidayService.updateHoliday(this.selectedHolidayId!, holiday).subscribe(finalize);
+  } else {
+    this.holidayService.addHoliday(holiday).subscribe(finalize);
   }
+}
 
   editHoliday(holiday: PublicHoliday): void {
     this.isEditing = true;

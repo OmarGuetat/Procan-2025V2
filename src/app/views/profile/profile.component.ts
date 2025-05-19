@@ -24,6 +24,12 @@ export class ProfileComponent implements OnInit {
     this.isAdmin = role === 'admin';
     this.initializeForm();
     this.loadProfile();
+    this.updateProfileForm = this.fb.group({
+  email: ['', [Validators.email]],
+  phone: ['', [Validators.pattern(/^\d{8}$/)]],
+  address: ['']
+});
+
   }
 
   dismissAlert() {

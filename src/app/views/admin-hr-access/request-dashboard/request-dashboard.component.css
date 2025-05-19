@@ -1,3 +1,21 @@
 .border-custom{
     border: 1px solid #ccc;
 }
+.skeleton-line {
+  background: #dee2e6;
+  border-radius: 4px;
+  animation: pulse 1.5s ease-in-out infinite;
+}
+
+@keyframes pulse {
+  0% {
+    background-color: #dee2e6;
+  }
+  50% {
+    background-color: #ced4da;
+  }
+  100% {
+    background-color: #dee2e6;
+  }
+}
+
