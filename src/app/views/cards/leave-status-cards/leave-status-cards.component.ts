@@ -6,7 +6,6 @@ import { CommonModule } from '@angular/common';
 @Component({
   selector: 'app-leave-status-cards',
   imports:[CommonModule],
-  styleUrl: './leave-status-cards.scss',
   templateUrl: './leave-status-cards.component.html',
 })
 export class LeaveStatusCardsComponent implements OnInit {
