@@ -16,7 +16,7 @@ interface Leave {
   selector: 'app-leave-details',
   imports: [CommonModule,SkeletonTableCardComponent],
   templateUrl: './leave-details.component.html',
-  styleUrls: ['./leave-details.component.css']
+  styleUrls: ['./leave-details.component.scss']
 })
 export class LeaveDetailsComponent implements OnInit {
   @Output() backToList = new EventEmitter<void>(); 
