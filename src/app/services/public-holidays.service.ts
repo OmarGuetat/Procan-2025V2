@@ -15,10 +15,31 @@ interface PublicHoliday {
 })
 export class PublicHolidayService {
   private apiUrl = environment.apiUrl+'/public-holidays';
+  private GlobalUrl = environment.apiUrl;
 
   constructor(private http: HttpClient) {}
+getAvailableYears(): Observable<number[]> {
+  return this.http.get<number[]>(`${this.GlobalUrl}/holiday-years`);
+}
 
-  getHolidays(page: number = 1): Observable<{
+  getHolidays(
+  page: number = 1,
+  name?: string,
+  year?: string
+): Observable<{
+  data: PublicHoliday[],
+  meta: {
+    current_page: number;
+    per_page: number;
+    total_pages: number;
+    total_holidays: number;
+  }
+}> {
+  let params = `?page=${page}`;
+  if (name) params += `&name=${encodeURIComponent(name)}`;
+  if (year) params += `&year=${year}`;
+
+  return this.http.get<{
     data: PublicHoliday[],
     meta: {
       current_page: number;
@@ -26,17 +47,8 @@ export class PublicHolidayService {
       total_pages: number;
       total_holidays: number;
     }
-  }> {
-    return this.http.get<{
-      data: PublicHoliday[],
-      meta: {
-        current_page: number;
-        per_page: number;
-        total_pages: number;
-        total_holidays: number;
-      }
-    }>(`${this.apiUrl}?page=${page}`);
-  }
+  }>(`${this.apiUrl}${params}`);
+}
   
 
   addHoliday(holiday: PublicHoliday): Observable<any> {

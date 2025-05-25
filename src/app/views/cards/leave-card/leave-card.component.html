@@ -16,13 +16,25 @@
 
   <!-- Leave Balances - Compact -->
   <div class="d-flex justify-content-center gap-2 mt-2 flex-wrap">
-    <span class="badge bg-primary px-2 py-1 small">
-      <i class="bi bi-person-check me-1"></i> {{ leaveEmployee.personal_leave_remaining }}d
-    </span>
-    <span class="badge bg-warning text-dark px-2 py-1 small">
-      <i class="bi bi-thermometer-half me-1"></i> {{ leaveEmployee.sick_leave_effective_days_current_year }}d
-    </span>
-  </div>
+  <span 
+    class="badge bg-primary px-2 py-1 small"
+    data-bs-toggle="tooltip"
+    data-bs-placement="top"
+    title="Remaining personal leave balance"
+  >
+    <i class="bi bi-person-check me-1"></i> {{ leaveEmployee.personal_leave_remaining }}d
+  </span>
+
+  <span 
+    class="badge bg-warning text-dark px-2 py-1 small"
+    data-bs-toggle="tooltip"
+    data-bs-placement="top"
+    title="Total effective sick leave days this year"
+  >
+    <i class="bi bi-thermometer-half me-1"></i> {{ leaveEmployee.sick_leave_effective_days_current_year }}d
+  </span>
+</div>
+
 
   <!-- Action Buttons -->
   <div class="btn-group mt-3">

@@ -149,6 +149,9 @@
                   <option value="individual">Individual</option>
                   <option value="professional">Professional</option>
                 </select>
+                <div *ngIf="clientForm.get('client_type')?.touched && clientForm.get('client_type')?.invalid" class="text-danger">
+  Client type is required.
+</div>
               </div>
 
               <!-- Client Name or Individual Details -->
@@ -157,6 +160,9 @@
                   <i class="bi bi-person"></i> Client Name
                 </label>
                 <input type="text" id="name" class="form-control" formControlName="name" />
+                <div *ngIf="clientForm.get('name')?.touched && clientForm.get('name')?.invalid" class="text-danger">
+  Last name is required.
+</div>
               </div>
 
               <div class="col-12 col-md-6 mb-3" *ngIf="clientForm.value.client_type === 'individual'">
@@ -170,18 +176,27 @@
                     <option value="Ms">Ms</option>
                     <option value="Miss">Miss</option>
                   </select>
+                  <div *ngIf="clientForm.get('civility')?.touched && clientForm.get('civility')?.hasError('required')" class="text-danger">
+  Civility is required.
+</div>
               </div>
               <div class="col-12 col-md-6 mb-3" *ngIf="clientForm.value.client_type === 'individual'">
                 <label for="first_name" class="form-label">
                   <i class="bi bi-person-fill"></i> First Name
                 </label>
                 <input type="text" id="first_name" class="form-control" formControlName="first_name" />
+                <div *ngIf="clientForm.get('first_name')?.touched && clientForm.get('first_name')?.invalid" class="text-danger">
+  First name is required.
+</div>
               </div>
               <div class="col-12 col-md-6 mb-3" *ngIf="clientForm.value.client_type === 'individual'">
                 <label for="last_name" class="form-label">
                   <i class="bi bi-person-fill"></i> Last Name
                 </label>
                 <input type="text" id="last_name" class="form-control" formControlName="last_name" />
+                <div *ngIf="clientForm.get('last_name')?.touched && clientForm.get('last_name')?.invalid" class="text-danger">
+  Last name is required.
+</div>
               </div>
 
               <!-- Address -->
@@ -190,6 +205,9 @@
                   <i class="bi bi-house-door"></i> Address
                 </label>
                 <input type="text" id="address" class="form-control" formControlName="address" required />
+                <div *ngIf="clientForm.get('address')?.touched && clientForm.get('address')?.hasError('required')" class="text-danger">
+  Address is required.
+</div>
               </div>
 
               <!-- Postal Code and Country -->
@@ -215,6 +233,10 @@
                   <i class="bi bi-telephone"></i> Phone Number
                 </label>
                 <input type="text" id="phone_number" class="form-control" formControlName="phone_number" required />
+                <div *ngIf="clientForm.get('phone_number')?.touched && clientForm.get('phone_number')?.errors" class="text-danger">
+  <div *ngIf="clientForm.get('phone_number')?.hasError('required')">Phone number is required.</div>
+  <div *ngIf="clientForm.get('phone_number')?.hasError('maxlength')">Max 15 characters allowed.</div>
+</div>
               </div>
 
               <!-- TVA Number (Professional Only) -->
@@ -223,6 +245,9 @@
                   <i class="bi bi-file-earmark"></i> TVA Number
                 </label>
                 <input type="text" id="tva_number_client" class="form-control" formControlName="tva_number_client" />
+                <div *ngIf="clientForm.get('tva_number_client')?.touched && clientForm.get('tva_number_client')?.hasError('pattern')" class="text-danger">
+  TVA number must be numeric.
+</div>
               </div>
 
               <!-- RIB Bank -->
@@ -239,6 +264,9 @@
                   <i class="bi bi-envelope"></i> Email
                 </label>
                 <input type="email" id="email" class="form-control" formControlName="email" />
+                <div *ngIf="clientForm.get('email')?.touched && clientForm.get('email')?.hasError('email')" class="text-danger">
+  Please enter a valid email.
+</div>
               </div>
             </div>
 
@@ -269,8 +297,8 @@
                   <i class="bi bi-person-fill"></i> Client Type
                 </label>
                 <select id="client_type" class="form-select" formControlName="client_type" required>
-                  <option value="individual" *ngIf="isIndividual" >Individual</option>
-                  <option value="professional" *ngIf="!isIndividual">Professional</option>
+                  <option value="individual"  *ngIf="clientForm.value.client_type === 'individual'" >Individual</option>
+                  <option value="professional"  *ngIf="clientForm.value.client_type === 'professional'">Professional</option>
                 </select>
               </div>
   
@@ -286,7 +314,13 @@
                 <label for="civility" class="form-label">
                   <i class="bi bi-person-circle"></i> Civility
                 </label>
-                <input type="text" id="civility" class="form-control" formControlName="civility" />
+                 <select id="civility" name="civility" formControlName="civility" class="form-control" required>
+                  <option value="" disabled selected>Select civility</option>
+                  <option value="Mr">Mr</option>
+                  <option value="Mrs">Mrs</option>
+                  <option value="Ms">Ms</option>
+                  <option value="Miss">Miss</option>
+                </select>
               </div>
               <div class="col-12 col-md-6 mb-3" *ngIf="clientForm.value.client_type === 'individual'">
                 <label for="first_name" class="form-label">

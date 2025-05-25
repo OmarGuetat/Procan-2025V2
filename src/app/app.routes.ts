@@ -50,6 +50,7 @@ export const routes: Routes = [
         path: '', 
         loadChildren: () => import('./views/employee-access/routes').then(m => m.routes) 
       },
+      
       { 
         path: '', 
         loadChildren: () => import('./views/hr-employee-access/routes').then(m => m.routes) 

@@ -1,61 +1,97 @@
-<div class="card shadow-sm mt-2">
-  <div class="card-header d-flex justify-content-between align-items-center">
-    <strong>Manage Public Holidays</strong>
-    <i class="bi bi-calendar-event fs-5 text-primary"></i>
+<!-- Add Holiday Card -->
+<div class="card border-custom-success shadow-sm mb-4">
+  <div class="card-header bg-custom-success d-flex justify-content-between align-items-center">
+    <strong><i class="bi bi-plus-circle me-2"></i>Add New Holiday</strong>
   </div>
 
   <div class="card-body">
-    <!-- Holiday Form -->
     <form [formGroup]="holidayForm" (ngSubmit)="addHoliday()">
       <div class="row gy-2 gx-3">
         <div class="col-md-4">
           <label class="form-label">
-            <i class="bi bi-card-text me-1 text-secondary"></i>
-            Holiday Name
+            <i class="bi bi-card-text me-1 text-secondary"></i> Holiday Name
           </label>
           <input type="text" formControlName="name" class="form-control" required />
         </div>
-    
+
         <div class="col-md-3">
           <label class="form-label">
-            <i class="bi bi-calendar-plus me-1 text-secondary"></i>
-            Start Date
+            <i class="bi bi-calendar-plus me-1 text-secondary"></i> Start Date
           </label>
-          <input type="date" formControlName="start_date" class="form-control" required (change)="checkDateValidity()" />
+          <input
+            type="date"
+            formControlName="start_date"
+            class="form-control"
+            required
+            (change)="checkDateValidity()"
+          />
         </div>
-    
+
         <div class="col-md-3">
           <label class="form-label">
-            <i class="bi bi-calendar-minus me-1 text-secondary"></i>
-            End Date
+            <i class="bi bi-calendar-minus me-1 text-secondary"></i> End Date
           </label>
-          <input type="date" formControlName="end_date" class="form-control" required (change)="checkDateValidity()" />
+          <input
+            type="date"
+            formControlName="end_date"
+            class="form-control"
+            required
+            (change)="checkDateValidity()"
+          />
         </div>
-    
+
         <div class="col-md-2 d-flex align-items-end">
           <button
             type="submit"
-            class="btn btn-outline-success w-100 d-flex align-items-center justify-content-center gap-1"
+            class="btn td-button-success w-100 d-flex align-items-center justify-content-center gap-1"
             [disabled]="holidayForm.invalid || dateInvalid"
           >
-            <i class="bi bi-plus-circle"></i>
-            {{ isEditing ? 'Update' : 'Add' }}
+            <i class="bi bi-plus-circle"></i> Add
           </button>
         </div>
       </div>
-    
+
       <div *ngIf="dateInvalid" class="text-danger mt-2">
         End date must be later than or equal to the start date.
       </div>
     </form>
-    
+  </div>
+</div>
 
-    <hr />
+<!-- Manage Holidays Card -->
+<div class="card shadow-sm border-custom-primary">
+  <div class="card-header bg-custom-primary d-flex justify-content-between align-items-center">
+    <strong><i class="bi bi-calendar-event me-2"></i> Manage Public Holidays</strong>
+    <i class="bi bi-calendar-event fs-5 text-white"></i>
+  </div>
+
+  <div class="card-body">
+
+  <div class="card-body">
+    <!-- Filter Controls -->
+    <div class="row g-3 mb-3">
+      <div class="col-md-6">
+        <label class="form-label">
+          <i class="bi bi-search me-1 text-secondary"></i> Filter by Name
+        </label>
+        <input type="text" class="form-control" placeholder="Enter holiday name"
+               [(ngModel)]="filterName" name="filterName" (ngModelChange)="onFilterChange()" />
+      </div>
+
+      <div class="col-md-3">
+        <label class="form-label">
+          <i class="bi bi-calendar me-1 text-secondary"></i> Filter by Year
+        </label>
+        <select class="form-select" [(ngModel)]="filterYear" name="filterYear" (change)="onFilterChange()">
+          <option value="">All Years</option>
+          <option *ngFor="let year of years" [value]="year">{{ year }}</option>
+        </select>
+      </div>
+    </div>
 
     <!-- Holiday List -->
     <div class="table-responsive">
-      <!-- Show table if holidays are not empty -->
-      <table class="table table-hover table-bordered align-middle" *ngIf="holidays.length > 0">
+      <table class="table table-hover table-bordered align-middle" *ngIf="holidays.length > 0 && !isLoading">
         <thead class="table-light">
           <tr>
             <th><i class="bi bi-card-text me-1 text-secondary"></i> Name</th>
@@ -70,7 +106,7 @@
             <td>{{ holiday.start_date }}</td>
             <td>{{ holiday.end_date }}</td>
             <td>
-              <button class="btn btn-sm btn-outline-danger d-flex align-items-center gap-1"
+              <button class="btn btn-sm td-button-error d-flex align-items-center gap-1"
                       (click)="openDeleteModal(holiday.id!)">
                 <i class="bi bi-trash"></i> Delete
               </button>
@@ -78,33 +114,30 @@
           </tr>
         </tbody>
       </table>
-    
-      <!-- Fallback message when no holidays -->
-      <div *ngIf="holidays.length <1 && !isLoading" class="text-center">
+
+      <!-- Fallback when no holidays -->
+      <div *ngIf="holidays.length < 1 && !isLoading" class="text-center">
         <img src="assets/no-data-images/w2-no-data.svg" alt="No Data" class="w-50 mb-3" />
         <p>No Holidays Registered</p>
       </div>
-    
-      <!-- Loading skeleton while data is being fetched -->
+
+      <!-- Loading Skeleton -->
       <div *ngIf="isLoading">
         <app-skeleton-table [rows]="5" [cols]="4"></app-skeleton-table>
       </div>
     </div>
-    
-    
-    
-    
+
+    <!-- Pagination Controls -->
+    <div class="d-flex justify-content-between align-items-center my-3">
+      <button class="btn td-btn" (click)="goToPreviousPage()" [disabled]="currentPage === 1">
+        <i class="bi bi-arrow-left-circle"></i> Previous
+      </button>
+      <span class="fw-semibold">Page {{ currentPage }} of {{ totalPages }}</span>
+      <button class="btn td-btn" (click)="goToNextPage()" [disabled]="currentPage === totalPages">
+        <i class="bi bi-arrow-right-circle"></i> Next
+      </button>
+    </div>
   </div>
-</div>
-<!-- Pagination Controls -->
-<div class="d-flex justify-content-between align-items-center my-3">
-  <button class="btn btn-outline-primary" (click)="goToPreviousPage()" [disabled]="currentPage === 1">
-    <i class="bi bi-arrow-left-circle"></i> Previous
-  </button>
-  <span class="fw-semibold">Page {{ currentPage }} of {{ totalPages }}</span>
-  <button class="btn btn-outline-primary" (click)="goToNextPage()" [disabled]="currentPage === totalPages">
-    <i class="bi bi-arrow-right-circle"></i> Next
-  </button>
 </div>
 
 <!-- Delete Confirmation Modal -->

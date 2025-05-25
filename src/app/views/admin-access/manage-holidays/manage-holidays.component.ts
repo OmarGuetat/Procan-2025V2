@@ -1,5 +1,5 @@
 import { Component, OnInit } from '@angular/core';
-import { FormBuilder, FormGroup, ReactiveFormsModule, Validators } from '@angular/forms';
+import { FormBuilder, FormGroup, FormsModule, ReactiveFormsModule, Validators } from '@angular/forms';
 import { PublicHolidayService } from '../../../services/public-holidays.service';
 import { CommonModule } from '@angular/common';
 import { SkeletonTableComponent } from '../../components/Skeletons/skeleton-table/skeleton-table.component';
@@ -9,11 +9,12 @@ interface PublicHoliday {
   name: string;
   start_date: string;
   end_date: string;
+  number_of_days?: number;
 }
 
 @Component({
   selector: 'app-manage-holidays',
-  imports:[ReactiveFormsModule,CommonModule,SkeletonTableComponent],
+  imports:[ReactiveFormsModule,CommonModule,FormsModule,SkeletonTableComponent],
   templateUrl: './manage-holidays.component.html',
   styleUrls: ['./manage-holidays.component.scss']
 })
@@ -24,9 +25,14 @@ export class ManageHolidaysComponent implements OnInit {
   selectedHolidayId?: number;
   dateInvalid = false;
   isLoading = true;
+  isSubmittingHoliday: boolean = false;
+
   currentPage = 1;
   totalPages = 1;
-  isSubmittingHoliday: boolean = false;
+
+  filterName = '';
+  filterYear = '';
+  years: number[] = [];
   constructor(
     private holidayService: PublicHolidayService,
     private fb: FormBuilder
@@ -37,19 +43,31 @@ export class ManageHolidaysComponent implements OnInit {
       end_date: ['', Validators.required],
     });
   }
-
+  
   ngOnInit(): void {
     this.loadHolidays();
+    this.loadAvailableYears();
   }
-
-  loadHolidays(page: number = 1): void {
-    this.holidayService.getHolidays(page).subscribe(response => {
-      this.holidays = response.data;
-      this.currentPage = response.meta.current_page;
-      this.totalPages = response.meta.total_pages;
-      this.isLoading = false; 
+   loadAvailableYears(): void {
+    this.holidayService.getAvailableYears().subscribe(years => {
+      this.years = years;
     });
   }
+  loadHolidays(page: number = 1): void {
+  this.isLoading = true;
+
+  this.holidayService.getHolidays(page, this.filterName, this.filterYear).subscribe(response => {
+    this.holidays = response.data;
+    this.currentPage = response.meta.current_page;
+    this.totalPages = response.meta.total_pages;
+    this.isLoading = false;
+  });
+}
+
+onFilterChange(): void {
+  this.currentPage = 1; // Reset to first page when filtering
+  this.loadHolidays();
+}
 
   goToPreviousPage(): void {
     if (this.currentPage > 1) {

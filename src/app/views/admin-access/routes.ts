@@ -17,6 +17,11 @@ export const routes: Routes = [
         data: {
           title: 'Public Holidays'
         }
+      },
+      {
+        path: 'client-management',
+        loadComponent: () => import('../accountant-acess/client-management/client-management.component').then(m => m.ClientManagementComponent),
+        data: { title: 'Client Management' }
       }
     ]
   }

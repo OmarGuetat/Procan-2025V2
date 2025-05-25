@@ -31,23 +31,47 @@ export class ClientManagementComponent implements OnInit, OnDestroy {
     private fb: FormBuilder
   ) {
     this.clientForm = this.fb.group({
-      client_type: ['', Validators.required],
-      civility: [''],
-      first_name: [''],
-      last_name: [''],
-      name: [''],
-      tva_number_client: [''],
-      address: ['', Validators.required],
-      postal_code: ['', Validators.required],
-      rib_bank: [''],
-      country: ['', Validators.required],
-      email: ['', Validators.email],
-      phone_number: ['', [Validators.required, Validators.maxLength(15)]],
-    });
+  client_type: ['', Validators.required],
+  civility: [''], 
+  first_name: [''],
+  last_name: [''],
+  name: [''],
+  tva_number_client: ['', Validators.pattern(/^\d+$/)], 
+  address: ['', Validators.required],
+  postal_code: ['', Validators.required],
+  rib_bank: [''],
+  country: ['', Validators.required],
+  email: ['', Validators.email],
+  phone_number: ['', [Validators.required, Validators.maxLength(15)]],
+});
+
   }
 
   ngOnInit(): void {
     this.fetchClients();
+    this.clientForm.get('client_type')?.valueChanges.subscribe(type => {
+  if (type === 'individual') {
+    this.clientForm.get('civility')?.setValidators([Validators.required]);
+    this.clientForm.get('first_name')?.setValidators([Validators.required, Validators.maxLength(255)]);
+    this.clientForm.get('last_name')?.setValidators([Validators.required, Validators.maxLength(255)]);
+    this.clientForm.get('name')?.clearValidators(); // not used directly
+    this.clientForm.get('tva_number_client')?.clearValidators(); // optional for individual
+  } else if (type === 'professional') {
+    this.clientForm.get('name')?.setValidators([Validators.required, Validators.maxLength(255)]);
+    this.clientForm.get('civility')?.clearValidators();
+    this.clientForm.get('first_name')?.clearValidators();
+    this.clientForm.get('last_name')?.clearValidators();
+    this.clientForm.get('tva_number_client')?.setValidators([Validators.required, Validators.pattern(/^\d+$/)]);
+  }
+
+  // Always update the validity
+  this.clientForm.get('civility')?.updateValueAndValidity();
+  this.clientForm.get('first_name')?.updateValueAndValidity();
+  this.clientForm.get('last_name')?.updateValueAndValidity();
+  this.clientForm.get('name')?.updateValueAndValidity();
+  this.clientForm.get('tva_number_client')?.updateValueAndValidity();
+});
+
     // Change placeholder every second
     this.placeholderInterval = setInterval(() => {
       this.changePlaceholder();
@@ -117,12 +141,48 @@ export class ClientManagementComponent implements OnInit, OnDestroy {
   
 
   openEditClientModal(client: any): void {
-    this.isEditMode = true;
-    this.editClientId = client.id;
-    this.clientForm.patchValue(client);
+      this.isEditMode = true;
+  this.editClientId = client.id;
 
-    const modal = new bootstrap.Modal(document.getElementById('editClientModal') as HTMLElement);
-    modal.show();
+  if (client.client_type === 'individual') {
+    // Split name by space
+    const nameParts = client.name?.split(' ') || [];
+    const civility = nameParts[0] || '';
+    const first_name = nameParts[1] || '';
+    const last_name = nameParts.slice(2).join(' ') || ''; // In case last name has spaces
+
+    this.clientForm.patchValue({
+      civility,
+      first_name,
+      last_name,
+      tva_number_client: client.tva_number_client,
+      address: client.address,
+      postal_code: client.postal_code,
+      rib_bank: client.rib_bank,
+      country: client.country,
+      email: client.email,
+      phone_number: client.phone_number,
+      client_type: client.client_type
+    });
+  } else {
+    // Professional client
+    this.clientForm.patchValue({
+      name: client.name,
+      tva_number_client: client.tva_number_client,
+      address: client.address,
+      postal_code: client.postal_code,
+      rib_bank: client.rib_bank,
+      country: client.country,
+      email: client.email,
+      phone_number: client.phone_number,
+      client_type: client.client_type
+    });
+  }
+
+  const modal = document.getElementById('editClientModal');
+  if (modal) {
+    (bootstrap as any).Modal.getOrCreateInstance(modal).show();
+  }
   }
 
   resetForm(): void {
@@ -143,21 +203,33 @@ export class ClientManagementComponent implements OnInit, OnDestroy {
     modal.show();
   }
   updateClient(): void {
-    if (this.clientForm.invalid) {
-      return;
+  if (this.clientForm.invalid) {
+    return;
+  }
+
+  if (this.isEditMode && this.editClientId !== null) {
+    let payload = { ...this.clientForm.value };
+
+    // Reconstruct `name` only for individual clients
+    if (payload.client_type === 'individual') {
+      payload.name = `${payload.civility} ${payload.first_name} ${payload.last_name}`.trim();
     }
 
-    if (this.isEditMode && this.editClientId !== null) {
-      // Update the client data
-      this.clientService.updateClient(this.editClientId, this.clientForm.value).subscribe(() => {
-        this.fetchClients();
-        const modal = bootstrap.Modal.getInstance(document.getElementById('editClientModal') as HTMLElement);
-        modal.hide();
-      });
-    } else {
-      // Add new client logic here if needed
-    }
+    // Remove unused fields if not needed by backend
+    delete payload.civility;
+    delete payload.first_name;
+    delete payload.last_name;
+
+    this.clientService.updateClient(this.editClientId, payload).subscribe(() => {
+      this.fetchClients();
+      const modal = bootstrap.Modal.getInstance(document.getElementById('editClientModal') as HTMLElement);
+      modal?.hide();
+    });
+  } else {
+    // Add new client logic here if needed
   }
+}
+
   // Save the client
   saveClient(): void {
     if (this.clientForm.invalid) {

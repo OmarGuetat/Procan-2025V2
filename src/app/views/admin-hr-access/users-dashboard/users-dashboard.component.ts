@@ -47,7 +47,7 @@ export class UsersDashboardComponent implements OnInit {
       company: ['procan', Validators.required],
       start_date: [this.getTodayDate(), Validators.required],
       role: ['employee', Validators.required],
-      job_description: ['', [Validators.required, Validators.maxLength(15)]],
+      job_description: ['', [Validators.required, Validators.maxLength(30)]],
     });
   }
   

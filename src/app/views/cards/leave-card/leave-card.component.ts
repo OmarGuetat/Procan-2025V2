@@ -1,4 +1,4 @@
-import { Component, EventEmitter, Input, Output } from '@angular/core';
+import { AfterViewInit, Component, EventEmitter, Input, Output } from '@angular/core';
 import { FormBuilder, FormGroup, ReactiveFormsModule, Validators } from '@angular/forms';
 import { LeaveService } from '../../../services/leave.service';
 import { CommonModule } from '@angular/common';
@@ -12,7 +12,7 @@ import { AuthService } from '../../../services/auth.service';
   templateUrl: './leave-card.component.html',
   styleUrls: ['./leave-card.component.css']
 })
-export class LeaveCardComponent {
+export class LeaveCardComponent implements AfterViewInit {
   @Input() leaveEmployee: any;
   @Output() onSeeDetails = new EventEmitter<number>();
   @Output() onViewRequests = new EventEmitter<number>();
@@ -27,6 +27,12 @@ export class LeaveCardComponent {
       description: ['', [Validators.maxLength(255)]]
     });    
    
+  }
+    ngAfterViewInit(): void {
+    const tooltipTriggerList = Array.from(document.querySelectorAll('[data-bs-toggle="tooltip"]'));
+    tooltipTriggerList.forEach((tooltipTriggerEl) => {
+      new bootstrap.Tooltip(tooltipTriggerEl);
+    });
   }
   ngOnInit(){
     this.userId = +localStorage.getItem('userId')!;

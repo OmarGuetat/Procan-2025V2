@@ -72,7 +72,12 @@ export const adminNavItems: INavData[] = [
             name: 'Company Settings',
             url: '/admin/company-settings',
             icon: 'bi-building'
-          }
+          },
+          {
+    name: 'Client Management',
+    url: '/admin/client-management',
+    icon: 'bi-people'
+  },
         ]
       }
     ]
