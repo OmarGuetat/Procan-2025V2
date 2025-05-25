@@ -26,7 +26,6 @@ export class LeaveCardComponent implements AfterViewInit {
       leave_day_limit: ['', [Validators.required, Validators.min(0.25)]],
       description: ['', [Validators.maxLength(255)]]
     });    
-   
   }
     ngAfterViewInit(): void {
     const tooltipTriggerList = Array.from(document.querySelectorAll('[data-bs-toggle="tooltip"]'));

@@ -213,6 +213,23 @@ h4, h5, h6 {
     transform: scale(1.2);
     border-color: var(--color-success);
   }
+  /* Success variant */
+  .button-outline-success {
+    color: var(--color-success);
+    border-color: var(--color-success);
+    border-radius: 6px;
+    border: 2px solid var(--color-success);
+    cursor: pointer;
+    font-weight: 600;
+    font-family: var(--font-family-accent);
+    transition: transform 0.25s ease, color 0.25s ease, border-color 0.25s ease;
+  }
+  
+  .button-outline-success:hover {
+    color: white;
+    background: var(--color-success);
+    border-color: var(--color-success);
+  }
   
   /* Danger variant */
   .td-button-error {

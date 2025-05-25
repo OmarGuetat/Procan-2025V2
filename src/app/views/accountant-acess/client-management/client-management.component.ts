@@ -230,25 +230,38 @@ export class ClientManagementComponent implements OnInit, OnDestroy {
   }
 }
 
-  // Save the client
-  saveClient(): void {
-    if (this.clientForm.invalid) {
-      this.clientForm.markAllAsTouched();
-      return;
-    }
-
-    if (this.isEditMode && this.editClientId !== null) {
-      this.clientService.updateClient(this.editClientId, this.clientForm.value).subscribe(() => {
-        this.resetForm();
-        this.fetchClients();
-      });
-    } else {
-      this.clientService.addClient(this.clientForm.value).subscribe(() => {
-        this.resetForm();
-        this.fetchClients();
-      });
-    }
+saveClient(): void {
+  if (this.clientForm.invalid) {
+    this.clientForm.markAllAsTouched();
+    return;
   }
+
+  if (this.clientForm.value.client_type === 'individual') {
+    const civility = this.clientForm.value.civility || '';
+    const firstName = this.clientForm.value.first_name || '';
+    const lastName = this.clientForm.value.last_name || '';
+    const fullName = [civility, firstName, lastName].filter(part => part.trim() !== '').join(' ');
+    this.clientForm.patchValue({ name: fullName });
+  }
+
+  if (this.isEditMode && this.editClientId !== null) {
+    this.clientService.updateClient(this.editClientId, this.clientForm.value).subscribe(() => {
+      this.resetForm();
+      this.fetchClients();
+      const modal = bootstrap.Modal.getInstance(document.getElementById('addClientModal') as HTMLElement);
+      modal?.hide();
+    });
+  } else {
+    this.clientService.addClient(this.clientForm.value).subscribe(() => {
+      this.resetForm();
+      this.fetchClients();
+      const modal = bootstrap.Modal.getInstance(document.getElementById('addClientModal') as HTMLElement);
+      modal?.hide();
+    });
+  }
+}
+
+
    // Trigger the delete confirmation modal
    openDeleteConfirmation(clientId: number): void {
     this.clientToDeleteId = clientId;
@@ -256,14 +269,15 @@ export class ClientManagementComponent implements OnInit, OnDestroy {
     modal.show();
   }
 
-  // Confirm the deletion of the client
-  confirmDelete(): void {
-    if (this.clientToDeleteId !== null) {
-      this.clientService.deleteClient(this.clientToDeleteId).subscribe(() => {
-        this.fetchClients();
-        const modal = new bootstrap.Modal(document.getElementById('deleteConfirmationModal') as HTMLElement);
-        modal.hide();
-      });
-    }
+ confirmDelete(): void {
+  if (this.clientToDeleteId !== null) {
+    this.clientService.deleteClient(this.clientToDeleteId).subscribe(() => {
+      this.fetchClients();
+      const modalElement = document.getElementById('deleteConfirmationModal');
+      const modal = bootstrap.Modal.getInstance(modalElement);
+      modal?.hide();
+    });
   }
+}
+
 }

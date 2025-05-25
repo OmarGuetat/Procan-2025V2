@@ -24,10 +24,11 @@ export const authInterceptor: HttpInterceptorFn = (req, next) => {
       if (error.status === 401) {
         // 401 Unauthorized - Token may be expired or invalid
         console.warn('Unauthorized (401): Redirecting to login.');
-        //authService.logout();
+        authService.logout();
       } else if (error.status === 403) {
         // 403 Forbidden - User doesn't have permission
         console.warn('Forbidden (403): Access denied.');
+        authService.logout();
       } else if (error.status === 404) {
         // 404 Not Found - API route might be incorrect
         console.warn('Not Found (404): The requested resource was not found.');

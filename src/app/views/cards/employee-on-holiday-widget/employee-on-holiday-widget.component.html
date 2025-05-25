@@ -19,23 +19,28 @@
     </ng-container>
     
     
-    
-  
-      <ng-container *ngIf="!loading && leavesToday.length > 0">
-        <div class="leave-scroll-container">
-          <ul class="list-group list-group-flush">
-            <li *ngFor="let leave of leavesToday" class="list-group-item leave-item">
-              <div class="d-flex justify-content-between align-items-center">
-                <div>
-                  <strong class="font-secondary">{{ leave.full_name }}</strong>
-                  <span class="badge leave-type-badge">{{ leave.leave_type }}</span>
-                </div>
-                <i class="bi bi-person-circle text-muted-icon"></i>
-              </div>
-            </li>
-          </ul>
+    <ng-container *ngIf="!loading && leavesToday.length > 0">
+  <div class="leave-scroll-container">
+    <ul class="list-group list-group-flush">
+      <li
+        *ngFor="let leave of leavesToday"
+        class="list-group-item leave-item"
+        data-bs-toggle="tooltip"
+        data-bs-placement="top"
+        [attr.title]="'From ' + leave.start_date + ' to ' + leave.end_date"
+      >
+        <div class="d-flex justify-content-between align-items-center">
+          <div>
+            <strong class="font-secondary">{{ leave.full_name }}</strong>
+            <span class="badge leave-type-badge">{{ leave.leave_type }}</span>
+          </div>
+          <i class="bi bi-person-circle text-muted-icon"></i>
         </div>
-      </ng-container>
+      </li>
+    </ul>
+  </div>
+</ng-container>
+
   
       <ng-container *ngIf="!loading && leavesToday.length === 0">
         <p class="text-muted">No employees are on leave today.</p>

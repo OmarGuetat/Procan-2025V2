@@ -46,17 +46,12 @@
               <div class="form-check mr-3">
                 <input type="radio" id="fullDayStart" class="form-check-input" name="startTime" value="full"
                   (change)="setStartTime('full')" [checked]="leaveForm.value.start_time === '08:00:00'">
-                <label for="fullDayStart" class="form-check-label">Full Day</label>
+                <label for="fullDayStart" class="form-check-label">Morning at 8:00 AM</label>
               </div>
               <div class="form-check mx-3">
                 <input type="radio" id="firstHalfStart" class="form-check-input" name="startTime" value="first"
                   (change)="setStartTime('first')" [checked]="leaveForm.value.start_time === '12:00:00'">
-                <label for="firstHalfStart" class="form-check-label">1st Half</label>
-              </div>
-              <div class="form-check mx-3">
-                <input type="radio" id="secondHalfStart" class="form-check-input" name="startTime" value="second"
-                  (change)="setStartTime('second')" [checked]="leaveForm.value.start_time === '17:00:00'">
-                <label for="secondHalfStart" class="form-check-label">2nd Half</label>
+                <label for="firstHalfStart" class="form-check-label">Afternoon at 12:00 PM</label>
               </div>
             </div>
           </div>
@@ -76,19 +71,14 @@
             <label class="form-label"><i class="bi bi-clock"></i> End Time</label>
             <div class="d-flex">
               <div class="form-check mx-2">
-                <input type="radio" id="fullDayEnd" class="form-check-input" name="endTime" value="full"
-                  (change)="setEndTime('full')" [checked]="leaveForm.value.end_time === '08:00:00'">
-                <label for="fullDayEnd" class="form-check-label">Full Day</label>
-              </div>
-              <div class="form-check mx-2">
                 <input type="radio" id="firstHalfEnd" class="form-check-input" name="endTime" value="first"
                   (change)="setEndTime('first')" [checked]="leaveForm.value.end_time === '12:00:00'">
-                <label for="firstHalfEnd" class="form-check-label">1st Half</label>
+                <label for="firstHalfEnd" class="form-check-label">Midday at 12:00 PM</label>
               </div>
               <div class="form-check mx-2">
                 <input type="radio" id="secondHalfEnd" class="form-check-input" name="endTime" value="second"
                   (change)="setEndTime('second')" [checked]="leaveForm.value.end_time === '17:00:00'">
-                <label for="secondHalfEnd" class="form-check-label">2nd Half</label>
+                <label for="secondHalfEnd" class="form-check-label">End of Day at 6:00 PM</label>
               </div>
             </div>
           </div>
