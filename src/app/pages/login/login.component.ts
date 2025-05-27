@@ -78,7 +78,7 @@ redirectUser() {
   } else if (role === 'employee') {
     this.router.navigate(['/employee/home']);
   } else if (role === 'accountant') {
-    this.router.navigate(['/accountant/home']);
+    this.router.navigate(['/accountant/invoices-dashboard']);
   } 
   else {
     this.router.navigate(['/login']);
