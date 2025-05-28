@@ -245,7 +245,7 @@ export class InvoiceFormComponent {
       step2: this.stepTwoData,
       step3: this.stepThreeData
     };
-
+    console.log(invoiceData);
     this.invoiceService.confirm(invoiceData).subscribe({
       next: (res: any) => {
         console.log(res);

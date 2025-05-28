@@ -5,32 +5,28 @@
   <strong class="mx-2">{{ alertMessage }}</strong>
   <button type="button" class="btn-close" (click)="dismissAlert()" aria-label="Close"></button>
 </div>
-  <div class="row mt-3 ">
-    <div class="col-md-4 mb-3">
-      <app-payment-status-chart></app-payment-status-chart>
-    </div>
-    <div class="col-md-4 mb-3">
-      <app-invoice-type-chart></app-invoice-type-chart>
-    </div>
-    <div class="col-md-4 mb-3">
-      <app-payment-mode-chart></app-payment-mode-chart>
-    </div>
+<div class="row mt-3 ">
+  <div class="col-md-4 mb-3">
+    <app-payment-status-chart></app-payment-status-chart>
   </div>
-<div class="row g-3 align-items-end mt-1 mb-3">
- <!-- Search (Client Name or Number) -->
-<div class="col-12 col-md-4">
-  <label class="form-label">
-    <i class="bi bi-search me-1"></i> Search
-  </label>
-  <div class="input-group">
-  <input
-    type="text"
-    class="form-control "
-    [placeholder]="currentPlaceholder"  [class.show-placeholder]="true"
-    [(ngModel)]="search"
-    (ngModelChange)="onFilterChange()" />
+  <div class="col-md-4 mb-3">
+    <app-invoice-type-chart></app-invoice-type-chart>
+  </div>
+  <div class="col-md-4 mb-3">
+    <app-payment-mode-chart></app-payment-mode-chart>
   </div>
 </div>
+<div class="row g-3 align-items-end mt-1 mb-3">
+  <!-- Search (Client Name or Number) -->
+  <div class="col-12 col-md-4">
+    <label class="form-label">
+      <i class="bi bi-search me-1"></i> Search
+    </label>
+    <div class="input-group">
+      <input type="text" class="form-control " [placeholder]="currentPlaceholder" [class.show-placeholder]="true"
+        [(ngModel)]="search" (ngModelChange)="onFilterChange()" />
+    </div>
+  </div>
 
   <!-- Start Date -->
   <div class="col-12 col-sm-6 col-md-4 ">
@@ -78,15 +74,21 @@
     <tbody>
       <tr *ngFor="let item of invoices">
         <!-- Status with colored badge -->
-        <td>
-          <span class="badge" [ngClass]="{
-                'bg-success': item.invoice.payment_status === 'paid',
-                'bg-primary': item.invoice.payment_status === 'unpaid',
-                'bg-warning text-dark': item.invoice.payment_status === 'partially paid'
-              }">
-            {{ item.invoice.payment_status }}
-          </span>
-        </td>
+       <td>
+  <ng-container *ngIf="item.invoice.payment_status; else noStatus">
+    <span class="badge" [ngClass]="{
+        'bg-success': item.invoice.payment_status === 'paid',
+        'bg-primary': item.invoice.payment_status === 'unpaid',
+        'bg-warning text-dark': item.invoice.payment_status === 'partially paid'
+      }">
+      {{ item.invoice.payment_status }}
+    </span>
+  </ng-container>
+  <ng-template #noStatus>
+    <span class="text-muted">-</span>
+  </ng-template>
+</td>
+
 
         <!-- Type -->
         <td>{{ formatInvoiceType(item.invoice.type) }}</td>
@@ -101,10 +103,11 @@
         <td>{{ item.client_name }}</td>
 
         <!-- Amount Paid -->
-        <td>{{ item.invoice.amount_paid || 0 }} TND</td>
+        <td>{{ item.invoice.amount_paid === null ? 'N/A' : item.invoice.amount_paid + ' TND' }}</td>
 
         <!-- Unpaid Amount column -->
-        <td>{{ item.invoice.unpaid_amount || 0 }} TND</td>
+        <td>{{ item.invoice.unpaid_amount === null ? 'N/A' : item.invoice.unpaid_amount + ' TND' }}</td>
+
 
         <!-- Actions -->
         <td class="d-flex gap-2 justify-content-center">
@@ -124,13 +127,14 @@
       </tr>
     </tbody>
   </table>
-  
+
 </div>
 <!-- No Data / Error Message -->
 <div *ngIf="!loading && invoices.length === 0" class="text-center my-5">
-  <img src="assets/no-data-images/w-no-data.svg" alt="No Data" class="img-fluid w-25" >
+  <img src="assets/no-data-images/w-no-data.svg" alt="No Data" class="img-fluid w-25">
   <p class="mt-3 fw-semibold text-muted d-flex align-items-center justify-content-center gap-2">
-    <i class="bi" [ngClass]="errorOccurred ? 'bi-exclamation-triangle-fill text-danger' : 'bi-info-circle-fill text-primary'"></i>
+    <i class="bi"
+      [ngClass]="errorOccurred ? 'bi-exclamation-triangle-fill text-danger' : 'bi-info-circle-fill text-primary'"></i>
     {{ errorOccurred ? 'An error occurred while fetching invoices.' : 'No invoices found.' }}
   </p>
 </div>
@@ -163,7 +167,8 @@
     <div class="modal-content">
 
       <div class="modal-header">
-        <h5 class="modal-title" id="updatePaymentModalLabel">Update Payment - Invoice #{{ selectedInvoice?.number }}</h5>
+        <h5 class="modal-title" id="updatePaymentModalLabel">Update Payment - Invoice #{{ selectedInvoice?.number }}
+        </h5>
         <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
       </div>
 
@@ -187,7 +192,7 @@
 
       <div class="modal-footer">
         <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancel</button>
-        <button type="button" class="btn btn-primary" 
+        <button type="button" class="btn btn-primary"
           [disabled]="selectedInvoice?.payment_status === 'paid' || updateForm.amount_paid <= 0"
           (click)="submitUpdate()">
           Save

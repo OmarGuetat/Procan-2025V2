@@ -28,12 +28,26 @@ export class RequestsUserDashboardComponent implements OnInit {
   totalPages: number = 1;
   fullname: string = 'User';
   isLoading: boolean = false;
+  pages: number[] = [];  // Holds the visible page numbers
+paginationStart: number = 1;
+paginationSize: number = 3;
+
 
   constructor(private leaveRequestService: LeaveService) { }
 
   ngOnInit(): void {
     this.fetchLeaveRequests();
   }
+  updatePaginationWindow(): void {
+  this.pages = [];
+
+  const end = Math.min(this.paginationStart + this.paginationSize - 1, this.totalPages);
+  for (let i = this.paginationStart; i <= end; i++) {
+    this.pages.push(i);
+  }
+}
+
+
 
   fetchLeaveRequests(): void {
     this.isLoading = true;
@@ -53,8 +67,10 @@ export class RequestsUserDashboardComponent implements OnInit {
           this.totalRejectedTimes = this.selectedYear ? response.stats.status_counts.approved : 0;
           this.totalApprovedTimes = this.selectedYear ? response.stats.status_counts.rejected : 0;
           this.totalOnHoldTimes = this.selectedYear ? response.stats.status_counts.on_hold : 0;
+          this.updatePaginationWindow(); 
           this.totalPages = response.meta.total_pages;
           this.isLoading = false;
+          
         },
         error: () => {
           this.leaveRequests = [];
@@ -65,11 +81,37 @@ export class RequestsUserDashboardComponent implements OnInit {
   
   
   changePage(page: number): void {
-    if (page >= 1 && page <= this.totalPages) { 
-      this.currentPage = page;
-      this.fetchLeaveRequests();
+  if (page >= 1 && page <= this.totalPages) {
+    this.currentPage = page;
+
+    // Slide window only if clicked on the last page of the window
+    if (page === this.paginationStart + this.paginationSize - 1 && page < this.totalPages) {
+      this.paginationStart += 1;
     }
+    // Slide window back if clicked on the first page of the window and not on first page globally
+    else if (page === this.paginationStart && page > 1) {
+      this.paginationStart -= 1;
+    }
+
+    this.updatePaginationWindow();
+    this.fetchLeaveRequests();
   }
+}
+
+  goToNextWindow(): void {
+  const nextPage = this.currentPage + 1;
+  if (nextPage <= this.totalPages) {
+    this.changePage(nextPage);
+  }
+}
+
+goToPreviousWindow(): void {
+  const prevPage = this.currentPage - 1;
+  if (prevPage >= 1) {
+    this.changePage(prevPage);
+  }
+}
+
   onLeaveTypeChange(): void {
     this.currentPage = 1;
     this.fetchLeaveRequests();
