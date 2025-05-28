@@ -38,18 +38,37 @@ export class InvoiceFormComponent {
     email: '',
     phone_number: ''
   };
-  stepThreeData = {
-    services: [
-      { name: '', quantity: 0, unit: '', price_ht: 0, tva: 0, total_ht: 0, total_ttc: 0, comment: '' }
-    ],
-    TTotal_HT: 0,
-    TTotal_TVA: 0,
-    TTotal_TTC: 0,
-    payment_mode: '',
-    due_date: '',
-    payment_status: 'paid',
-    amount_paid: 0,
-  };
+  stepThreeData: {
+  services: {
+    name: string;
+    quantity: number;
+    unit: string;
+    price_ht: number;
+    tva: number;
+    total_ht: number;
+    total_ttc: number;
+    comment?: string;
+  }[];
+  TTotal_HT: number;
+  TTotal_TVA: number;
+  TTotal_TTC: number;
+  payment_mode: string | null;
+  due_date: string | null;
+  payment_status: string | null;
+  amount_paid: number | null;
+} = {
+  services: [
+    { name: '', quantity: 0, unit: '', price_ht: 0, tva: 0, total_ht: 0, total_ttc: 0, comment: '' }
+  ],
+  TTotal_HT: 0,
+  TTotal_TVA: 0,
+  TTotal_TTC: 0,
+  payment_mode: '',       // will set to null later if needed
+  due_date: '',
+  payment_status: 'paid',
+  amount_paid: 0,
+};
+
 
   alertMessage: string = '';
   alertType: string = '';
@@ -165,7 +184,6 @@ export class InvoiceFormComponent {
     );
   }
   onSubmitStepThree() {
-    if (this.isSubmitting) return; // Block if already submitting
 
     const hasNegative = this.stepThreeData.services.some(service =>
       service.quantity < 0 || service.price_ht < 0 || service.tva < 0
@@ -182,21 +200,33 @@ export class InvoiceFormComponent {
       return;
     }
 
-    if (hasNegative || (this.stepThreeData.amount_paid < 0)) {
-      this.showAlert('Values cannot be negative.', 'alert-danger');
-      setTimeout(() => {
-        this.dismissAlert();
-      }, 2000);
-      return;
-    }
+    if (
+  hasNegative || 
+  (this.stepThreeData.amount_paid !== null && this.stepThreeData.amount_paid < 0)
+) {
+  this.showAlert('Values cannot be negative.', 'alert-danger');
+  setTimeout(() => {
+    this.dismissAlert();
+  }, 2000);
+  return;
+}
+
 
     this.updateCalculations();
+    // ✅ Nullify payment-related fields if type is 'devis'
+  if (this.stepOneData.type === 'devis') {
+    this.stepThreeData.payment_mode = null;
+    this.stepThreeData.due_date = null;
+    this.stepThreeData.payment_status = null;
+    this.stepThreeData.amount_paid = null;
+  }
 
-    this.isSubmitting = true;
 
     this.invoiceService.stepThree(this.stepThreeData).subscribe({
       next: (response) => {
+        console.log(response);
         this.currentStep = 4;
+        
       },
       error: (error) => {
         console.error('Error in Step 3:', error);
