@@ -24,16 +24,6 @@ export class EmployeeHeaderComponent implements OnInit {
   ngOnInit(): void {
     this.loadUserData();
     this.fetchNotifications();
-    // ✅ Subscribe to real-time notifications
-    this.notificationService.notifications$.subscribe((newNotifications) => {
-
-      if (Array.isArray(newNotifications)) {
-        this.notifications = [...newNotifications, ...this.notifications];
-      } else {
-        this.notifications = [newNotifications, ...this.notifications];
-      }
-      this.updateUnreadCount();
-    });
   }
   constructor(private employeeService: EmployeeService, private authService: AuthService, private router: Router, private notificationService: NotificationService) { }
   loadUserData(): void {

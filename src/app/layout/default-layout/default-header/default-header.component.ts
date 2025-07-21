@@ -1,5 +1,5 @@
-import { CommonModule, NgTemplateOutlet } from '@angular/common';
-import { Component, computed, inject, input, OnInit } from '@angular/core';
+import { CommonModule } from '@angular/common';
+import { Component, input, OnInit } from '@angular/core';
 import {Router } from '@angular/router';
 
 import { 
@@ -37,19 +37,6 @@ export class DefaultHeaderComponent extends HeaderComponent implements OnInit {
   ngOnInit(): void {
     this.loadUserData();
     this.fetchNotifications();
-
-    // ✅ Subscribe to real-time notifications
-    this.notificationService.notifications$.subscribe((newNotifications) => {
-      console.log('🔔 Real-time notifications received:', newNotifications);
-
-      if (Array.isArray(newNotifications)) {
-        this.notifications = [...newNotifications, ...this.notifications];
-      } else {
-        this.notifications = [newNotifications, ...this.notifications];
-      }
-
-      this.updateUnreadCount();
-    });
   }
 
   constructor(
